@@ -1,0 +1,31 @@
+image: maven:eclipse-temurin
+
+stages:
+  - build
+  - test
+  - package
+
+
+build:
+  stage: build
+  script:
+    - cd SpareSti
+    - mvn compile
+
+test:
+  stage: test
+  script:
+    - cd SpareSti
+    - mvn verify
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+        - target/failsafe-reports/TEST-*.xml
+
+package:
+  stage: package
+  script:
+    - cd SpareSti
+    - mvn clean package
