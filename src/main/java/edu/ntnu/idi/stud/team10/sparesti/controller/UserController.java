@@ -1,7 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /** Controller for handling user requests. */
 @RestController
@@ -56,10 +56,10 @@ public class UserController {
 
   /**
    * Delete a user by id.
+   *
    * @param id The id of the user to delete.
    * @return ResponseEntity with status code.
    */
-
   @DeleteMapping("/delete/{id}")
   @Operation(summary = "Delete a user")
   public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
