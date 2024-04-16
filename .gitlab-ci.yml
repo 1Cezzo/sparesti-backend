@@ -6,13 +6,13 @@ stages:
   - package
 
 
-build-backend:
+build:
   stage: build-backend
   script:
     - cd SpareSti
     - mvn compile
 
-test-backend:
+test:
   stage: test-backend
   script:
     - cd SpareSti
@@ -24,7 +24,7 @@ test-backend:
         - target/surefire-reports/TEST-*.xml
         - target/failsafe-reports/TEST-*.xml
 
-package-backend:
+package:
   stage: package-backend
   script:
     - cd SpareSti
