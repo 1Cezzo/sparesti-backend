@@ -1,4 +1,4 @@
-package edu.ntnu.idi.stud.team10.sparesti;
+package edu.ntnu.idi.stud.team10.SpareSti;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,7 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SpareStiApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(SpareStiApplication.class, args);
-  }
+	public static void main(String[] args) {
+		SpringApplication.run(SpareStiApplication.class, args);
+	}
+
 }
