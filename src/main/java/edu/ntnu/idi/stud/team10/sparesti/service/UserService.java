@@ -3,6 +3,7 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,7 +30,7 @@ public class UserService {
   public void deleteUser(Long id) {
   }
 
-  public UserDto getUserByUsername(String username) {
-    return null;
+  public void getUserByUsername(String username) {
+
   }
 }

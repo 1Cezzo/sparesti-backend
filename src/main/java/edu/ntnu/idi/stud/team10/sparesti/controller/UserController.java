@@ -32,26 +32,23 @@ public class UserController {
      * Get a user by username.
      *
      * @param username the username of the user
-     * @return the user with the given username
      */
     @GetMapping("/{username}")
-    public ResponseEntity<UserDto> getUserByUsername(@PathVariable String username) {
-        return userService.getUserByUsername(username);
+    public void getUserByUsername(@PathVariable String username) {
+        userService.getUserByUsername(username);
     }
 
     /**
      * Create a new user.
      *
      * @param userDTO the user to create
-     * @return the response entity
      */
     @PostMapping("/create")
-    public ResponseEntity<String> createUser(@RequestBody UserDto userDTO) {
-        return userService.addUser(userDTO);
+    public void createUser(@RequestBody UserDto userDTO) {
+        userService.addUser(userDTO);
     }
 
-    @DeleteMapping("/delete/{username}")
-    public ResponseEntity<String> deleteUser(@PathVariable String username) {
-        return userService.deleteUser(username);
+    @DeleteMapping("/delete/{id}")
+    public void deleteUser(@PathVariable Long id) { userService.deleteUser(id);
     }
 }
