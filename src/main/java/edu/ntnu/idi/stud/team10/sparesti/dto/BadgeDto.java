@@ -13,6 +13,7 @@ public class BadgeDto {
     private String imageUrl;
 
     /**
+     * Converts badge into DTO for data transfer.
      *
      * @param badge (Badge) The badge being converted
      */

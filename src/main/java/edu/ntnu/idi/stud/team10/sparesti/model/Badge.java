@@ -1,7 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
-
-import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import jakarta.persistence.*;
 import lombok.*;
 
