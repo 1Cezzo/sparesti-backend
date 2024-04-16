@@ -1,10 +1,10 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
@@ -27,10 +27,7 @@ public class UserService {
     return null;
   }
 
-  public void deleteUser(Long id) {
-  }
+  public void deleteUser(Long id) {}
 
-  public void getUserByUsername(String username) {
-
-  }
+  public void getUserByUsername(String username) {}
 }
