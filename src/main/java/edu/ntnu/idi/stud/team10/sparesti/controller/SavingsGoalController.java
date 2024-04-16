@@ -1,4 +1,4 @@
-package main.java.edu.ntnu.idi.stud.team10.sparesti.controller;
+package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,11 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
+import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
+import edu.ntnu.idi.stud.team10.sparesti.service.SavingsGoalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import main.java.edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
-import main.java.edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
-import main.java.edu.ntnu.idi.stud.team10.sparesti.service.SavingsGoalService;
 
 @RestController
 @RequestMapping("/api/savings-goals")

@@ -1,4 +1,4 @@
-package main.java.edu.ntnu.idi.stud.team10.sparesti.model;
+package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import java.time.LocalDate;
 
