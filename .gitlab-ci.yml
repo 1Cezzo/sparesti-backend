@@ -5,17 +5,14 @@ stages:
   - test
   - package
 
-
 build:
   stage: build
   script:
-    - cd SpareSti
     - mvn compile
 
 test:
   stage: test
   script:
-    - cd SpareSti
     - mvn verify
   artifacts:
     when: always
@@ -27,5 +24,4 @@ test:
 package:
   stage: package
   script:
-    - cd SpareSti
     - mvn clean package
