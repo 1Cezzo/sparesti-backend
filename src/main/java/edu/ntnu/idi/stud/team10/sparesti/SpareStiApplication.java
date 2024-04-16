@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SpareStiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpareStiApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(SpareStiApplication.class, args);
+  }
 }
