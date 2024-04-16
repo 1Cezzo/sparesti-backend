@@ -49,7 +49,7 @@ public class UserController {
    * @return the response entity
    */
   @PostMapping("/create")
-  @Operation(summary = "Create a new savings goal")
+  @Operation(summary = "Create a new user")
   public UserDto createUser(@RequestBody UserDto userDTO) {
     return userService.addUser(userDTO);
   }
