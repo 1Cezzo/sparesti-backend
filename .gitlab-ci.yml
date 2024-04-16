@@ -7,13 +7,13 @@ stages:
 
 
 build:
-  stage: build-backend
+  stage: build
   script:
     - cd SpareSti
     - mvn compile
 
 test:
-  stage: test-backend
+  stage: test
   script:
     - cd SpareSti
     - mvn verify
@@ -25,7 +25,7 @@ test:
         - target/failsafe-reports/TEST-*.xml
 
 package:
-  stage: package-backend
+  stage: package
   script:
     - cd SpareSti
     - mvn clean package
