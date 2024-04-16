@@ -1,12 +1,12 @@
-package main.java.edu.ntnu.idi.stud.team10.sparesti.dto;
+package edu.ntnu.idi.stud.team10.sparesti.dto;
 
 import java.time.LocalDate;
 
+import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import main.java.edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 
 @AllArgsConstructor
 @NoArgsConstructor
