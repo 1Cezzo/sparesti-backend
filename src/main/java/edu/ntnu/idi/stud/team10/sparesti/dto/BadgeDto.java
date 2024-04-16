@@ -3,6 +3,9 @@ package edu.ntnu.idi.stud.team10.sparesti.dto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import lombok.*;
 
+/**
+ * Data transfer object for Badge entities
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
