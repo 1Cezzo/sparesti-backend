@@ -44,8 +44,7 @@ public class AuthorizationServerConfig {
     OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
     http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
         .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
-    http
-        .exceptionHandling(
+    http.exceptionHandling(
             exceptions ->
                 exceptions.defaultAuthenticationEntryPointFor(
                     new LoginUrlAuthenticationEntryPoint("/login"),
