@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +22,7 @@ import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
 
 /** Service for User entities. */
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final SavingsGoalRepository savingsGoalRepository;
@@ -148,7 +147,6 @@ public class UserService implements UserDetailsService {
         .orElseThrow(() -> new InvalidIdException("User with username " + username + " not found"));
   }
 
-  @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     User foundUser = findUserByUsername(username);
     return org.springframework.security.core.userdetails.User.builder()
