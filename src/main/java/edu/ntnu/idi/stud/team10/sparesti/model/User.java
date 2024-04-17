@@ -1,6 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,6 +31,13 @@ public class User {
   @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<SavingsGoal> savingsGoals;
+
+  @ManyToMany
+  @JoinTable(
+          name = "userBadges",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "badge_id")) //might need to give more descriptive column names
+  private Set<Badge> earnedBadges;
 
   /**
    * Constructor for converting UserDto to User.
