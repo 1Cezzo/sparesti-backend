@@ -58,13 +58,13 @@ public class AuthorizationServerConfig {
   public RegisteredClientRepository registeredClientRepository() {
     RegisteredClient oidcClient =
         RegisteredClient.withId(UUID.randomUUID().toString())
-            .clientId("frontend-client")
+            .clientId("sparestiClient")
             .clientSecret("{noop}secret")
             .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .redirectUri("https://localhost:5173")
-            .postLogoutRedirectUri("https://localhost:5173")
+            .redirectUri("http://localhost:5173")
+            .postLogoutRedirectUri("http://localhost:5173")
             .scope(OidcScopes.OPENID)
             .scope(OidcScopes.PROFILE)
             .clientSettings(
