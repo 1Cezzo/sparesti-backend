@@ -26,5 +26,11 @@ public class BadgeDto {
         this.description = badge.getDescription();
         this.imageUrl = badge.getImageUrl();
     }
+
+    /** */
+    public Badge toEntity() {
+        return new Badge(id, title, description, imageUrl);
+    }
+
 }
 
