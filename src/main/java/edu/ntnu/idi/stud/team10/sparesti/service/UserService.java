@@ -157,7 +157,7 @@ public class UserService implements UserDetailsService {
         .roles("USER") // Can be changed to take roles from database
         .build();
   }
-  
+
   /**
    * Adds a savings goal to a user.
    *
