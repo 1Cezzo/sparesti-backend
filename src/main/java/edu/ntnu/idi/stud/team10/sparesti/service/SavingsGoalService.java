@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,10 +26,16 @@ public class SavingsGoalService {
    * Creates a new SavingsGoal entity.
    *
    * @param savingsGoalDTO the DTO representing the savings goal to create
+   * @throws IllegalArgumentException if the target amount is less than or equal to 0
    * @return the created savings goal
    */
   public SavingsGoal createSavingsGoal(SavingsGoalDTO savingsGoalDTO) {
     SavingsGoal savingsGoal = savingsGoalDTO.toEntity();
+    if (savingsGoalDTO.getTargetAmount() <= 0) {
+      throw new IllegalArgumentException("Target amount must be greater than 0");
+    }
+    savingsGoal.setSavedAmount(0);
+    savingsGoal.setCompleted(false);
     // Perform validation if necessary
     return savingsGoalRepository.save(savingsGoal);
   }
@@ -53,15 +60,28 @@ public class SavingsGoalService {
    *
    * @param id the ID of the savings goal
    * @param savingsGoalDTO the DTO representing the savings goal to update
+   * @throws IllegalArgumentException if the target amount is less than or equal to 0 or the savings
+   *     goal is null.
    * @return the updated savings goal
    */
   public SavingsGoal updateSavingsGoal(Long id, SavingsGoalDTO savingsGoalDTO) {
     Optional<SavingsGoal> optionalSavingsGoal = savingsGoalRepository.findById(id);
+    if (savingsGoalDTO == null) {
+      throw new IllegalArgumentException("SavingsGoalDTO cannot be null");
+    }
+    if (savingsGoalDTO.getTargetAmount() <= 0) {
+      throw new IllegalArgumentException("Target amount must be greater than 0");
+    }
     if (optionalSavingsGoal.isPresent()) {
       SavingsGoal savingsGoal = optionalSavingsGoal.get();
       savingsGoal.setName(savingsGoalDTO.getName());
       savingsGoal.setTargetAmount(savingsGoalDTO.getTargetAmount());
+      savingsGoal.setSavedAmount(savingsGoalDTO.getSavedAmount());
       savingsGoal.setDeadline(savingsGoalDTO.getDeadline());
+      LocalDateTime currentDate = LocalDateTime.now();
+      savingsGoal.setCompleted(
+          savingsGoalDTO.getSavedAmount() > savingsGoalDTO.getTargetAmount()
+              || currentDate.isAfter(savingsGoalDTO.getDeadline().atStartOfDay()));
       return savingsGoalRepository.save(savingsGoal);
     } else {
       throw new IllegalArgumentException("Savings goal with ID " + id + " not found");
@@ -77,6 +97,26 @@ public class SavingsGoalService {
     try {
       savingsGoalRepository.deleteById(id);
     } catch (Exception e) {
+      throw new IllegalArgumentException("Savings goal with ID " + id + " not found");
+    }
+  }
+
+  /**
+   * Updates the saved amount of a savings goal.
+   *
+   * @param id The ID of the savings goal.
+   */
+  public void updateSavedAmount(Long id, double savedAmount) {
+    Optional<SavingsGoal> optionalSavingsGoal = savingsGoalRepository.findById(id);
+    if (optionalSavingsGoal.isPresent()) {
+      SavingsGoal savingsGoal = optionalSavingsGoal.get();
+      savingsGoal.setSavedAmount(savingsGoal.getSavedAmount() + savedAmount);
+      LocalDateTime currentDate = LocalDateTime.now();
+      savingsGoal.setCompleted(
+          savingsGoal.getSavedAmount() > savingsGoal.getTargetAmount()
+              || currentDate.isAfter(savingsGoal.getDeadline().atStartOfDay()));
+      savingsGoalRepository.save(savingsGoal);
+    } else {
       throw new IllegalArgumentException("Savings goal with ID " + id + " not found");
     }
   }
