@@ -1,9 +1,12 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -208,5 +211,17 @@ public class UserService {
             .orElseThrow(
                 () ->
                     new InvalidIdException("Savings goal with ID " + savingsGoalId + " not found"));
+  }
+
+  /**
+   * Returns a Set of all the badges earned by a user.
+   *
+   * @param userId (Long): The User's unique ID.
+   * @return A Set of all Badges that a User has earned.
+   */
+  public Set<Badge> getBadgesByUserId(Long userId) { // @Transactional readonly attribute may be needed?
+    return userRepository.findById(userId)
+            .map(User::getEarnedBadges)
+            .orElse(Collections.emptySet());
   }
 }
