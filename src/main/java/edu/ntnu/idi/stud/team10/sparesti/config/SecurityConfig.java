@@ -7,8 +7,12 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -42,5 +46,35 @@ public class SecurityConfig {
             .allowedHeaders("*");
       }
     };
+  }
+
+  /**
+   * Configures the session registry.
+   *
+   * @return (SessionRegistry) The session registry
+   */
+  @Bean
+  public SessionRegistry sessionRegistry() {
+    return new SessionRegistryImpl();
+  }
+
+  /**
+   * Configures the HttpSessionEventPublisher.
+   *
+   * @return (HttpSessionEventPublisher) The HttpSessionEventPublisher
+   */
+  @Bean
+  public HttpSessionEventPublisher httpSessionEventPublisher() {
+    return new HttpSessionEventPublisher();
+  }
+
+  /**
+   * Configures the request cache.
+   *
+   * @return (HttpSessionRequestCache) The request cache
+   */
+  @Bean
+  public HttpSessionRequestCache requestCache() {
+    return new HttpSessionRequestCache();
   }
 }

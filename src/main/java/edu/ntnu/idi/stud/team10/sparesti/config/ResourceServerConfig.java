@@ -12,15 +12,18 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 
 @Configuration
 @EnableWebSecurity
 public class ResourceServerConfig {
   private final JwtDecoder jwtDecoder;
+  private final HttpSessionRequestCache requestCache;
 
   @Autowired
-  public ResourceServerConfig(JwtDecoder jwtDecoder) {
+  public ResourceServerConfig(JwtDecoder jwtDecoder, HttpSessionRequestCache requestCache) {
     this.jwtDecoder = jwtDecoder;
+    this.requestCache = requestCache;
   }
 
   @Bean
@@ -28,9 +31,31 @@ public class ResourceServerConfig {
   public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
-        // TODO: All endpoints are open for now, change this later when login is implemented.
+        // All endpoints are open for now, change this later when login is implemented.
         .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-        .formLogin(Customizer.withDefaults())
+        .formLogin(
+            custom -> custom
+                .loginPage("/login.html")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .loginProcessingUrl("/login")
+                .successHandler(
+                    (request, response, authentication) -> {
+                      // The redirect url can be stored in different places depending on the type
+                      // of request,
+                      // so two checks are required.
+                      var cachedRequest = requestCache.getRequest(request, response);
+                      String alternativeRedirect =
+                          cachedRequest == null
+                              ? "http://localhost:5173/"
+                              : cachedRequest.getRedirectUrl();
+                      String authorizeRequestUrl =
+                          (String) request.getSession().getAttribute("ORIGINAL_REQUEST_URL");
+                      response.sendRedirect(
+                          authorizeRequestUrl != null
+                              ? authorizeRequestUrl
+                              : alternativeRedirect);
+                    }))
         .oauth2ResourceServer(
             oauth2ResourceServer ->
                 oauth2ResourceServer.jwt(

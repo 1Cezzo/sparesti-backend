@@ -4,12 +4,13 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,9 +25,8 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -34,9 +34,17 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+/** Configuration for the Authorization Server. */
 @Configuration
 @EnableWebSecurity
 public class AuthorizationServerConfig {
+  /**
+   * Configures the security filter chain for the Authorization Server.
+   *
+   * @param http The HttpSecurity object to configure
+   * @return The SecurityFilterChain object
+   * @throws Exception If an error occurs
+   */
   @Bean
   @Order(1)
   public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
@@ -44,16 +52,29 @@ public class AuthorizationServerConfig {
     OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
     http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
         .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
-    http.exceptionHandling(
+    http
+        // Redirect to the login page.
+        // Stores the original request URL in the session.
+        .exceptionHandling(
             exceptions ->
-                exceptions.defaultAuthenticationEntryPointFor(
-                    new LoginUrlAuthenticationEntryPoint("/login"),
-                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+                exceptions.authenticationEntryPoint(
+                    (request, response, e) -> {
+                      String originalUrl =
+                          request.getRequestURL().toString() + "?" + request.getQueryString();
+                      request.getSession().setAttribute("ORIGINAL_REQUEST_URL", originalUrl);
+                      response.sendRedirect("/login");
+                    }))
+        // Accept access tokens for User Info and/or Client Registration
         .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
 
     return http.build();
   }
 
+  /**
+   * Configures the RegisteredClientRepository bean.
+   *
+   * @return The RegisteredClientRepository bean
+   */
   @Bean
   public RegisteredClientRepository registeredClientRepository() {
     RegisteredClient oidcClient =
@@ -72,11 +93,20 @@ public class AuthorizationServerConfig {
                     .requireAuthorizationConsent(true)
                     .requireProofKey(true)
                     .build())
+            .tokenSettings(
+                TokenSettings.builder()
+                    .accessTokenTimeToLive(Duration.of(180, ChronoUnit.MINUTES))
+                    .build())
             .build();
 
     return new InMemoryRegisteredClientRepository(oidcClient);
   }
 
+  /**
+   * Configures the JWKSource bean.
+   *
+   * @return The JWKSource bean
+   */
   @Bean
   public JWKSource<SecurityContext> jwkSource() {
     KeyPair keyPair = generateRsaKey();
@@ -91,6 +121,11 @@ public class AuthorizationServerConfig {
     return new ImmutableJWKSet<>(jwkSet);
   }
 
+  /**
+   * Generates an RSA key pair.
+   *
+   * @return The generated RSA key pair
+   */
   private static KeyPair generateRsaKey() {
     KeyPair keyPair;
     try {
@@ -103,11 +138,22 @@ public class AuthorizationServerConfig {
     return keyPair;
   }
 
+  /**
+   * Configures the JwtDecoder bean.
+   *
+   * @param jwkSource The JWKSource bean
+   * @return The JwtDecoder bean
+   */
   @Bean
   public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
     return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
   }
 
+  /**
+   * Configures the AuthorizationServerSettings bean.
+   *
+   * @return The AuthorizationServerSettings bean
+   */
   @Bean
   public AuthorizationServerSettings authorizationServerSettings() {
     return AuthorizationServerSettings.builder()
