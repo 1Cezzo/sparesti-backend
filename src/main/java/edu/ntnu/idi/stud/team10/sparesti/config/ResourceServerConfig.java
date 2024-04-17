@@ -34,28 +34,30 @@ public class ResourceServerConfig {
         // All endpoints are open for now, change this later when login is implemented.
         .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
         .formLogin(
-            custom -> custom
-                .loginPage("/login.html")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .loginProcessingUrl("/login")
-                .successHandler(
-                    (request, response, authentication) -> {
-                      // The redirect url can be stored in different places depending on the type
-                      // of request,
-                      // so two checks are required.
-                      var cachedRequest = requestCache.getRequest(request, response);
-                      String alternativeRedirect =
-                          cachedRequest == null
-                              ? "http://localhost:5173/"
-                              : cachedRequest.getRedirectUrl();
-                      String authorizeRequestUrl =
-                          (String) request.getSession().getAttribute("ORIGINAL_REQUEST_URL");
-                      response.sendRedirect(
-                          authorizeRequestUrl != null
-                              ? authorizeRequestUrl
-                              : alternativeRedirect);
-                    }))
+            custom ->
+                custom
+                    .loginPage("/login.html")
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .loginProcessingUrl("/login")
+                    .successHandler(
+                        (request, response, authentication) -> {
+                          // The redirect url can be stored in different places depending on the
+                          // type
+                          // of request,
+                          // so two checks are required.
+                          var cachedRequest = requestCache.getRequest(request, response);
+                          String alternativeRedirect =
+                              cachedRequest == null
+                                  ? "http://localhost:5173/"
+                                  : cachedRequest.getRedirectUrl();
+                          String authorizeRequestUrl =
+                              (String) request.getSession().getAttribute("ORIGINAL_REQUEST_URL");
+                          response.sendRedirect(
+                              authorizeRequestUrl != null
+                                  ? authorizeRequestUrl
+                                  : alternativeRedirect);
+                        }))
         .oauth2ResourceServer(
             oauth2ResourceServer ->
                 oauth2ResourceServer.jwt(

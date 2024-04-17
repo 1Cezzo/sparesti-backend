@@ -146,7 +146,7 @@ public class UserService implements UserDetailsService {
     return org.springframework.security.core.userdetails.User.builder()
         .username(foundUser.getUsername())
         .password(foundUser.getPassword())
-        .roles("USER") //Can be changed to take roles from database
+        .roles("USER") // Can be changed to take roles from database
         .build();
   }
 }
