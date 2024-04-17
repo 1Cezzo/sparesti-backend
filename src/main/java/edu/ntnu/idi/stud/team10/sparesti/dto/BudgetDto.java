@@ -20,4 +20,11 @@ public class BudgetDto {
         this.id = budget.getId();
         this.row = budget.getRow();
     }
+
+    public Budget toEntity() {
+        Budget budget = new Budget();
+        budget.setId(id);
+        budget.setRow(row);
+        return budget;
+    }
 }

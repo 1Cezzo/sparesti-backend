@@ -23,4 +23,13 @@ public class BudgetRowDto {
         this.amount = budgetRow.getAmount();
         this.category = budgetRow.getCategory();
     }
+
+    public BudgetRow toEntity() {
+        BudgetRow budgetRow = new BudgetRow();
+        budgetRow.setId(id);
+        budgetRow.setName(name);
+        budgetRow.setAmount(amount);
+        budgetRow.setCategory(category);
+        return budgetRow;
+    }
 }

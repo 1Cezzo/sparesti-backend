@@ -2,11 +2,13 @@ package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
 import jakarta.persistence.*;
+import lombok.Setter;
 
 /**
  * A row in a budget. It has a name, an amount, and a category.
  */
 @Entity
+@Setter
 public class BudgetRow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

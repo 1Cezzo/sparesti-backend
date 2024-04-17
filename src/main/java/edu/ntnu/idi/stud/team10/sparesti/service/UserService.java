@@ -1,32 +1,41 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.model.User;
+import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
+import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
-import edu.ntnu.idi.stud.team10.sparesti.model.User;
-import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
-import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
-import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
-
 /** Service for User entities. */
 @Service
 public class UserService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final BudgetRepository budgetRepository;
 
   /**
    * Constructor for UserService, with automatic injection of dependencies.
    *
-   * @param userRepository (UserRepository) The repository for User entities.
+   * @param userRepository   (UserRepository) The repository for User entities.
+   * @param budgetRepository (BudgetRepository) The repository for Budget entities.
    */
   @Autowired
-  public UserService(UserRepository userRepository) {
+  public UserService(UserRepository userRepository, BudgetRepository budgetRepository) {
     this.userRepository = userRepository;
+    this.budgetRepository = budgetRepository;
     this.passwordEncoder = new BCryptPasswordEncoder();
   }
 
@@ -135,5 +144,43 @@ public class UserService {
     return userRepository
         .findByUsername(username)
         .orElseThrow(() -> new InvalidIdException("User with username " + username + " not found"));
+  }
+  public UserDto addBudgetToUser(Long userId, BudgetDto budgetDto) {
+    User user =
+            userRepository
+                    .findById(userId)
+                    .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget = budgetDto.toEntity();
+    budget.setUser(user);
+    budgetRepository.save(budget);
+    return new UserDto(user);
+  }
+
+  public List<BudgetDto> getAllBudgetsForUser(Long userId) {
+    User user =
+            userRepository
+                    .findById(userId)
+                    .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    return budgetRepository.findByUser(user).stream()
+            .map(BudgetDto::new)
+            .collect(Collectors.toList());
+  }
+
+  public void deleteBudgetFromUser(Long userId, Long budgetId) {
+    User user =
+            userRepository
+                    .findById(userId)
+                    .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget =
+            budgetRepository
+                    .findById(budgetId)
+                    .orElseThrow(
+                            () ->
+                                    new InvalidIdException("Budget with ID " + budgetId + " not found"));
+
+    budgetRepository.delete(budget);
   }
 }
