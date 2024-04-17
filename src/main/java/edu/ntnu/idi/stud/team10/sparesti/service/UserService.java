@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
 import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+import jakarta.transaction.Transactional;
 
 /** Service for User entities. */
 @Service
@@ -154,20 +156,34 @@ public class UserService {
    * @throws InvalidIdException If the user does not exist or target amount is less than or equal to
    *     0.
    */
+  @Transactional
   public UserDto addSavingsGoalToUser(Long userId, SavingsGoalDTO savingsGoalDto) {
+    // Find the user by ID or throw an exception if not found
     User user =
         userRepository
             .findById(userId)
             .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
 
+    // Create a new SavingsGoal entity from the DTO
     SavingsGoal savingsGoal = savingsGoalDto.toEntity();
+
+    // Validate the target amount
     if (savingsGoal.getTargetAmount() <= 0) {
       throw new IllegalArgumentException("Target amount must be greater than 0");
     }
-    savingsGoal.setSavedAmount(0);
-    savingsGoal.setCompleted(false);
+
+    // Set the user for the savings goal
     savingsGoal.setUser(user);
-    savingsGoalRepository.save(savingsGoal);
+
+    // Save the savings goal
+    try {
+      savingsGoalRepository.save(savingsGoal);
+    } catch (DataIntegrityViolationException e) {
+      // Catch constraint violation exceptions and handle them appropriately
+      throw new IllegalArgumentException("Error adding savings goal: " + e.getMessage());
+    }
+
+    // Return a DTO representing the updated user
     return new UserDto(user);
   }
 

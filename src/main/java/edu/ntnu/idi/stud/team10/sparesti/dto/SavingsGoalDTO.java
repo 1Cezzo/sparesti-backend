@@ -4,15 +4,11 @@ import java.time.LocalDate;
 
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 /** A DTO for the SavingsGoal entity. */
 public class SavingsGoalDTO {
   private Long id;
@@ -31,6 +27,15 @@ public class SavingsGoalDTO {
     this.deadline = savingsGoal.getDeadline();
     this.completed = savingsGoal.isCompleted();
     this.user = savingsGoal.getUser();
+  }
+
+  public SavingsGoalDTO(String name, double targetAmount, LocalDate deadline) {
+    this.name = name;
+    this.targetAmount = targetAmount;
+    this.savedAmount = 0;
+    this.deadline = deadline;
+    this.completed = false;
+    this.user = null;
   }
 
   /**

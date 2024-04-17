@@ -79,13 +79,13 @@ public class UserController {
    */
   @PostMapping("/{userId}/savings-goals/add")
   @Operation(summary = "Add a savings goal to a user")
-  public ResponseEntity<UserDto> addSavingsGoalToUser(
+  public ResponseEntity<String> addSavingsGoalToUser(
       @PathVariable Long userId, @RequestBody SavingsGoalDTO savingsGoalDTO) {
     try {
       UserDto updatedUserDto = userService.addSavingsGoalToUser(userId, savingsGoalDTO);
-      return ResponseEntity.ok(updatedUserDto); // Return 200 OK status
+      return ResponseEntity.ok("Saving goal created and added to user"); // Return 200 OK status
     } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().build(); // Return 400 Bad Request status
+      return ResponseEntity.badRequest().body(e.getMessage()); // Return 400 Bad Request status
     }
   }
 
