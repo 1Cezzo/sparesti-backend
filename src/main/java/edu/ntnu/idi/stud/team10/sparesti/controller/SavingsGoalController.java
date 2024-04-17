@@ -92,4 +92,18 @@ public class SavingsGoalController {
     savingsGoalService.deleteSavingsGoalById(id);
     return ResponseEntity.noContent().build();
   }
+
+  /**
+   * Update saved amount of a savings goal.
+   *
+   * @param id The ID of the savings goal.
+   * @param savedAmount The new saved amount.
+   */
+  @PutMapping("/{id}/update-saved-amount")
+  @Operation(summary = "Update the saved amount of a savings goal")
+  public ResponseEntity<Void> updateSavedAmount(
+      @PathVariable Long id, @RequestParam double savedAmount) {
+    savingsGoalService.updateSavedAmount(id, savedAmount);
+    return ResponseEntity.ok().build();
+  }
 }

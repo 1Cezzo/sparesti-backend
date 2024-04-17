@@ -2,11 +2,15 @@ package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,6 +41,17 @@ public class SavingsGoal {
   @Column(name = "target_amount", nullable = false)
   private double targetAmount;
 
+  @Column(name = "amount_saved", nullable = false)
+  private double savedAmount;
+
   @Column(name = "deadline", nullable = false)
   private LocalDate deadline;
+
+  @Column(name = "completed", nullable = false)
+  private boolean completed;
+
+  @JsonBackReference
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 }
