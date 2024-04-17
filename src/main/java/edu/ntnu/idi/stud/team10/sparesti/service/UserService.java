@@ -156,7 +156,8 @@ public class UserService implements UserDetailsService {
         .password(foundUser.getPassword())
         .roles("USER") // Can be changed to take roles from database
         .build();
-
+  }
+  
   /**
    * Adds a savings goal to a user.
    *
