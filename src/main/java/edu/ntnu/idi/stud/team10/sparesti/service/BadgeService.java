@@ -52,6 +52,17 @@ public class BadgeService {
     }
 
     /**
+     * Returns an optional that includes a Badge entity with a given id -
+     * if the id exists in repo.
+     *
+     * @param id (Long): The unique id of the Badge entity.
+     * @return the Badge if it exists, otherwise an empty Optional
+     */
+    public Optional<Badge> getBadgeById(Long id) {
+        return badgeRepository.findById(id);
+    }
+
+    /**
      * Updates a Badge entity.
      *
      * @param id (Long): The unique id of the Badge.
@@ -66,6 +77,8 @@ public class BadgeService {
            badge.setDescription(badgeDto.getDescription());
            badge.setImageUrl(badgeDto.getImageUrl());
            return badgeRepository.save(badge);
+       } else {
+           throw new IllegalArgumentException("Badge with id " + id + " not found...");
        }
     }
 }
