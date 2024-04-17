@@ -64,4 +64,7 @@ public class BudgetRow {
         return category;
     }
 
+    public Long getId() {
+        return id;
+    }
 }
