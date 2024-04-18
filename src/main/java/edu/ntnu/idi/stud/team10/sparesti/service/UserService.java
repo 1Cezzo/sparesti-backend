@@ -3,7 +3,6 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,11 +15,12 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
-import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
+import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
@@ -47,11 +47,11 @@ public class UserService implements UserDetailsService {
    */
   @Autowired
   public UserService(
-          UserRepository userRepository,
-          BudgetRepository budgetRepository,
-          BudgetRowRepository budgetRowRepository,
-          SavingsGoalRepository savingsGoalRepository,
-          BadgeRepository badgeRepository) {
+      UserRepository userRepository,
+      BudgetRepository budgetRepository,
+      BudgetRowRepository budgetRowRepository,
+      SavingsGoalRepository savingsGoalRepository,
+      BadgeRepository badgeRepository) {
     this.userRepository = userRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
