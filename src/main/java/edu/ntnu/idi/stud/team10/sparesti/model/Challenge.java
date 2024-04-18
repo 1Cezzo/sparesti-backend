@@ -1,6 +1,9 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import edu.ntnu.idi.stud.team10.sparesti.enums.DifficultyLevel;
 import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
@@ -31,6 +34,9 @@ public class Challenge {
   @Column(name = "saved_amount", nullable = false)
   private double savedAmount;
 
+  @Column(name = "media_url")
+  private String mediaUrl;
+
   @Enumerated(EnumType.STRING)
   private TimeInterval timeInterval;
 
@@ -42,4 +48,10 @@ public class Challenge {
 
   @Column(name = "completed", nullable = false)
   private boolean completed;
+
+  @ManyToMany(
+      mappedBy = "challenges",
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+  @JsonIgnore
+  private List<User> users;
 }

@@ -31,6 +31,13 @@ public class User {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<SavingsGoal> savingsGoals;
 
+  @ManyToMany
+  @JoinTable(
+      name = "user_challenge",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "challenge_id"))
+  private List<Challenge> challenges;
+
   /**
    * Constructor for converting UserDto to User.
    *
@@ -42,5 +49,13 @@ public class User {
     this.password = dto.getPassword();
     this.email = dto.getEmail();
     this.profilePictureUrl = dto.getProfilePictureUrl();
+  }
+
+  public void addChallenge(Challenge challenge) {
+    this.challenges.add(challenge);
+  }
+
+  public void removeChallenge(Challenge challenge) {
+    this.challenges.remove(challenge);
   }
 }

@@ -19,6 +19,7 @@ public class UserDto {
   private String email;
   private String profilePictureUrl;
   private List<SavingsGoalDTO> savingsGoals;
+  private List<ChallengeDTO> challenges;
 
   /**
    * Constructor for converting User entity to UserDto. Does not include password.
@@ -30,7 +31,39 @@ public class UserDto {
     this.username = user.getUsername();
     this.email = user.getEmail();
     this.profilePictureUrl = user.getProfilePictureUrl();
-    this.savingsGoals =
-        user.getSavingsGoals().stream().map(SavingsGoalDTO::new).collect(Collectors.toList());
+    if (user.getSavingsGoals() != null) {
+      this.savingsGoals =
+          user.getSavingsGoals().stream().map(SavingsGoalDTO::new).collect(Collectors.toList());
+    } else {
+      this.savingsGoals = null;
+    }
+    if (user.getChallenges() != null) {
+      this.challenges =
+          user.getChallenges().stream().map(ChallengeDTO::new).collect(Collectors.toList());
+    } else {
+      this.challenges = null;
+    }
+  }
+
+  public User toEntity() {
+    User user = new User();
+    user.setId(this.id);
+    user.setUsername(this.username);
+    user.setPassword(this.password);
+    user.setEmail(this.email);
+    user.setProfilePictureUrl(this.profilePictureUrl);
+    if (this.savingsGoals != null) {
+      user.setSavingsGoals(
+          this.savingsGoals.stream().map(SavingsGoalDTO::toEntity).collect(Collectors.toList()));
+    } else {
+      user.setSavingsGoals(null);
+    }
+    if (this.challenges != null) {
+      user.setChallenges(
+          this.challenges.stream().map(ChallengeDTO::toEntity).collect(Collectors.toList()));
+    } else {
+      user.setChallenges(null);
+    }
+    return user;
   }
 }
