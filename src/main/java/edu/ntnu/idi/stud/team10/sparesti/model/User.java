@@ -23,7 +23,7 @@ public class User {
 
   @Column(unique = true)
   private String username;
-
+  //TODO: add full name here? (might come from the mock bank?) Designer(s) claimed that since we are connecting to the bank, the user's name should be visible on profile page
   private String password;
   private String email;
   private String profilePictureUrl;
