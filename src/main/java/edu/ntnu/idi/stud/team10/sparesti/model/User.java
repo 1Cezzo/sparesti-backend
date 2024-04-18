@@ -12,8 +12,6 @@ import lombok.*;
 /** Entity representing a user in the database. */
 @Entity
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -26,9 +24,17 @@ public class User {
 
   // TODO: add full name here? (might come from the mock bank?) Designer(s) claimed that since we
   // are connecting to the bank, the user's name should be visible on profile page
+  @Column(nullable = false)
   private String password;
+
+  @Column(unique = true)
   private String email;
-  private String profilePictureUrl;
+
+  @Column() private String profilePictureUrl;
+
+  @Column() private int checkingAccountNr;
+
+  @Column() private int savingsAccountNr;
 
   @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
