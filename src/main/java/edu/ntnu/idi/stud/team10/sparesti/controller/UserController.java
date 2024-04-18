@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.ChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.ChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;

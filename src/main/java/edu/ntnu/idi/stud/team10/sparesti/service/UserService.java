@@ -13,28 +13,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
+import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
+import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
+import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
-import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
-import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
-import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
-import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
-import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
-import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
-import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
 import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
-import jakarta.transaction.Transactional;
 
 /** Service for User entities. */
 @Service
@@ -57,14 +52,12 @@ public class UserService implements UserDetailsService {
   @Autowired
   public UserService(
       UserRepository userRepository,
+      SavingsGoalRepository savingsGoalRepository,
+      ChallengeRepository challengeRepository,
       BudgetRepository budgetRepository,
       BudgetRowRepository budgetRowRepository,
-      SavingsGoalRepository savingsGoalRepository,
-      BadgeRepository badgeRepository) {
-  public UserService(
-      UserRepository userRepository,
-      SavingsGoalRepository savingsGoalRepository,
-      ChallengeRepository challengeRepository) {
+      BadgeRepository badgeRepository,
+      PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
