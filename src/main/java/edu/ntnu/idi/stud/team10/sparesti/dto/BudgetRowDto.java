@@ -11,25 +11,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BudgetRowDto {
 
-    private Long id;
+  private Long id;
 
-    private String name;
-    private double amount;
-    private CategoryEnum category;
+  private String name;
+  private double amount;
+  private CategoryEnum category;
 
-    public BudgetRowDto(BudgetRow budgetRow) {
-        this.id = budgetRow.getId();
-        this.name = budgetRow.getName();
-        this.amount = budgetRow.getAmount();
-        this.category = budgetRow.getCategory();
-    }
+  public BudgetRowDto(BudgetRow budgetRow) {
+    this.id = budgetRow.getId();
+    this.name = budgetRow.getName();
+    this.amount = budgetRow.getAmount();
+    this.category = budgetRow.getCategory();
+  }
 
-    public BudgetRow toEntity() {
-        BudgetRow budgetRow = new BudgetRow();
-        budgetRow.setId(id);
-        budgetRow.setName(name);
-        budgetRow.setAmount(amount);
-        budgetRow.setCategory(category);
-        return budgetRow;
-    }
+  public BudgetRow toEntity() {
+    BudgetRow budgetRow = new BudgetRow();
+    budgetRow.setId(id);
+    budgetRow.setName(name);
+    budgetRow.setAmount(amount);
+    budgetRow.setCategory(category);
+    return budgetRow;
+  }
 }
