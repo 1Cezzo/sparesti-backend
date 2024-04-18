@@ -36,18 +36,16 @@ public class BadgeService {
 
   /**
    * Using its unique id, deletes a Badge entity from the repository.
+   * Will also delete every badge-user relationship with this badge id.
    *
    * @param id (Long): The unique id of the Badge entity.
-   * @return
    */
-  public void deleteBadgeById(
-      Long id) { // Will we need to delete user-badge relationships of the same id?
-    // In that case, could return the id of the same badge to be passed on.
-    try {
-      badgeRepository.deleteById(id);
-    } catch (EmptyResultDataAccessException e) {
-      throw new IllegalArgumentException("Badge with id " + id + " not found...");
-    }
+  public void deleteBadgeById(Long id) {
+    badgeRepository.findById(id).ifPresentOrElse(badge -> {
+      badge.getUsers().forEach(user -> user.getEarnedBadges().remove(badge));
+      userRepository.saveAll(badge.getUsers());
+      badgeRepository.delete(badge);
+    }, () -> System.out.println("Badge wasn't found")); //Might need to throw exception in the future, for bug fixing's sake.
   }
 
   /** Returns all stored badges. */
