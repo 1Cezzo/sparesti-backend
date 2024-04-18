@@ -77,6 +77,7 @@ public class SavingsGoalService {
       savingsGoal.setName(savingsGoalDTO.getName());
       savingsGoal.setTargetAmount(savingsGoalDTO.getTargetAmount());
       savingsGoal.setSavedAmount(savingsGoalDTO.getSavedAmount());
+      savingsGoal.setMediaUrl(savingsGoalDTO.getMediaUrl());
       savingsGoal.setDeadline(savingsGoalDTO.getDeadline());
       LocalDateTime currentDate = LocalDateTime.now();
       savingsGoal.setCompleted(

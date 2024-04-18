@@ -10,24 +10,26 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
-import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
-import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
+import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
+import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
+import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
+import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
 import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
-import jakarta.transaction.Transactional;
 
 /** Service for User entities. */
 @Service
@@ -38,24 +40,29 @@ public class UserService implements UserDetailsService {
   private final BudgetRepository budgetRepository;
   private final BudgetRowRepository budgetRowRepository;
   private final BadgeRepository badgeRepository;
+  private final ChallengeRepository challengeRepository;
 
   /**
    * Constructor for UserService, with automatic injection of dependencies.
    *
    * @param userRepository (UserRepository) The repository for User entities.
    * @param savingsGoalRepository (SavingsGoalRepository) The repository for SavingsGoal entities.
+   * @param challengeRepository (ChallengeRepository) The repository for Challenge entities.
    */
   @Autowired
   public UserService(
       UserRepository userRepository,
+      SavingsGoalRepository savingsGoalRepository,
+      ChallengeRepository challengeRepository,
       BudgetRepository budgetRepository,
       BudgetRowRepository budgetRowRepository,
-      SavingsGoalRepository savingsGoalRepository,
-      BadgeRepository badgeRepository) {
+      BadgeRepository badgeRepository,
+      PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
     this.savingsGoalRepository = savingsGoalRepository;
+    this.challengeRepository = challengeRepository;
     this.badgeRepository = badgeRepository;
     this.passwordEncoder = new BCryptPasswordEncoder();
   }
@@ -426,5 +433,95 @@ public class UserService implements UserDetailsService {
             .findById(badgeId)
             .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
     return new ArrayList<>(badge.getUsers()); // possible null exception
+  }
+
+  @Transactional
+  public UserDto addChallengeToUser(Long userId, Long challengeId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+    Challenge challenge =
+        challengeRepository
+            .findById(challengeId)
+            .orElseThrow(() -> new IllegalArgumentException("Challenge not found"));
+
+    user.addChallenge(challenge);
+    userRepository.save(user);
+
+    return new UserDto(user);
+  }
+
+  @Transactional
+  public UserDto removeChallengeFromUser(Long userId, Long challengeId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+    Challenge challengeToRemove =
+        user.getChallenges().stream()
+            .filter(challenge -> challenge.getId().equals(challengeId))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Challenge not found"));
+
+    user.removeChallenge(challengeToRemove);
+    userRepository.save(user);
+    challengeRepository.delete(challengeToRemove); // Delete the challenge from the database
+    return new UserDto(user);
+  }
+
+  private List<ConsumptionChallengeDTO> fetchConsumptionChallengesForUser(Long userId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+    return user.getChallenges().stream()
+        .filter(challenge -> challenge instanceof ConsumptionChallenge)
+        .map(ConsumptionChallengeDTO::new)
+        .collect(Collectors.toList());
+  }
+
+  private List<PurchaseChallengeDTO> fetchPurchaseChallengesForUser(Long userId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+    return user.getChallenges().stream()
+        .filter(challenge -> challenge instanceof PurchaseChallenge)
+        .map(PurchaseChallengeDTO::new)
+        .collect(Collectors.toList());
+  }
+
+  private List<SavingChallengeDTO> fetchSavingChallengesForUser(Long userId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+    return user.getChallenges().stream()
+        .filter(challenge -> challenge instanceof SavingChallenge)
+        .map(SavingChallengeDTO::new)
+        .collect(Collectors.toList());
+  }
+
+  @Transactional(readOnly = true)
+  public Map<String, List<? extends ChallengeDTO>> getChallengesByUser(Long userId) {
+    Map<String, List<? extends ChallengeDTO>> challengesMap = new HashMap<>();
+
+    // Fetch challenges for the user
+    List<ConsumptionChallengeDTO> consumptionChallenges = fetchConsumptionChallengesForUser(userId);
+    List<PurchaseChallengeDTO> purchaseChallenges = fetchPurchaseChallengesForUser(userId);
+    List<SavingChallengeDTO> savingChallenges = fetchSavingChallengesForUser(userId);
+
+    // Add lists to the map
+    challengesMap.put("consumptionChallenges", consumptionChallenges);
+    challengesMap.put("purchaseChallenges", purchaseChallenges);
+    challengesMap.put("savingChallenges", savingChallenges);
+
+    return challengesMap;
   }
 }

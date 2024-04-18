@@ -40,6 +40,9 @@ public class SavingsGoal {
   @Column(name = "amount_saved", nullable = false)
   private double savedAmount;
 
+  @Column(name = "media_url")
+  private String mediaUrl;
+
   @Column(name = "deadline", nullable = false)
   private LocalDate deadline;
 

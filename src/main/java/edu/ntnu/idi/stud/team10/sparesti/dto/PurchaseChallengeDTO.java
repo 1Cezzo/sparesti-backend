@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
+import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import lombok.*;
 
@@ -16,6 +17,13 @@ public class PurchaseChallengeDTO extends ChallengeDTO {
     this.setTimeInterval(savedChallenge.getTimeInterval());
     this.setDifficultyLevel(savedChallenge.getDifficultyLevel());
     this.setProductName(savedChallenge.getProductName());
+  }
+
+  public PurchaseChallengeDTO(Challenge challenge) {
+    super(challenge);
+    if (challenge instanceof PurchaseChallenge purchaseChallenge) {
+      this.productName = purchaseChallenge.getProductName();
+    }
   }
 
   @Override

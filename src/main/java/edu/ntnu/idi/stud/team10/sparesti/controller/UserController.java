@@ -1,13 +1,16 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.ChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
@@ -224,5 +227,42 @@ public class UserController {
       @PathVariable Long userId, @PathVariable Long savingsGoalId) {
     userService.deleteSavingsGoalFromUser(userId, savingsGoalId);
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/{userId}/challenges/add")
+  @Operation(summary = "Add a challenge to a user")
+  public ResponseEntity<UserDto> addChallengeToUser(
+      @PathVariable Long userId, @RequestParam Long challengeId) {
+    try {
+      UserDto updatedUserDto = userService.addChallengeToUser(userId, challengeId);
+      return ResponseEntity.ok(updatedUserDto);
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  @DeleteMapping("/{userId}/challenges/{challengeId}")
+  @Operation(summary = "Remove a challenge from a user")
+  public ResponseEntity<UserDto> removeChallengeFromUser(
+      @PathVariable Long userId, @PathVariable Long challengeId) {
+    try {
+      UserDto updatedUserDto = userService.removeChallengeFromUser(userId, challengeId);
+      return ResponseEntity.ok(updatedUserDto);
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+  }
+
+  @GetMapping("/{userId}/challenges")
+  @Operation(summary = "Get all challenges for a user")
+  public ResponseEntity<Map<String, List<? extends ChallengeDTO>>> getChallengesByUser(
+      @PathVariable Long userId) {
+    try {
+      Map<String, List<? extends ChallengeDTO>> challengesMap =
+          userService.getChallengesByUser(userId);
+      return ResponseEntity.ok(challengesMap);
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
   }
 }
