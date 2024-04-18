@@ -1,6 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -11,8 +12,6 @@ import lombok.*;
 /** Entity representing a user in the database. */
 @Entity
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -23,9 +22,19 @@ public class User {
   @Column(unique = true)
   private String username;
 
+  // TODO: add full name here? (might come from the mock bank?) Designer(s) claimed that since we
+  // are connecting to the bank, the user's name should be visible on profile page
+  @Column(nullable = false)
   private String password;
+
+  @Column(unique = true)
   private String email;
-  private String profilePictureUrl;
+
+  @Column() private String profilePictureUrl;
+
+  @Column() private int checkingAccountNr;
+
+  @Column() private int savingsAccountNr;
 
   @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -37,6 +46,13 @@ public class User {
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "challenge_id"))
   private List<Challenge> challenges;
+
+  @ManyToMany
+  @JoinTable(
+      name = "userBadges",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "badge_id"))
+  private Set<Badge> earnedBadges;
 
   /**
    * Constructor for converting UserDto to User.

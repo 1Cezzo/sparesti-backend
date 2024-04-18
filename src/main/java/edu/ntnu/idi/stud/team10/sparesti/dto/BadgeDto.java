@@ -1,6 +1,9 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
+import java.util.Set;
+
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
+import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import lombok.*;
 
 /** Data transfer object for Badge entities */
@@ -12,6 +15,7 @@ public class BadgeDto {
   private String title;
   private String description;
   private String imageUrl;
+  private Set<User> users;
 
   /**
    * Converts badge into DTO for data transfer.
@@ -27,6 +31,12 @@ public class BadgeDto {
 
   /** */
   public Badge toEntity() {
-    return new Badge(id, title, description, imageUrl);
+    Badge badge = new Badge();
+    badge.setId(this.id);
+    badge.setTitle(this.title);
+    badge.setDescription(this.description);
+    badge.setImageUrl(this.imageUrl);
+    badge.setUsers(this.users);
+    return new Badge(id, title, description, imageUrl, users);
   }
 }

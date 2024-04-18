@@ -17,13 +17,24 @@ import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
+import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
+import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
 import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+import jakarta.transaction.Transactional;
 
 /** Service for User entities. */
 @Service
@@ -31,6 +42,9 @@ public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final SavingsGoalRepository savingsGoalRepository;
+  private final BudgetRepository budgetRepository;
+  private final BudgetRowRepository budgetRowRepository;
+  private final BadgeRepository badgeRepository;
   private final ChallengeRepository challengeRepository;
 
   /**
@@ -43,12 +57,21 @@ public class UserService implements UserDetailsService {
   @Autowired
   public UserService(
       UserRepository userRepository,
+      BudgetRepository budgetRepository,
+      BudgetRowRepository budgetRowRepository,
+      SavingsGoalRepository savingsGoalRepository,
+      BadgeRepository badgeRepository) {
+  public UserService(
+      UserRepository userRepository,
       SavingsGoalRepository savingsGoalRepository,
       ChallengeRepository challengeRepository) {
     this.userRepository = userRepository;
-    this.passwordEncoder = new BCryptPasswordEncoder();
+    this.budgetRepository = budgetRepository;
+    this.budgetRowRepository = budgetRowRepository;
     this.savingsGoalRepository = savingsGoalRepository;
     this.challengeRepository = challengeRepository;
+    this.badgeRepository = badgeRepository;
+    this.passwordEncoder = new BCryptPasswordEncoder();
   }
 
   /**
@@ -231,6 +254,192 @@ public class UserService implements UserDetailsService {
             .orElseThrow(
                 () ->
                     new InvalidIdException("Savings goal with ID " + savingsGoalId + " not found"));
+  }
+
+  public UserDto addBudgetToUser(Long userId, BudgetDto budgetDto) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget = budgetDto.toEntity();
+    budget.setUser(user);
+    budgetRepository.save(budget);
+    return new UserDto(user);
+  }
+
+  public List<BudgetDto> getAllBudgetsForUser(Long userId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    return budgetRepository.findByUser(user).stream()
+        .map(BudgetDto::new)
+        .collect(Collectors.toList());
+  }
+
+  public void deleteBudgetFromUser(Long userId, Long budgetId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget =
+        budgetRepository
+            .findById(budgetId)
+            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+
+    budgetRepository.delete(budget);
+  }
+
+  public BudgetDto addBudgetRowToUserBudget(Long userId, Long budgetId, BudgetRowDto budgetRowDto) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget =
+        budgetRepository
+            .findById(budgetId)
+            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+
+    if (!budget.getUser().equals(user)) {
+      throw new IllegalArgumentException("The budget does not belong to the user");
+    }
+
+    BudgetRow budgetRow = budgetRowDto.toEntity();
+    budgetRow.setBudget(budget);
+    budget.getRow().add(budgetRow);
+    budgetRepository.save(budget);
+
+    return new BudgetDto(budget);
+  }
+
+  public void deleteBudgetRowFromUserBudget(Long userId, Long budgetId, Long budgetRowId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget =
+        budgetRepository
+            .findById(budgetId)
+            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+
+    if (!budget.getUser().equals(user)) {
+      throw new IllegalArgumentException("The budget does not belong to the user");
+    }
+
+    BudgetRow budgetRow =
+        budgetRowRepository
+            .findById(budgetRowId)
+            .orElseThrow(
+                () -> new InvalidIdException("BudgetRow with ID " + budgetRowId + " not found"));
+
+    budget.getRow().remove(budgetRow);
+    budgetRepository.save(budget);
+  }
+
+  public BudgetRowDto editBudgetRowInUserBudget(
+      Long userId, Long budgetId, Long budgetRowId, BudgetRowDto budgetRowDto) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget =
+        budgetRepository
+            .findById(budgetId)
+            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+
+    if (!budget.getUser().equals(user)) {
+      throw new IllegalArgumentException("The budget does not belong to the user");
+    }
+
+    BudgetRow budgetRow =
+        budgetRowRepository
+            .findById(budgetRowId)
+            .orElseThrow(
+                () -> new InvalidIdException("BudgetRow with ID " + budgetRowId + " not found"));
+
+    // Update the budget row with the new data
+    budgetRow.updateFromDto(budgetRowDto);
+    budgetRowRepository.save(budgetRow);
+
+    return new BudgetRowDto(budgetRow);
+  }
+
+  /**
+   * Returns a Set of all the badges earned by a user.
+   *
+   * @param userId (Long): The User's unique ID.
+   * @return A Set of all Badges that a User has earned.
+   */
+  public Set<Badge> getAllBadgesByUserId(
+      Long userId) { // @Transactional readonly attribute may be needed?
+    return userRepository
+        .findById(userId)
+        .map(User::getEarnedBadges)
+        .orElse(Collections.emptySet());
+  }
+
+  /**
+   * Awards a Badge of badgeId to a User of userId
+   *
+   * @param userId (Long): The User's id (who is earning the Badge)
+   * @param badgeId (Long): The Badge's id (the Badge being awarded)
+   * @throws InvalidIdException If either the User or Badge id is not found.
+   */
+  @Transactional
+  public void giveUserBadge(Long userId, Long badgeId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+    Badge badge =
+        badgeRepository
+            .findById(badgeId)
+            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    user.getEarnedBadges().add(badge);
+    userRepository.save(user);
+  }
+
+  /**
+   * Removes a user's badge, given the User and Badge id's.
+   *
+   * @param userId (Long): The User's id (who is losing the Badge)
+   * @param badgeId (Long): The Badge's id (the Badge being removed)
+   * @throws InvalidIdException If either the User or Badge id is not found.
+   */
+  @Transactional
+  public void removeUserBadge(Long userId, Long badgeId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+    Badge badge =
+        badgeRepository
+            .findById(badgeId)
+            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    if (user.getEarnedBadges().remove(badge)) {
+      userRepository.save(user);
+    }
+  }
+
+  /**
+   * Retrieves all users that have acquired a certain badge
+   *
+   * @param badgeId (Long): The badge id being researched.
+   * @return an ArrayList of Users that have earned the badge.
+   * @throws InvalidIdException When the badge id is not found in the database.
+   */
+  public List<User> getUsersByBadge(Long badgeId) {
+    Badge badge =
+        badgeRepository
+            .findById(badgeId)
+            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    return new ArrayList<>(badge.getUsers()); // possible null exception
   }
 
   @Transactional

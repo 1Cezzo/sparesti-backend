@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.ChallengeDTO;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
@@ -48,9 +50,14 @@ public class UserController {
    * @return the response entity
    */
   @PostMapping("/create")
-  @Operation(summary = "Create a new user")
-  public UserDto createUser(@RequestBody UserDto userDTO) {
-    return userService.addUser(userDTO);
+  @Operation(summary = "Create a new savings goal")
+  public ResponseEntity<String> createUser(@RequestBody UserDto userDTO) {
+    try {
+      userService.addUser(userDTO);
+      return ResponseEntity.ok("User created successfully");
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 
   /**
@@ -64,6 +71,116 @@ public class UserController {
   public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
     userService.deleteUser(id);
     return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Add a budget to a user.
+   *
+   * @param userId The ID of the user.
+   * @param budgetDTO The budget to add.
+   * @return The updated user DTO.
+   */
+  @PostMapping("/{userId}/budgets/add")
+  @Operation(summary = "Add a budget to a user")
+  public ResponseEntity<UserDto> addBudgetToUser(
+      @PathVariable Long userId, @RequestBody BudgetDto budgetDTO) {
+    try {
+      UserDto updatedUserDto = userService.addBudgetToUser(userId, budgetDTO);
+      return ResponseEntity.ok(updatedUserDto); // Return 200 OK status
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build(); // Return 400 Bad Request status
+    }
+  }
+
+  /**
+   * Get all budgets for a user.
+   *
+   * @param userId The ID of the user.
+   * @return A list of budget DTOs.
+   */
+  @GetMapping("/{userId}/budgets")
+  @Operation(summary = "Get all budgets for a user")
+  public ResponseEntity<List<BudgetDto>> getAllBudgetsForUser(@PathVariable Long userId) {
+    List<BudgetDto> budgets = userService.getAllBudgetsForUser(userId);
+    return ResponseEntity.ok(budgets);
+  }
+
+  /**
+   * Delete a budget from a user.
+   *
+   * @param userId The ID of the user.
+   * @param budgetId The ID of the budget.
+   */
+  @DeleteMapping("/{userId}/budgets/{budgetId}")
+  @Operation(summary = "Delete a budget from a user")
+  public ResponseEntity<Void> deleteBudgetFromUser(
+      @PathVariable Long userId, @PathVariable Long budgetId) {
+    userService.deleteBudgetFromUser(userId, budgetId);
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Add a budget row to a user's budget.
+   *
+   * @param userId The ID of the user.
+   * @param budgetId The ID of the budget.
+   * @param budgetRowDTO The budget row to add.
+   * @return The updated budget DTO.
+   */
+  @PostMapping("/{userId}/budgets/{budgetId}/rows/add")
+  @Operation(summary = "Add a budget row to a user's budget")
+  public ResponseEntity<BudgetDto> addBudgetRowToUserBudget(
+      @PathVariable Long userId,
+      @PathVariable Long budgetId,
+      @RequestBody BudgetRowDto budgetRowDTO) {
+    try {
+      BudgetDto updatedBudgetDto =
+          userService.addBudgetRowToUserBudget(userId, budgetId, budgetRowDTO);
+      return ResponseEntity.ok(updatedBudgetDto); // Return 200 OK status
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build(); // Return 400 Bad Request status
+    }
+  }
+
+  /**
+   * Delete a budget row from a user's budget.
+   *
+   * @param userId The ID of the user.
+   * @param budgetId The ID of the budget.
+   * @param budgetRowId The ID of the budget row.
+   * @return ResponseEntity with status code.
+   */
+  @DeleteMapping("/{userId}/budgets/{budgetId}/rows/{budgetRowId}")
+  @Operation(summary = "Delete a budget row from a user's budget")
+  public ResponseEntity<Void> deleteBudgetRowFromUserBudget(
+      @PathVariable Long userId, @PathVariable Long budgetId, @PathVariable Long budgetRowId) {
+    userService.deleteBudgetRowFromUserBudget(userId, budgetId, budgetRowId);
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Edit a budget row in a user's budget.
+   *
+   * @param userId The ID of the user.
+   * @param budgetId The ID of the budget.
+   * @param budgetRowId The ID of the budget row.
+   * @param budgetRowDto The budget row data to update.
+   * @return The updated budget row DTO.
+   */
+  @PutMapping("/{userId}/budgets/{budgetId}/rows/{budgetRowId}")
+  @Operation(summary = "Edit a budget row in a user's budget")
+  public ResponseEntity<BudgetRowDto> editBudgetRowInUserBudget(
+      @PathVariable Long userId,
+      @PathVariable Long budgetId,
+      @PathVariable Long budgetRowId,
+      @RequestBody BudgetRowDto budgetRowDto) {
+    try {
+      BudgetRowDto updatedBudgetRowDto =
+          userService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
+      return ResponseEntity.ok(updatedBudgetRowDto); // Return 200 OK status
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build(); // Return 400 Bad Request status
+    }
   }
 
   /**

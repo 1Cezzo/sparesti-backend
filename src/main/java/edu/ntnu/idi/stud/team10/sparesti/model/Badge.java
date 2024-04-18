@@ -1,5 +1,9 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,4 +26,8 @@ public class Badge {
 
   @Column(name = "image_url", nullable = false)
   private String imageUrl;
+
+  @JsonIgnore
+  @ManyToMany(mappedBy = "earnedBadges")
+  Set<User> users;
 }
