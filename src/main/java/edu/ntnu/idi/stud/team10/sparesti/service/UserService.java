@@ -11,12 +11,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
+import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
+import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
@@ -29,6 +35,8 @@ public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final SavingsGoalRepository savingsGoalRepository;
+  private final BudgetRepository budgetRepository;
+  private final BudgetRowRepository budgetRowRepository;
   private final BadgeRepository badgeRepository;
 
   /**
@@ -40,12 +48,16 @@ public class UserService implements UserDetailsService {
   @Autowired
   public UserService(
       UserRepository userRepository,
+      BudgetRepository budgetRepository,
+      BudgetRowRepository budgetRowRepository,
       SavingsGoalRepository savingsGoalRepository,
       BadgeRepository badgeRepository) {
     this.userRepository = userRepository;
-    this.passwordEncoder = new BCryptPasswordEncoder();
+    this.budgetRepository = budgetRepository;
+    this.budgetRowRepository = budgetRowRepository;
     this.savingsGoalRepository = savingsGoalRepository;
     this.badgeRepository = badgeRepository;
+    this.passwordEncoder = new BCryptPasswordEncoder();
   }
 
   /**
@@ -228,6 +240,120 @@ public class UserService implements UserDetailsService {
             .orElseThrow(
                 () ->
                     new InvalidIdException("Savings goal with ID " + savingsGoalId + " not found"));
+  }
+
+  public UserDto addBudgetToUser(Long userId, BudgetDto budgetDto) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget = budgetDto.toEntity();
+    budget.setUser(user);
+    budgetRepository.save(budget);
+    return new UserDto(user);
+  }
+
+  public List<BudgetDto> getAllBudgetsForUser(Long userId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    return budgetRepository.findByUser(user).stream()
+        .map(BudgetDto::new)
+        .collect(Collectors.toList());
+  }
+
+  public void deleteBudgetFromUser(Long userId, Long budgetId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget =
+        budgetRepository
+            .findById(budgetId)
+            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+
+    budgetRepository.delete(budget);
+  }
+
+  public BudgetDto addBudgetRowToUserBudget(Long userId, Long budgetId, BudgetRowDto budgetRowDto) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget =
+        budgetRepository
+            .findById(budgetId)
+            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+
+    if (!budget.getUser().equals(user)) {
+      throw new IllegalArgumentException("The budget does not belong to the user");
+    }
+
+    BudgetRow budgetRow = budgetRowDto.toEntity();
+    budgetRow.setBudget(budget);
+    budget.getRow().add(budgetRow);
+    budgetRepository.save(budget);
+
+    return new BudgetDto(budget);
+  }
+
+  public void deleteBudgetRowFromUserBudget(Long userId, Long budgetId, Long budgetRowId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget =
+        budgetRepository
+            .findById(budgetId)
+            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+
+    if (!budget.getUser().equals(user)) {
+      throw new IllegalArgumentException("The budget does not belong to the user");
+    }
+
+    BudgetRow budgetRow =
+        budgetRowRepository
+            .findById(budgetRowId)
+            .orElseThrow(
+                () -> new InvalidIdException("BudgetRow with ID " + budgetRowId + " not found"));
+
+    budget.getRow().remove(budgetRow);
+    budgetRepository.save(budget);
+  }
+
+  public BudgetRowDto editBudgetRowInUserBudget(
+      Long userId, Long budgetId, Long budgetRowId, BudgetRowDto budgetRowDto) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
+    Budget budget =
+        budgetRepository
+            .findById(budgetId)
+            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+
+    if (!budget.getUser().equals(user)) {
+      throw new IllegalArgumentException("The budget does not belong to the user");
+    }
+
+    BudgetRow budgetRow =
+        budgetRowRepository
+            .findById(budgetRowId)
+            .orElseThrow(
+                () -> new InvalidIdException("BudgetRow with ID " + budgetRowId + " not found"));
+
+    // Update the budget row with the new data
+    budgetRow.updateFromDto(budgetRowDto);
+    budgetRowRepository.save(budgetRow);
+
+    return new BudgetRowDto(budgetRow);
   }
 
   /**
