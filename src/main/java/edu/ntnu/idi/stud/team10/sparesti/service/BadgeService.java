@@ -3,7 +3,6 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import java.util.List;
 import java.util.Optional;
 
-import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 
 /** Service for Badge entities */
 @Service
@@ -41,7 +41,7 @@ public class BadgeService {
    * @return
    */
   public void deleteBadgeById(
-          Long id) { // Will we need to delete user-badge relationships of the same id?
+      Long id) { // Will we need to delete user-badge relationships of the same id?
     // In that case, could return the id of the same badge to be passed on.
     try {
       badgeRepository.deleteById(id);
@@ -50,9 +50,7 @@ public class BadgeService {
     }
   }
 
-  /**
-   * Returns all stored badges.
-   */
+  /** Returns all stored badges. */
   public List<Badge> getAllBadges() {
     return badgeRepository.findAll();
   }
@@ -70,7 +68,7 @@ public class BadgeService {
   /**
    * Updates a Badge entity.
    *
-   * @param id       (Long): The unique id of the Badge.
+   * @param id (Long): The unique id of the Badge.
    * @param badgeDto (BadgeDto): The data transfer object representing the Badge to alter.
    * @return the updated Badge.
    */
@@ -88,16 +86,19 @@ public class BadgeService {
   }
 
   /**
-   * Calculates the percentage of users that have acquired a certain badge
-   * of badgeId.
+   * Calculates the percentage of users that have acquired a certain badge of badgeId.
    *
    * @param badgeId (Long): The id of the badge being checked.
    * @return The percentage of users that have the badge.
    */
-  public double findBadgeRarity(Long badgeId) { //unsure if this should be in UserService
+  public double findBadgeRarity(Long badgeId) { // unsure if this should be in UserService
     if (badgeRepository.findById(badgeId).isPresent()) {
-      double ratio = userRepository.countByBadgeId(badgeId) / userRepository.count(); // Theoretically need to check if user count is zero to avoid division by zero
-      return ratio * 100; //percentage conversion
+      double ratio =
+          userRepository.countByBadgeId(badgeId)
+              / userRepository
+                  .count(); // Theoretically need to check if user count is zero to avoid division
+      // by zero
+      return ratio * 100; // percentage conversion
     } else {
       throw new IllegalArgumentException("Badge with id " + badgeId + " not found...");
     }

@@ -1,10 +1,10 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
+import java.util.Set;
+
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import lombok.*;
-
-import java.util.Set;
 
 /** Data transfer object for Badge entities */
 @Data

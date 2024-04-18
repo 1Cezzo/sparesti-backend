@@ -34,9 +34,10 @@ public class User {
 
   @ManyToMany
   @JoinTable(
-          name = "userBadges",
-          joinColumns = @JoinColumn(name = "user_id"),
-          inverseJoinColumns = @JoinColumn(name = "badge_id")) //might need to give more descriptive column names
+      name = "userBadges",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns =
+          @JoinColumn(name = "badge_id")) // might need to give more descriptive column names
   private Set<Badge> earnedBadges;
 
   /**

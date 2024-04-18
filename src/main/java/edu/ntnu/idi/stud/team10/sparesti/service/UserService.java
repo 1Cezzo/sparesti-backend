@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
@@ -232,9 +232,11 @@ public class UserService implements UserDetailsService {
    * @param userId (Long): The User's unique ID.
    * @return A Set of all Badges that a User has earned.
    */
-  public Set<Badge> getBadgesByUserId(Long userId) { // @Transactional readonly attribute may be needed?
-    return userRepository.findById(userId)
-            .map(User::getEarnedBadges)
-            .orElse(Collections.emptySet());
+  public Set<Badge> getAllBadgesByUserId(
+      Long userId) { // @Transactional readonly attribute may be needed?
+    return userRepository
+        .findById(userId)
+        .map(User::getEarnedBadges)
+        .orElse(Collections.emptySet());
   }
 }

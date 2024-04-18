@@ -1,10 +1,11 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Set;
 
 /** Badge entity for storage in database */
 @Data
