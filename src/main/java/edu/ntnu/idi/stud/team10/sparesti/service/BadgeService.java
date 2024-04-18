@@ -54,6 +54,16 @@ public class BadgeService {
   }
 
   /**
+   * Counts how many Users have earned a certain badge
+   *
+   * @param badgeId (Long) the Badge's id being checked.
+   * @return The amount of Users with the badge being checked.
+   */
+  public long countUsersWithBadge(Long badgeId) {
+    return userRepository.countByBadgeId(badgeId); //could be put into getBadgeRarity to simplify/shorten it.
+  }
+
+  /**
    * Returns an optional that includes a Badge entity with a given id - if the id exists in repo.
    *
    * @param id (Long): The unique id of the Badge entity.
