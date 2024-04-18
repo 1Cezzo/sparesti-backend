@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
+import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -232,5 +233,16 @@ public class UserController {
   @Operation(summary = "Get all badges a user earned")
   public ResponseEntity<Set<BadgeDto>> getUserBadges(@PathVariable Long userId) {
     return ResponseEntity.ok(userService.getAllBadgesByUserId(userId));
+  }
+
+  @PostMapping("/{userId}/badges/{badgeId}")
+  @Operation(summary = "Award a badge to a user")
+  public ResponseEntity<Void> awardBadgeToUser(@PathVariable Long userId, @PathVariable Long badgeId) {
+    try {
+      userService.giveUserBadge(userId, badgeId);
+      return ResponseEntity.noContent().build();
+    } catch (InvalidIdException e) {
+      return ResponseEntity.badRequest().build();
+    }
   }
 }
