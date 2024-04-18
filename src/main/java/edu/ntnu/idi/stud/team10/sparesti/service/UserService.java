@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,6 +32,7 @@ public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final SavingsGoalRepository savingsGoalRepository;
+  private final BadgeRepository badgeRepository;
 
   /**
    * Constructor for UserService, with automatic injection of dependencies.
@@ -38,10 +41,11 @@ public class UserService implements UserDetailsService {
    * @param savingsGoalRepository (SavingsGoalRepository) The repository for SavingsGoal entities.
    */
   @Autowired
-  public UserService(UserRepository userRepository, SavingsGoalRepository savingsGoalRepository) {
+  public UserService(UserRepository userRepository, SavingsGoalRepository savingsGoalRepository, BadgeRepository badgeRepository) {
     this.userRepository = userRepository;
     this.passwordEncoder = new BCryptPasswordEncoder();
     this.savingsGoalRepository = savingsGoalRepository;
+    this.badgeRepository = badgeRepository;
   }
 
   /**
@@ -238,5 +242,21 @@ public class UserService implements UserDetailsService {
         .findById(userId)
         .map(User::getEarnedBadges)
         .orElse(Collections.emptySet());
+  }
+
+  /**
+   * Awards a Badge of badgeId to a User of userId
+   *
+   * @param userId (Long): The User's id (who is earning the Badge)
+   * @param badgeId (Long): The Badge's id (the Badge being awarded)
+   */
+  @Transactional
+  public void giveUserBadge(Long userId, Long badgeId) {
+    User user = userRepository.findById(userId).orElseThrow(()
+            -> new InvalidIdException("User with ID " + userId + " not found"));
+    Badge badge = badgeRepository.findById(badgeId).orElseThrow(()
+            -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    user.getEarnedBadges().add(badge);
+    userRepository.save(user);
   }
 }
