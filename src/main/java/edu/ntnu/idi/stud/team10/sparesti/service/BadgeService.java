@@ -4,21 +4,24 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
 
 /** Service for Badge entities */
 @Service
 public class BadgeService {
   private final BadgeRepository badgeRepository;
+  private final UserRepository userRepository;
 
   @Autowired
-  public BadgeService(BadgeRepository badgeRepository) {
+  public BadgeService(BadgeRepository badgeRepository, UserRepository userRepository) {
     this.badgeRepository = badgeRepository;
+    this.userRepository = userRepository;
   }
 
   /**
@@ -32,24 +35,40 @@ public class BadgeService {
   }
 
   /**
-   * Using its unique id, deletes a Badge entity from the repository.
+   * Using its unique id, deletes a Badge entity from the repository. Will also delete every
+   * badge-user relationship with this badge id.
    *
    * @param id (Long): The unique id of the Badge entity.
-   * @return
    */
-  public void deleteBadgeById(
-      Long id) { // Will we need to delete user-badge relationships of the same id?
-    // In that case, could return the id of the same badge to be passed on.
-    try {
-      badgeRepository.deleteById(id);
-    } catch (EmptyResultDataAccessException e) {
-      throw new IllegalArgumentException("Badge with id " + id + " not found...");
-    }
+  public void deleteBadgeById(Long id) {
+    badgeRepository
+        .findById(id)
+        .ifPresentOrElse(
+            badge -> {
+              badge.getUsers().forEach(user -> user.getEarnedBadges().remove(badge));
+              userRepository.saveAll(badge.getUsers());
+              badgeRepository.delete(badge);
+            },
+            () ->
+                System.out.println(
+                    "Badge wasn't found")); // Might need to throw exception in the future, for bug
+    // fixing's sake.
   }
 
   /** Returns all stored badges. */
   public List<Badge> getAllBadges() {
     return badgeRepository.findAll();
+  }
+
+  /**
+   * Counts how many Users have earned a certain badge
+   *
+   * @param badgeId (Long) the Badge's id being checked.
+   * @return The amount of Users with the badge being checked.
+   */
+  public long countUsersWithBadge(Long badgeId) {
+    return userRepository.countByBadgeId(
+        badgeId); // could be put into getBadgeRarity to simplify/shorten it.
   }
 
   /**
@@ -68,6 +87,7 @@ public class BadgeService {
    * @param id (Long): The unique id of the Badge.
    * @param badgeDto (BadgeDto): The data transfer object representing the Badge to alter.
    * @return the updated Badge.
+   * @throws InvalidIdException If the badge id is not found.
    */
   public Badge updateBadge(Long id, BadgeDto badgeDto) {
     Optional<Badge> badgeOptional = badgeRepository.findById(id);
@@ -78,7 +98,27 @@ public class BadgeService {
       badge.setImageUrl(badgeDto.getImageUrl());
       return badgeRepository.save(badge);
     } else {
-      throw new IllegalArgumentException("Badge with id " + id + " not found...");
+      throw new InvalidIdException("Badge with id " + id + " not found...");
+    }
+  }
+
+  /**
+   * Calculates the percentage of users that have acquired a certain badge of badgeId.
+   *
+   * @param badgeId (Long): The id of the badge being checked.
+   * @return The percentage of users that have the badge.
+   * @throws InvalidIdException If the badge id is not found.
+   */
+  public double findBadgeRarity(Long badgeId) { // unsure if this should be in UserService
+    if (badgeRepository.findById(badgeId).isPresent()) {
+      double ratio =
+          (double) countUsersWithBadge(badgeId)
+              / userRepository
+                  .count(); // Theoretically need to check if user count is zero to avoid division
+      // by zero
+      return ratio * 100; // percentage conversion
+    } else {
+      throw new InvalidIdException("Badge with id " + badgeId + " not found...");
     }
   }
 }

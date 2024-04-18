@@ -1,7 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +13,15 @@ import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
+import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
 import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+import jakarta.transaction.Transactional;
 
 /** Service for User entities. */
 @Service
@@ -27,6 +29,7 @@ public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final SavingsGoalRepository savingsGoalRepository;
+  private final BadgeRepository badgeRepository;
 
   /**
    * Constructor for UserService, with automatic injection of dependencies.
@@ -35,10 +38,14 @@ public class UserService implements UserDetailsService {
    * @param savingsGoalRepository (SavingsGoalRepository) The repository for SavingsGoal entities.
    */
   @Autowired
-  public UserService(UserRepository userRepository, SavingsGoalRepository savingsGoalRepository) {
+  public UserService(
+      UserRepository userRepository,
+      SavingsGoalRepository savingsGoalRepository,
+      BadgeRepository badgeRepository) {
     this.userRepository = userRepository;
     this.passwordEncoder = new BCryptPasswordEncoder();
     this.savingsGoalRepository = savingsGoalRepository;
+    this.badgeRepository = badgeRepository;
   }
 
   /**
@@ -221,5 +228,77 @@ public class UserService implements UserDetailsService {
             .orElseThrow(
                 () ->
                     new InvalidIdException("Savings goal with ID " + savingsGoalId + " not found"));
+  }
+
+  /**
+   * Returns a Set of all the badges earned by a user.
+   *
+   * @param userId (Long): The User's unique ID.
+   * @return A Set of all Badges that a User has earned.
+   */
+  public Set<Badge> getAllBadgesByUserId(
+      Long userId) { // @Transactional readonly attribute may be needed?
+    return userRepository
+        .findById(userId)
+        .map(User::getEarnedBadges)
+        .orElse(Collections.emptySet());
+  }
+
+  /**
+   * Awards a Badge of badgeId to a User of userId
+   *
+   * @param userId (Long): The User's id (who is earning the Badge)
+   * @param badgeId (Long): The Badge's id (the Badge being awarded)
+   * @throws InvalidIdException If either the User or Badge id is not found.
+   */
+  @Transactional
+  public void giveUserBadge(Long userId, Long badgeId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+    Badge badge =
+        badgeRepository
+            .findById(badgeId)
+            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    user.getEarnedBadges().add(badge);
+    userRepository.save(user);
+  }
+
+  /**
+   * Removes a user's badge, given the User and Badge id's.
+   *
+   * @param userId (Long): The User's id (who is losing the Badge)
+   * @param badgeId (Long): The Badge's id (the Badge being removed)
+   * @throws InvalidIdException If either the User or Badge id is not found.
+   */
+  @Transactional
+  public void removeUserBadge(Long userId, Long badgeId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+    Badge badge =
+        badgeRepository
+            .findById(badgeId)
+            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    if (user.getEarnedBadges().remove(badge)) {
+      userRepository.save(user);
+    }
+  }
+
+  /**
+   * Retrieves all users that have acquired a certain badge
+   *
+   * @param badgeId (Long): The badge id being researched.
+   * @return an ArrayList of Users that have earned the badge.
+   * @throws InvalidIdException When the badge id is not found in the database.
+   */
+  public List<User> getUsersByBadge(Long badgeId) {
+    Badge badge =
+        badgeRepository
+            .findById(badgeId)
+            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    return new ArrayList<>(badge.getUsers()); // possible null exception
   }
 }
