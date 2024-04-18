@@ -1,6 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -21,6 +22,8 @@ public class User {
   @Column(unique = true)
   private String username;
 
+  // TODO: add full name here? (might come from the mock bank?) Designer(s) claimed that since we
+  // are connecting to the bank, the user's name should be visible on profile page
   @Column(nullable = false)
   private String password;
 
@@ -36,6 +39,13 @@ public class User {
   @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<SavingsGoal> savingsGoals;
+
+  @ManyToMany
+  @JoinTable(
+      name = "userBadges",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "badge_id"))
+  private Set<Badge> earnedBadges;
 
   /**
    * Constructor for converting UserDto to User.

@@ -30,7 +30,11 @@ public class UserDto {
     this.username = user.getUsername();
     this.email = user.getEmail();
     this.profilePictureUrl = user.getProfilePictureUrl();
-    this.savingsGoals =
-        user.getSavingsGoals().stream().map(SavingsGoalDTO::new).collect(Collectors.toList());
+    if (user.getSavingsGoals() != null) {
+      this.savingsGoals =
+          user.getSavingsGoals().stream().map(SavingsGoalDTO::new).collect(Collectors.toList());
+    } else {
+      this.savingsGoals = null;
+    }
   }
 }
