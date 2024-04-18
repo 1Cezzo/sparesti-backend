@@ -3,6 +3,7 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -231,17 +232,18 @@ public class UserService implements UserDetailsService {
   }
 
   /**
-   * Returns a Set of all the badges earned by a user.
+   * Returns a Set of all the badges earned by a user, as DTOs.
    *
    * @param userId (Long): The User's unique ID.
-   * @return A Set of all Badges that a User has earned.
+   * @return A Set of all Badges that a User has earned, in DTO form.
    */
-  public Set<Badge> getAllBadgesByUserId(
-      Long userId) { // @Transactional readonly attribute may be needed?
-    return userRepository
-        .findById(userId)
-        .map(User::getEarnedBadges)
-        .orElse(Collections.emptySet());
+  public Set<BadgeDto> getAllBadgesByUserId(Long userId) {
+    return userRepository.findById(userId)
+            .map(user -> user.getEarnedBadges()
+                    .stream()
+                    .map(BadgeDto::new) // conversion to DTO here
+                    .collect(Collectors.toSet()))
+            .orElse(Collections.emptySet());
   }
 
   /**
