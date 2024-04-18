@@ -30,8 +30,9 @@ public class BadgeService {
    * @param badgeDto (BadgeDto): the data transfer object representing the Badge to create
    * @return the created Badge
    */
-  public Badge createBadge(BadgeDto badgeDto) {
-    return badgeRepository.save(badgeDto.toEntity()); // unique id - should not need validation?
+  public BadgeDto createBadge(BadgeDto badgeDto) {
+    badgeRepository.save(badgeDto.toEntity());// unique id - should not need validation?
+    return badgeDto;
   }
 
   /**
@@ -89,14 +90,15 @@ public class BadgeService {
    * @return the updated Badge.
    * @throws InvalidIdException If the badge id is not found.
    */
-  public Badge updateBadge(Long id, BadgeDto badgeDto) {
+  public BadgeDto updateBadge(Long id, BadgeDto badgeDto) {
     Optional<Badge> badgeOptional = badgeRepository.findById(id);
     if (badgeOptional.isPresent()) {
       Badge badge = badgeOptional.get();
       badge.setTitle(badgeDto.getTitle());
       badge.setDescription(badgeDto.getDescription());
       badge.setImageUrl(badgeDto.getImageUrl());
-      return badgeRepository.save(badge);
+      badgeRepository.save(badge);
+      return new BadgeDto(badge);
     } else {
       throw new InvalidIdException("Badge with id " + id + " not found...");
     }
