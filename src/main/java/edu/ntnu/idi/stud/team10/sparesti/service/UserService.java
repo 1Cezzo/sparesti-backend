@@ -3,8 +3,6 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,10 +16,12 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
+import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
 import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+import jakarta.transaction.Transactional;
 
 /** Service for User entities. */
 @Service
@@ -38,7 +38,10 @@ public class UserService implements UserDetailsService {
    * @param savingsGoalRepository (SavingsGoalRepository) The repository for SavingsGoal entities.
    */
   @Autowired
-  public UserService(UserRepository userRepository, SavingsGoalRepository savingsGoalRepository, BadgeRepository badgeRepository) {
+  public UserService(
+      UserRepository userRepository,
+      SavingsGoalRepository savingsGoalRepository,
+      BadgeRepository badgeRepository) {
     this.userRepository = userRepository;
     this.passwordEncoder = new BCryptPasswordEncoder();
     this.savingsGoalRepository = savingsGoalRepository;
@@ -250,10 +253,14 @@ public class UserService implements UserDetailsService {
    */
   @Transactional
   public void giveUserBadge(Long userId, Long badgeId) {
-    User user = userRepository.findById(userId).orElseThrow(()
-            -> new InvalidIdException("User with ID " + userId + " not found"));
-    Badge badge = badgeRepository.findById(badgeId).orElseThrow(()
-            -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+    Badge badge =
+        badgeRepository
+            .findById(badgeId)
+            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
     user.getEarnedBadges().add(badge);
     userRepository.save(user);
   }
@@ -267,10 +274,14 @@ public class UserService implements UserDetailsService {
    */
   @Transactional
   public void removeUserBadge(Long userId, Long badgeId) {
-    User user = userRepository.findById(userId).orElseThrow(()
-            -> new InvalidIdException("User with ID " + userId + " not found"));
-    Badge badge = badgeRepository.findById(badgeId).orElseThrow(()
-            -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+    Badge badge =
+        badgeRepository
+            .findById(badgeId)
+            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
     if (user.getEarnedBadges().remove(badge)) {
       userRepository.save(user);
     }
@@ -284,8 +295,10 @@ public class UserService implements UserDetailsService {
    * @throws InvalidIdException When the badge id is not found in the database.
    */
   public List<User> getUsersByBadge(Long badgeId) {
-    Badge badge = badgeRepository.findById(badgeId).orElseThrow(()
-            -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
-    return new ArrayList<>(badge.getUsers()); //possible null exception
+    Badge badge =
+        badgeRepository
+            .findById(badgeId)
+            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    return new ArrayList<>(badge.getUsers()); // possible null exception
   }
 }
