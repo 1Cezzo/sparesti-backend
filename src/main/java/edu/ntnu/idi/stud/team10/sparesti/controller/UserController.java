@@ -1,11 +1,9 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
-import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -235,6 +233,4 @@ public class UserController {
   public ResponseEntity<Set<BadgeDto>> getUserBadges(@PathVariable Long userId) {
     return ResponseEntity.ok(userService.getAllBadgesByUserId(userId));
   }
-
-  //@PostMapping("/{userId}/badges/{badgeId}") Add a badge to user
 }
