@@ -1,9 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
@@ -249,6 +246,7 @@ public class UserService implements UserDetailsService {
    *
    * @param userId (Long): The User's id (who is earning the Badge)
    * @param badgeId (Long): The Badge's id (the Badge being awarded)
+   * @throws InvalidIdException If either the User or Badge id is not found.
    */
   @Transactional
   public void giveUserBadge(Long userId, Long badgeId) {
@@ -258,5 +256,36 @@ public class UserService implements UserDetailsService {
             -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
     user.getEarnedBadges().add(badge);
     userRepository.save(user);
+  }
+
+  /**
+   * Removes a user's badge, given the User and Badge id's.
+   *
+   * @param userId (Long): The User's id (who is losing the Badge)
+   * @param badgeId (Long): The Badge's id (the Badge being removed)
+   * @throws InvalidIdException If either the User or Badge id is not found.
+   */
+  @Transactional
+  public void removeUserBadge(Long userId, Long badgeId) {
+    User user = userRepository.findById(userId).orElseThrow(()
+            -> new InvalidIdException("User with ID " + userId + " not found"));
+    Badge badge = badgeRepository.findById(badgeId).orElseThrow(()
+            -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    if (user.getEarnedBadges().remove(badge)) {
+      userRepository.save(user);
+    }
+  }
+
+  /**
+   * Retrieves all users that have acquired a certain badge
+   *
+   * @param badgeId (Long): The badge id being researched.
+   * @return an ArrayList of Users that have earned the badge.
+   * @throws InvalidIdException When the badge id is not found in the database.
+   */
+  public List<User> getUsersByBadge(Long badgeId) {
+    Badge badge = badgeRepository.findById(badgeId).orElseThrow(()
+            -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+    return new ArrayList<>(badge.getUsers()); //possible null exception
   }
 }
