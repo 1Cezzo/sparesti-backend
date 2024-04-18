@@ -1,18 +1,18 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 /** Entity representing a user in the database. */
 @Entity
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -26,6 +26,10 @@ public class User {
   private String password;
   private String email;
   private String profilePictureUrl;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private List<SavingsGoal> savingsGoals;
 
   /**
    * Constructor for converting UserDto to User.
