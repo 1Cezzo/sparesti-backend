@@ -1,7 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import lombok.*;
@@ -15,6 +14,8 @@ import lombok.*;
 public class UserDto {
   private Long id;
   private String username;
+  private String firstName;
+  private String lastName;
   private String password;
   private String email;
   private String profilePictureUrl;
@@ -32,7 +33,7 @@ public class UserDto {
     this.profilePictureUrl = user.getProfilePictureUrl();
     if (user.getSavingsGoals() != null) {
       this.savingsGoals =
-          user.getSavingsGoals().stream().map(SavingsGoalDTO::new).collect(Collectors.toList());
+          user.getSavingsGoals().stream().map(SavingsGoalDTO::new).toList();
     } else {
       this.savingsGoals = null;
     }
