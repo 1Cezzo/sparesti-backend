@@ -229,18 +229,31 @@ public class UserController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Get all badges earned by a user id.
+   *
+   * @param userId The ID of the user
+   * @return A set of the user's earned badges
+   */
   @GetMapping("/{userId}/badges")
   @Operation(summary = "Get all badges a user earned")
   public ResponseEntity<Set<BadgeDto>> getUserBadges(@PathVariable Long userId) {
+
     return ResponseEntity.ok(userService.getAllBadgesByUserId(userId));
   }
 
+  /**
+   * Awards a badge to a user
+   *
+   * @param userId The ID of the user
+   * @param badgeId The ID of the badge
+   */
   @PostMapping("/{userId}/badges/{badgeId}")
   @Operation(summary = "Award a badge to a user")
   public ResponseEntity<Void> awardBadgeToUser(@PathVariable Long userId, @PathVariable Long badgeId) {
     try {
       userService.giveUserBadge(userId, badgeId);
-      return ResponseEntity.noContent().build();
+      return ResponseEntity.noContent().build(); //maybe should return something else.
     } catch (InvalidIdException e) {
       return ResponseEntity.badRequest().build();
     }
