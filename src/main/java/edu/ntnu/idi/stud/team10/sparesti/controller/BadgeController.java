@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 /**
  * Operations related to badges of users.
  */
@@ -52,5 +54,13 @@ public class BadgeController {
         }
     }
 
-
+    @GetMapping("/{badgeId}")
+    @Operation(summary = "Get a singular badge's info")
+    public ResponseEntity<BadgeDto> getBadgeInfo(@PathVariable final Long badgeId) {
+        try {
+            return ResponseEntity.ok(badgeService.getBadgeById(badgeId).get());
+        } catch (InvalidIdException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

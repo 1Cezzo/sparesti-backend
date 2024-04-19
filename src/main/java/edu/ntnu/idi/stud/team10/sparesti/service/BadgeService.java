@@ -76,10 +76,16 @@ public class BadgeService {
    * Returns an optional that includes a Badge entity with a given id - if the id exists in repo.
    *
    * @param id (Long): The unique id of the Badge entity.
-   * @return the Badge if it exists, otherwise an empty Optional
+   * @return the Badge if it exists, as DTO.
+   * @throws InvalidIdException if the badge id is not found within database.
    */
-  public Optional<Badge> getBadgeById(Long id) {
-    return badgeRepository.findById(id);
+  public Optional<BadgeDto> getBadgeById(Long id) {
+    Optional<Badge> badgeOptional = badgeRepository.findById(id);
+    if (badgeOptional.isPresent()) {
+      return badgeOptional.map(BadgeDto::new);
+    } else {
+      throw new InvalidIdException("Badge of id " + id + " not found");
+    }
   }
 
   /**
