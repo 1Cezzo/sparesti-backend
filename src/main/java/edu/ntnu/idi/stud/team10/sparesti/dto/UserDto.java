@@ -13,7 +13,7 @@ import lombok.*;
 @Setter
 public class UserDto {
   private Long id;
-  private String username;
+  private String displayName;
   private String firstName;
   private String lastName;
   private String password;
@@ -28,7 +28,7 @@ public class UserDto {
    */
   public UserDto(User user) {
     this.id = user.getId();
-    this.username = user.getUsername();
+    this.displayName = user.getDisplayName();
     this.email = user.getEmail();
     this.profilePictureUrl = user.getProfilePictureUrl();
     if (user.getSavingsGoals() != null) {

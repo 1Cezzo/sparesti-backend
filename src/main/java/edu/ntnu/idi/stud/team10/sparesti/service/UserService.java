@@ -72,12 +72,22 @@ public class UserService implements UserDetailsService {
     if (userDto == null) {
       throw new IllegalArgumentException("UserDto cannot be null");
     }
-    if (userRepository.existsByUsername(userDto.getUsername())) {
-      throw new ExistingUserException("Username already exists.");
-    }
     userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
     User newUser = new User(userDto);
     return new UserDto(userRepository.save(newUser));
+  }
+
+  /**
+   * Sets the display name of a user.
+   *
+   * @param dto (UserDto) The user to update.
+   * @return A Dto representing the updated user.
+   * @throws InvalidIdException If the user is not found.
+   */
+  public UserDto setDisplayName(UserDto dto) {
+    User user = findUserById(dto.getId());
+    user.setDisplayName(dto.getDisplayName());
+    return new UserDto(userRepository.save(user));
   }
 
   /**
@@ -136,7 +146,7 @@ public class UserService implements UserDetailsService {
    * @throws InvalidIdException If the user is not found.
    */
   public UserDto getUserByUsername(String username) {
-    User foundUser = findUserByUsername(username);
+    User foundUser = findUserByDisplayName(username);
 
     return new UserDto(foundUser);
   }
@@ -155,23 +165,31 @@ public class UserService implements UserDetailsService {
   }
 
   /**
-   * Finds a User by username, if it exists.
+   * Finds a User by display name, if it exists.
    *
-   * @param username (String) The username of the user.
+   * @param displayName (String) The display name of the user.
    * @return The User, if found.
    * @throws InvalidIdException If the user is not found.
    */
-  private User findUserByUsername(String username) {
+  private User findUserByDisplayName(String displayName) {
     return userRepository
-        .findByUsername(username)
-        .orElseThrow(() -> new InvalidIdException("User with username " + username + " not found"));
+        .findByDisplayName(displayName)
+        .orElseThrow(() -> new InvalidIdException("User with display name " + displayName + " not found"));
   }
 
+  /**
+   * Overridden method from Spring Security. Loads a user by a username,
+   * which in this application is the email of the user.
+   *
+   * @param username (String) The email of the user.
+   * @return The UserDetails of the user.
+   * @throws UsernameNotFoundException If the user is not found.
+   */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User foundUser = findUserByUsername(username);
+    User foundUser = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     return org.springframework.security.core.userdetails.User.builder()
-        .username(foundUser.getUsername())
+        .username(foundUser.getEmail())
         .password(foundUser.getPassword())
         .roles("USER") // Can be changed to take roles from database
         .build();

@@ -20,7 +20,7 @@ public class User {
   private Long id;
 
   @Column(unique = true)
-  private String username;
+  private String displayName;
 
   @Column()
   private String firstName;
@@ -58,7 +58,7 @@ public class User {
    */
   public User(UserDto dto) {
     this.id = dto.getId();
-    this.username = dto.getUsername();
+    this.displayName = dto.getDisplayName();
     this.password = dto.getPassword();
     this.email = dto.getEmail();
     this.profilePictureUrl = dto.getProfilePictureUrl();
