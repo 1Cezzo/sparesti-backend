@@ -1,0 +1,223 @@
+:root {
+    --vt-c-white: #f0f0f0;
+    --vt-c-white-soft: #f8f8f8;
+    --vt-c-white-mute: #f2f2f2;
+
+    --vt-c-black: #131212;
+    --vt-c-black-soft: #2b2b2b;
+    --vt-c-black-mute: #282828;
+
+    --vt-c-indigo: #2c3e50;
+
+    --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
+    --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
+    --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
+    --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+
+    --vt-c-text-light-1: var(--vt-c-black-soft);
+    --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
+    --vt-c-text-dark-1: var(--vt-c-white);
+    --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+
+    --vt-c-button-base-light: #A6CD94;
+    --vt-c-button-hover-light: #4B644A;
+
+    --vt-c-button-base-dark: #757BFD;
+    --vt-c-button-hover-dark: #313273;
+}
+
+/* Default Light theme */
+:root {
+    --color-background: var(--vt-c-white);
+    --color-background-soft: var(--vt-c-white-soft);
+    --color-background-mute: var(--vt-c-white-mute);
+
+    --color-border: var(--vt-c-divider-light-2);
+    --color-border-hover: var(--vt-c-divider-light-1);
+
+    --color-heading: var(--vt-c-black-soft);
+    --color-text: var(--vt-c-black-soft);
+
+    --section-gap: 160px;
+
+    --color-button-base: var(--vt-c-button-base-light);
+    --color-button-hover: var(--vt-c-button-hover-light);
+}
+
+/* Dark theme */
+body.dark {
+    --color-background: var(--vt-c-black-soft);
+    --color-background-soft: var(--vt-c-black-soft);
+    --color-background-mute: var(--vt-c-black-mute);
+
+    --color-border: var(--vt-c-divider-dark-2);
+    --color-border-hover: var(--vt-c-divider-dark-1);
+
+    --color-heading: var(--vt-c-text-dark-1);
+    --color-text: var(--vt-c-text-dark-2);
+
+    --color-button-base: var(--vt-c-button-base-dark);
+    --color-button-hover: var(--vt-c-button-hover-dark);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    font-weight: normal;
+}
+
+body {
+    min-height: 100vh;
+    color: var(--color-text);
+    background: var(--color-background);
+    transition:
+            color 0.5s,
+            background-color 0.5s;
+    line-height: 1.6;
+    font-family:
+            Inter,
+            -apple-system,
+            BlinkMacSystemFont,
+            'Segoe UI',
+            Roboto,
+            Oxygen,
+            Ubuntu,
+            Cantarell,
+            'Fira Sans',
+            'Droid Sans',
+            'Helvetica Neue',
+            sans-serif;
+    font-size: 15px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+    background-color: var(--color-button-base);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--color-button-hover);
+}
+
+
+.authentication-wrapper {
+    overflow: hidden;
+
+}
+.authentication-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    place-items: center;
+    position: relative;
+}
+
+.piggy-bank-image img {
+    max-width: 70%;
+    height: auto;
+    position: absolute;
+    top: -2vw;
+    left: -13vw;
+    z-index: -1;
+}
+
+.static-content {
+    width: 100%;
+    height: 100%;
+    align-content: center;
+    border-right: 1px solid var(--color-border);
+    padding-left: 10rem;
+}
+
+.dynamic-content {
+    width: 100%;
+}
+
+.static-content {
+    font-size: 1.5rem;
+    text-align: left;
+    margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .authentication-container {
+        grid-template-columns: 1fr;
+    }
+
+    .static-content {
+        display: none;
+    }
+
+    .dynamic-content {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.login-container {
+    width:100%;
+    height:100%;
+    text-align: center;
+}
+.sign-up-link {
+    margin-top: 15vw;
+}
+
+.sign-up-link button {
+    background-color: transparent;
+    border: none;
+    /*color: var(--color-primary);*/
+    cursor: pointer;
+}
+
+.input-wrapper input {
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    margin: 10px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.input-wrapper input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+.form-button {
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    margin: 10px;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.signup-container {
+    text-align: center;
+}
+
+.login-link {
+    margin-top: 15vw;
+}
+
+.login-link button {
+    background-color: transparent;
+    border: none;
+    color: var(--color-primary);
+    cursor: pointer;
+    font: bold;
+}
+
+.hidden {
+    display: none;
+}

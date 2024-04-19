@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./stylesheet.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="authentication-wrapper">
+        <button id="toggle-dark-mode">Toggle dark mode</button>
+        <div class="piggy-bank-image">
+            <img id="piggy-bank-image" src="" alt="piggy-bank on a walk" />
+        </div>
+        <div class="authentication-container">
+            <div class="static-content">
+                <p>Welcome to SpareSti! <br>Application to make your wallet happier. <br>Free to use, money back guarantee.</p>
+            </div>
+            <div class="dynamic-content">
+                <div class="login-container" id="login-container">
+                    <h1>Login</h1>
+                    <p>Sign in to your account</p>
+                    <form method="post" action="/login">
+                        <div>
+                            <div class="input-wrapper">
+                                <input type="email" id="username" name="username" placeholder="Enter your email"/>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-wrapper">
+                                <input type="password" id="password" name="password" placeholder="Password"/>
+                            </div>
+                        </div>
+                        <button type="submit" class="form-button">Login</button>
+                    </form>
+                    <div class="sign-up-link">
+                        <p>Don't have an account? <button id="signup-link">Sign Up</button></p>
+                    </div>
+                </div>
+
+                <div class="signup-container hidden" id="signup-container">
+                    <h1>Sign up</h1>
+                    <p>Create your account</p>
+                    <form action="/api/users/create" method="post">
+                        <div>
+                            <div class="input-wrapper">
+                                <input type="email" id="email" name="email" placeholder="Enter your email"/>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-wrapper">
+                                <input type="password" id="signup-password" name="password" placeholder="Password"/>
+                            </div>
+                        </div>
+                        <button id="signup-submit" type="submit" class="form-button">Sign Up</button>
+                    </form>
+                    <div class="login-link">
+                        <p>Already have an account? <button id="login-link">Login</button></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
