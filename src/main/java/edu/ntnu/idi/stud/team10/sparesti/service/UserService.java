@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
@@ -414,18 +415,24 @@ public class UserService implements UserDetailsService {
   }
 
   /**
-   * Returns a Set of all the badges earned by a user.
+   * Returns a Set of all the badges earned by a user, as DTOs.
    *
    * @param userId (Long): The User's unique ID.
-   * @return A Set of all Badges that a User has earned.
+   * @return A Set of all Badges that a User has earned, in DTO form.
    */
-  public Set<Badge> getAllBadgesByUserId(
-      Long userId) { // @Transactional readonly attribute may be needed?
-    return userRepository
-        .findById(userId)
-        .map(User::getEarnedBadges)
-        .orElse(Collections.emptySet());
+  public Set<BadgeDto> getAllBadgesByUserId(Long userId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+    Set<BadgeDto> badges =
+        user.getEarnedBadges().stream().map(BadgeDto::new).collect(Collectors.toSet());
+    return badges;
   }
+
+  // Possibly need a method that retrieves the 3 most recent badges of a user,
+  // which will display on the front of their profile-page
+  // Which could use a dateEarned field in the badge-user connection.
 
   /**
    * Awards a Badge of badgeId to a User of userId
@@ -440,12 +447,15 @@ public class UserService implements UserDetailsService {
         userRepository
             .findById(userId)
             .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
     Badge badge =
         badgeRepository
             .findById(badgeId)
             .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
-    user.getEarnedBadges().add(badge);
+    user.addBadge(badge);
+    badge.addUser(user);
     userRepository.save(user);
+    badgeRepository.save(badge);
   }
 
   /**
@@ -465,9 +475,9 @@ public class UserService implements UserDetailsService {
         badgeRepository
             .findById(badgeId)
             .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
-    if (user.getEarnedBadges().remove(badge)) {
-      userRepository.save(user);
-    }
+    user.removeBadge(badge);
+    badge.removeUser(user);
+    userRepository.save(user);
   }
 
   /**

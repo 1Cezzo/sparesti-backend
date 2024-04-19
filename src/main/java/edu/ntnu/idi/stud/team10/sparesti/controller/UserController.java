@@ -2,18 +2,16 @@ package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
-import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
-import edu.ntnu.idi.stud.team10.sparesti.dto.ChallengeDTO;
-import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
+import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -50,7 +48,7 @@ public class UserController {
    * @return the response entity
    */
   @PostMapping("/create")
-  @Operation(summary = "Create a new savings goal")
+  @Operation(summary = "Create a new user")
   public ResponseEntity<String> createUser(@RequestBody UserDto userDTO) {
     try {
       userService.addUser(userDTO);
@@ -283,6 +281,36 @@ public class UserController {
       return ResponseEntity.ok(challengesMap);
     } catch (IllegalArgumentException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+  }
+
+  /**
+   * Get all badges earned by a user id.
+   *
+   * @param userId The ID of the user
+   * @return A set of the user's earned badges
+   */
+  @GetMapping("/{userId}/badges")
+  @Operation(summary = "Get all badges a user earned")
+  public ResponseEntity<Set<BadgeDto>> getUserBadges(@PathVariable Long userId) {
+    return ResponseEntity.ok(userService.getAllBadgesByUserId(userId));
+  }
+
+  /**
+   * Awards a badge to a user
+   *
+   * @param userId The ID of the user
+   * @param badgeId The ID of the badge
+   */
+  @PostMapping("/{userId}/badges/{badgeId}")
+  @Operation(summary = "Award a badge to a user")
+  public ResponseEntity<Void> awardBadgeToUser(
+      @PathVariable Long userId, @PathVariable Long badgeId) {
+    try {
+      userService.giveUserBadge(userId, badgeId);
+      return ResponseEntity.noContent().build(); // maybe should return something else.
+    } catch (InvalidIdException e) {
+      return ResponseEntity.badRequest().build();
     }
   }
 }

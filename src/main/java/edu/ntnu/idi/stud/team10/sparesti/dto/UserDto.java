@@ -1,6 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
@@ -20,6 +21,7 @@ public class UserDto {
   private String profilePictureUrl;
   private List<SavingsGoalDTO> savingsGoals;
   private List<ChallengeDTO> challenges;
+  private Set<BadgeDto> badges;
 
   /**
    * Constructor for converting User entity to UserDto. Does not include password.
@@ -42,6 +44,9 @@ public class UserDto {
           user.getChallenges().stream().map(ChallengeDTO::new).collect(Collectors.toList());
     } else {
       this.challenges = null;
+    }
+    if (user.getEarnedBadges() != null) {
+      this.badges = user.getEarnedBadges().stream().map(BadgeDto::new).collect(Collectors.toSet());
     }
   }
 
@@ -69,6 +74,7 @@ public class UserDto {
     } else {
       user.setChallenges(null);
     }
+    user.setEarnedBadges(null);
     return user;
   }
 }
