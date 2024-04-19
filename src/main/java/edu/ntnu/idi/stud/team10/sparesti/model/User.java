@@ -50,7 +50,7 @@ public class User {
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
-      name = "userBadges",
+      name = "user_badges",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "badge_id"))
   private Set<Badge> earnedBadges;
@@ -74,5 +74,13 @@ public class User {
 
   public void removeChallenge(Challenge challenge) {
     this.challenges.remove(challenge);
+  }
+
+  public void addBadge(Badge badge) {
+    this.earnedBadges.add(badge);
+  }
+
+  public void removeBadge(Badge badge) {
+    this.earnedBadges.remove(badge);
   }
 }
