@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
+import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
 import lombok.*;
 
@@ -13,6 +14,10 @@ public class SavingChallengeDTO extends ChallengeDTO {
     this.setTargetAmount(savedChallenge.getTargetAmount());
     this.setTimeInterval(savedChallenge.getTimeInterval());
     this.setDifficultyLevel(savedChallenge.getDifficultyLevel());
+  }
+
+  public SavingChallengeDTO(Challenge challenge) {
+    super(challenge);
   }
 
   @Override

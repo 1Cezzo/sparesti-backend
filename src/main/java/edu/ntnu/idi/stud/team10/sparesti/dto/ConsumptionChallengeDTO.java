@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
+import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import lombok.*;
 
@@ -18,6 +19,14 @@ public class ConsumptionChallengeDTO extends ChallengeDTO {
     this.setDifficultyLevel(savedChallenge.getDifficultyLevel());
     this.setProductCategory(savedChallenge.getProductCategory());
     this.setReductionPercentage(savedChallenge.getReductionPercentage());
+  }
+
+  public ConsumptionChallengeDTO(Challenge challenge) {
+    super(challenge);
+    if (challenge instanceof ConsumptionChallenge consumptionChallenge) {
+      this.productCategory = consumptionChallenge.getProductCategory();
+      this.reductionPercentage = consumptionChallenge.getReductionPercentage();
+    }
   }
 
   @Override

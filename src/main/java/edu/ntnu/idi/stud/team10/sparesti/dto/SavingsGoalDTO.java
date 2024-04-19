@@ -3,7 +3,6 @@ package edu.ntnu.idi.stud.team10.sparesti.dto;
 import java.time.LocalDate;
 
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
-import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import lombok.*;
 
 @AllArgsConstructor
@@ -15,27 +14,27 @@ public class SavingsGoalDTO {
   private String name;
   private double targetAmount;
   private double savedAmount;
+  private String mediaUrl;
   private LocalDate deadline;
   private boolean completed;
-  private User user;
 
   public SavingsGoalDTO(SavingsGoal savingsGoal) {
     this.id = savingsGoal.getId();
     this.name = savingsGoal.getName();
     this.targetAmount = savingsGoal.getTargetAmount();
     this.savedAmount = savingsGoal.getSavedAmount();
+    this.mediaUrl = savingsGoal.getMediaUrl();
     this.deadline = savingsGoal.getDeadline();
     this.completed = savingsGoal.isCompleted();
-    this.user = savingsGoal.getUser();
   }
 
-  public SavingsGoalDTO(String name, double targetAmount, LocalDate deadline) {
+  public SavingsGoalDTO(String name, double targetAmount, String mediaUrl, LocalDate deadline) {
     this.name = name;
     this.targetAmount = targetAmount;
     this.savedAmount = 0;
+    this.mediaUrl = mediaUrl;
     this.deadline = deadline;
     this.completed = false;
-    this.user = null;
   }
 
   /**
@@ -49,9 +48,9 @@ public class SavingsGoalDTO {
     savingsGoal.setName(this.name);
     savingsGoal.setTargetAmount(this.targetAmount);
     savingsGoal.setSavedAmount(this.savedAmount);
+    savingsGoal.setMediaUrl(this.mediaUrl);
     savingsGoal.setDeadline(this.deadline);
     savingsGoal.setCompleted(this.completed);
-    savingsGoal.setUser(this.user);
     return savingsGoal;
   }
 }
