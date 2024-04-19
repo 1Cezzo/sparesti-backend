@@ -48,7 +48,7 @@ public class User {
   private List<Challenge> challenges;
 
 
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "userBadges",
       joinColumns = @JoinColumn(name = "user_id"),
