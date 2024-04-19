@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/challenges")
 @Tag(name = "Challenges", description = "Operations related to challenges")
+/** Controller class for the Challenge entity. */
 public class ChallengeController {
 
   private final ChallengeService challengeService;
@@ -43,6 +44,12 @@ public class ChallengeController {
     this.consumptionChallengeService = consumptionChallengeService;
   }
 
+  /**
+   * Create a new purchase challenge.
+   *
+   * @param dto The DTO representing the purchase challenge to create
+   * @return The created purchase challenge
+   */
   @PostMapping("/purchase")
   @Operation(summary = "Create a new purchase challenge")
   public ResponseEntity<PurchaseChallenge> createPurchaseChallenge(
@@ -51,6 +58,13 @@ public class ChallengeController {
     return new ResponseEntity<>(challenge, HttpStatus.CREATED);
   }
 
+  /**
+   * Update an existing purchase challenge.
+   *
+   * @param id The id of the purchase challenge to update
+   * @param dto The DTO representing the updated purchase challenge
+   * @return The updated purchase challenge
+   */
   @PutMapping("/purchase/{id}")
   @Operation(summary = "Update an existing purchase challenge")
   public ResponseEntity<PurchaseChallenge> updatePurchaseChallenge(
@@ -59,6 +73,12 @@ public class ChallengeController {
     return ResponseEntity.ok(challenge);
   }
 
+  /**
+   * Delete an existing purchase challenge.
+   *
+   * @param id The id of the purchase challenge to delete
+   * @return A response entity with no content
+   */
   @DeleteMapping("/purchase/{id}")
   @Operation(summary = "Delete an existing purchase challenge")
   public ResponseEntity<Void> deletePurchaseChallenge(@PathVariable Long id) {
@@ -66,6 +86,11 @@ public class ChallengeController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Get all purchase challenges.
+   *
+   * @return A list of all purchase challenges
+   */
   @GetMapping("/purchase")
   @Operation(summary = "Get all purchase challenges")
   public ResponseEntity<List<PurchaseChallenge>> getAllPurchaseChallenges() {
@@ -73,6 +98,12 @@ public class ChallengeController {
     return ResponseEntity.ok(challenges);
   }
 
+  /**
+   * Get a purchase challenge by its id.
+   *
+   * @param id The id of the purchase challenge
+   * @return The purchase challenge if it exists, or a 404 Not Found response otherwise
+   */
   @GetMapping("/purchase/{id}")
   @Operation(summary = "Get a purchase challenge by id")
   public ResponseEntity<PurchaseChallenge> getPurchaseChallengeById(@PathVariable Long id) {
@@ -80,6 +111,13 @@ public class ChallengeController {
     return challenge.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
   }
 
+  /**
+   * Add an amount to the saved amount of a purchase challenge.
+   *
+   * @param id The id of the purchase challenge
+   * @param amount The amount to add
+   * @return A response entity with a message
+   */
   @PutMapping("/purchase/{id}/add")
   @Operation(summary = "Add an amount to the saved amount")
   public ResponseEntity<String> addAmountToPurchaseChallenge(
@@ -96,6 +134,12 @@ public class ChallengeController {
     }
   }
 
+  /**
+   * Create a new saving challenge.
+   *
+   * @param dto The DTO representing the saving challenge to create
+   * @return The created saving challenge
+   */
   @PostMapping("/saving")
   @Operation(summary = "Create a new saving challenge")
   public ResponseEntity<SavingChallenge> createSavingChallenge(
@@ -104,6 +148,13 @@ public class ChallengeController {
     return new ResponseEntity<>(challenge, HttpStatus.CREATED);
   }
 
+  /**
+   * Update an existing saving challenge.
+   *
+   * @param id The id of the saving challenge to update
+   * @param dto The DTO representing the updated saving challenge
+   * @return The updated saving challenge
+   */
   @PutMapping("/saving/{id}")
   @Operation(summary = "Update an existing saving challenge")
   public ResponseEntity<SavingChallenge> updateSavingChallenge(
@@ -112,6 +163,12 @@ public class ChallengeController {
     return ResponseEntity.ok(challenge);
   }
 
+  /**
+   * Delete an existing saving challenge.
+   *
+   * @param id The id of the saving challenge to delete
+   * @return A response entity with no content
+   */
   @DeleteMapping("/saving/{id}")
   @Operation(summary = "Delete an existing saving challenge")
   public ResponseEntity<Void> deleteSavingChallenge(@PathVariable Long id) {
@@ -119,6 +176,11 @@ public class ChallengeController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Get all saving challenges.
+   *
+   * @return A list of all saving challenges
+   */
   @GetMapping("/saving")
   @Operation(summary = "Get all saving challenges")
   public ResponseEntity<List<SavingChallenge>> getAllSavingChallenges() {
@@ -126,6 +188,12 @@ public class ChallengeController {
     return ResponseEntity.ok(challenges);
   }
 
+  /**
+   * Get a saving challenge by its id.
+   *
+   * @param id The id of the saving challenge
+   * @return The saving challenge if it exists, or a 404 Not Found response otherwise
+   */
   @GetMapping("/saving/{id}")
   @Operation(summary = "Get a saving challenge by id")
   public ResponseEntity<SavingChallenge> getSavingChallengeById(@PathVariable Long id) {
@@ -133,6 +201,13 @@ public class ChallengeController {
     return challenge.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
   }
 
+  /**
+   * Add an amount to the saved amount of a saving challenge.
+   *
+   * @param id The id of the saving challenge
+   * @param amount The amount to add
+   * @return A response entity with a message
+   */
   @PutMapping("/saving/{id}/add")
   @Operation(summary = "Add an amount to the saved amount")
   public ResponseEntity<String> addAmountToSavingChallenge(
@@ -149,6 +224,12 @@ public class ChallengeController {
     }
   }
 
+  /**
+   * Create a new consumption challenge.
+   *
+   * @param dto The DTO representing the consumption challenge to create
+   * @return The created consumption challenge
+   */
   @PostMapping("/consumption")
   @Operation(summary = "Create a new consumption challenge")
   public ResponseEntity<ConsumptionChallenge> createConsumptionChallenge(
@@ -157,6 +238,13 @@ public class ChallengeController {
     return new ResponseEntity<>(challenge, HttpStatus.CREATED);
   }
 
+  /**
+   * Update an existing consumption challenge.
+   *
+   * @param id The id of the consumption challenge to update
+   * @param dto The DTO representing the updated consumption challenge
+   * @return The updated consumption challenge
+   */
   @PutMapping("/consumption/{id}")
   @Operation(summary = "Update an existing consumption challenge")
   public ResponseEntity<ConsumptionChallenge> updateConsumptionChallenge(
@@ -165,6 +253,12 @@ public class ChallengeController {
     return ResponseEntity.ok(challenge);
   }
 
+  /**
+   * Delete an existing consumption challenge.
+   *
+   * @param id The id of the consumption challenge to delete
+   * @return A response entity with no content
+   */
   @DeleteMapping("/consumption/{id}")
   @Operation(summary = "Delete an existing consumption challenge")
   public ResponseEntity<Void> deleteConsumptionChallenge(@PathVariable Long id) {
@@ -172,6 +266,11 @@ public class ChallengeController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Get all consumption challenges.
+   *
+   * @return A list of all consumption challenges
+   */
   @GetMapping("/consumption")
   @Operation(summary = "Get all consumption challenges")
   public ResponseEntity<List<ConsumptionChallenge>> getAllConsumptionChallenges() {
@@ -179,6 +278,12 @@ public class ChallengeController {
     return ResponseEntity.ok(challenges);
   }
 
+  /**
+   * Get a consumption challenge by its id.
+   *
+   * @param id The id of the consumption challenge
+   * @return The consumption challenge if it exists, or a 404 Not Found response otherwise
+   */
   @GetMapping("/consumption/{id}")
   @Operation(summary = "Get a consumption challenge by id")
   public ResponseEntity<ConsumptionChallenge> getConsumptionChallengeById(@PathVariable Long id) {
@@ -186,6 +291,13 @@ public class ChallengeController {
     return challenge.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
   }
 
+  /**
+   * Add an amount to the saved amount of a consumption challenge.
+   *
+   * @param id The id of the consumption challenge
+   * @param amount The amount to add
+   * @return A response entity with a message
+   */
   @PutMapping("/consumption/{id}/add")
   @Operation(summary = "Add an amount to the saved amount")
   public ResponseEntity<String> addAmountToConsumptionChallenge(

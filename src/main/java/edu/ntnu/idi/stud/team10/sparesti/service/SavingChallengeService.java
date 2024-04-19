@@ -12,6 +12,7 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.SavingChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingChallengeRepository;
 
+/** Service for Saving Challenge entities. */
 @Service
 public class SavingChallengeService {
 
@@ -25,6 +26,12 @@ public class SavingChallengeService {
     this.challengeService = challengeService;
   }
 
+  /**
+   * Create a new saving challenge.
+   *
+   * @param dto the DTO representing the saving challenge to create.
+   * @return the created saving challenge.
+   */
   @Transactional
   public SavingChallenge create(SavingChallengeDTO dto) {
     SavingChallenge challenge = dto.toEntity();
@@ -35,6 +42,13 @@ public class SavingChallengeService {
     return savingChallengeRepository.save(challenge);
   }
 
+  /**
+   * Update a saving challenge.
+   *
+   * @param id the id of the saving challenge.
+   * @param savingChallengeDTO the DTO representing the saving challenge to update.
+   * @return the updated saving challenge.
+   */
   @Transactional
   public SavingChallenge update(Long id, SavingChallengeDTO savingChallengeDTO) {
     Optional<SavingChallenge> optionalChallenge = savingChallengeRepository.findById(id);
@@ -69,6 +83,11 @@ public class SavingChallengeService {
     }
   }
 
+  /**
+   * Delete a saving challenge by id.
+   *
+   * @param id the id of the saving challenge.
+   */
   @Transactional
   public void delete(Long id) {
     Optional<SavingChallenge> optionalChallenge = savingChallengeRepository.findById(id);
@@ -79,16 +98,33 @@ public class SavingChallengeService {
     }
   }
 
+  /**
+   * Get all saving challenges.
+   *
+   * @return a list of all saving challenges.
+   */
   @Transactional(readOnly = true)
   public List<SavingChallenge> getAll() {
     return savingChallengeRepository.findAll();
   }
 
+  /**
+   * Get a saving challenge by id.
+   *
+   * @param id the id of the saving challenge.
+   * @return the saving challenge if it exists, or an empty Optional otherwise.
+   */
   @Transactional(readOnly = true)
   public Optional<SavingChallenge> getById(Long id) {
     return savingChallengeRepository.findById(id);
   }
 
+  /**
+   * Add an amount to the saved amount of a saving challenge.
+   *
+   * @param id the id of the saving challenge.
+   * @param amount the amount to add to the saved amount.
+   */
   @Transactional
   public void addToSavedAmount(Long id, Double amount) {
     Optional<SavingChallenge> optionalChallenge = savingChallengeRepository.findById(id);

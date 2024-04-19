@@ -4,6 +4,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import lombok.*;
 
+/** A DTO for PurchaseChallenge entities. */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
@@ -11,6 +12,11 @@ import lombok.*;
 public class PurchaseChallengeDTO extends ChallengeDTO {
   private String productName;
 
+  /**
+   * The target amount for the challenge.
+   *
+   * @param savedChallenge The PurchaseChallenge entity to convert.
+   */
   public PurchaseChallengeDTO(PurchaseChallenge savedChallenge) {
     this.setDescription(savedChallenge.getDescription());
     this.setTargetAmount(savedChallenge.getTargetAmount());
@@ -19,6 +25,11 @@ public class PurchaseChallengeDTO extends ChallengeDTO {
     this.setProductName(savedChallenge.getProductName());
   }
 
+  /**
+   * Constructor for creating a new PurchaseChallengeDTO.
+   *
+   * @param challenge The PurchaseChallenge entity to convert.
+   */
   public PurchaseChallengeDTO(Challenge challenge) {
     super(challenge);
     if (challenge instanceof PurchaseChallenge purchaseChallenge) {
@@ -26,6 +37,11 @@ public class PurchaseChallengeDTO extends ChallengeDTO {
     }
   }
 
+  /**
+   * Converts the DTO to a PurchaseChallenge entity.
+   *
+   * @return (PurchaseChallenge) The PurchaseChallenge entity.
+   */
   @Override
   public PurchaseChallenge toEntity() {
     PurchaseChallenge challenge = new PurchaseChallenge();

@@ -17,6 +17,7 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.bank.TransactionRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
 import jakarta.transaction.Transactional;
 
+/** Service for bank operations. */
 @Service
 public class BankService {
   private final AccountRepository accountRepository;

@@ -174,6 +174,13 @@ public class UserService implements UserDetailsService {
         .orElseThrow(() -> new InvalidIdException("User with username " + username + " not found"));
   }
 
+  /**
+   * Loads a user by username.
+   *
+   * @param username the username of the user to load.
+   * @return the user details.
+   * @throws UsernameNotFoundException if the user is not found.
+   */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     User foundUser = findUserByUsername(username);
@@ -249,6 +256,13 @@ public class UserService implements UserDetailsService {
                     new InvalidIdException("Savings goal with ID " + savingsGoalId + " not found"));
   }
 
+  /**
+   * Adds a budget to a user.
+   *
+   * @param userId the user id to add the budget for.
+   * @param budgetDto the budget to add.
+   * @return the updated user.
+   */
   public UserDto addBudgetToUser(Long userId, BudgetDto budgetDto) {
     User user =
         userRepository
@@ -261,6 +275,12 @@ public class UserService implements UserDetailsService {
     return new UserDto(user);
   }
 
+  /**
+   * Gets all budgets for a user.
+   *
+   * @param userId the user id to get budgets for.
+   * @return a list of budget DTOs.
+   */
   public List<BudgetDto> getAllBudgetsForUser(Long userId) {
     User user =
         userRepository
@@ -272,6 +292,12 @@ public class UserService implements UserDetailsService {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Deletes a budget from a user.
+   *
+   * @param userId the user id to delete the budget from.
+   * @param budgetId the budget id to delete.
+   */
   public void deleteBudgetFromUser(Long userId, Long budgetId) {
     User user =
         userRepository
@@ -286,6 +312,14 @@ public class UserService implements UserDetailsService {
     budgetRepository.delete(budget);
   }
 
+  /**
+   * Adds a budget row to a user's budget.
+   *
+   * @param userId the user id to add the budget row for.
+   * @param budgetId the budget id to add the budget row for.
+   * @param budgetRowDto the budget row to add.
+   * @return the updated budget.
+   */
   public BudgetDto addBudgetRowToUserBudget(Long userId, Long budgetId, BudgetRowDto budgetRowDto) {
     User user =
         userRepository
@@ -309,6 +343,13 @@ public class UserService implements UserDetailsService {
     return new BudgetDto(budget);
   }
 
+  /**
+   * Deletes a budget row from a user's budget.
+   *
+   * @param userId the user id to delete the budget row for.
+   * @param budgetId the budget id to delete the budget row for.
+   * @param budgetRowId the budget row id to delete.
+   */
   public void deleteBudgetRowFromUserBudget(Long userId, Long budgetId, Long budgetRowId) {
     User user =
         userRepository
@@ -334,6 +375,15 @@ public class UserService implements UserDetailsService {
     budgetRepository.save(budget);
   }
 
+  /**
+   * Edits a budget row in a user's budget.
+   *
+   * @param userId the user id to edit the budget row for.
+   * @param budgetId the budget id to edit the budget row for.
+   * @param budgetRowId the budget row id to edit.
+   * @param budgetRowDto the new data for the budget row.
+   * @return the updated budget row.
+   */
   public BudgetRowDto editBudgetRowInUserBudget(
       Long userId, Long budgetId, Long budgetRowId, BudgetRowDto budgetRowDto) {
     User user =
@@ -453,6 +503,13 @@ public class UserService implements UserDetailsService {
     return new UserDto(user);
   }
 
+  /**
+   * Removes a challenge from a user.
+   *
+   * @param userId the user id to remove the challenge from
+   * @param challengeId the challenge id to remove
+   * @return the updated user
+   */
   @Transactional
   public UserDto removeChallengeFromUser(Long userId, Long challengeId) {
     User user =
@@ -468,10 +525,16 @@ public class UserService implements UserDetailsService {
 
     user.removeChallenge(challengeToRemove);
     userRepository.save(user);
-    challengeRepository.delete(challengeToRemove); // Delete the challenge from the database
+
     return new UserDto(user);
   }
 
+  /**
+   * Fetches all consumption challenges for a user.
+   *
+   * @param userId the user id to fetch challenges for the user.
+   * @return a list of consumption challenges.
+   */
   private List<ConsumptionChallengeDTO> fetchConsumptionChallengesForUser(Long userId) {
     User user =
         userRepository
@@ -484,6 +547,12 @@ public class UserService implements UserDetailsService {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Fetches all purchase challenges for a user.
+   *
+   * @param userId the user id to fetch purchase challenges for the user.
+   * @return a list of purchase challenges.
+   */
   private List<PurchaseChallengeDTO> fetchPurchaseChallengesForUser(Long userId) {
     User user =
         userRepository
@@ -496,6 +565,12 @@ public class UserService implements UserDetailsService {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Fetches all saving challenges for a user.
+   *
+   * @param userId the user id to fetch saving challenges for the user.
+   * @return a list of saving challenges.
+   */
   private List<SavingChallengeDTO> fetchSavingChallengesForUser(Long userId) {
     User user =
         userRepository
@@ -508,6 +583,13 @@ public class UserService implements UserDetailsService {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Fetches all challenges for a user.
+   *
+   * @param userId the user id to fetch challenges for the user.
+   * @return a map of challenges, with keys "consumptionChallenges", "purchaseChallenges" and
+   *     "savingChallenges".
+   */
   @Transactional(readOnly = true)
   public Map<String, List<? extends ChallengeDTO>> getChallengesByUser(Long userId) {
     Map<String, List<? extends ChallengeDTO>> challengesMap = new HashMap<>();

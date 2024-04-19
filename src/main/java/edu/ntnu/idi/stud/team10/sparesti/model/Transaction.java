@@ -32,6 +32,12 @@ public class Transaction {
   @JoinColumn(nullable = false, name = "account_id", referencedColumnName = "id")
   private Account account;
 
+  /**
+   * Constructor for creating a new Transaction.
+   *
+   * @param o the amount of the transaction
+   * @return the account the transaction is associated with
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -46,11 +52,21 @@ public class Transaction {
         && Objects.equals(account, that.account);
   }
 
+  /**
+   * Returns the hash code of the transaction.
+   *
+   * @return the hash code of the transaction
+   */
   @Override
   public int hashCode() {
     return Objects.hash(id, amount, account);
   }
 
+  /**
+   * Returns a string representation of the transaction.
+   *
+   * @return a string representation of the transaction
+   */
   @Override
   public String toString() {
     Long accountId = account == null ? null : account.getId();
