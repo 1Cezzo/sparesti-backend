@@ -238,7 +238,6 @@ public class UserController {
   @GetMapping("/{userId}/badges")
   @Operation(summary = "Get all badges a user earned")
   public ResponseEntity<Set<BadgeDto>> getUserBadges(@PathVariable Long userId) {
-
     return ResponseEntity.ok(userService.getAllBadgesByUserId(userId));
   }
 

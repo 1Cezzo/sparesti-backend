@@ -371,12 +371,14 @@ public class UserService implements UserDetailsService {
    * @return A Set of all Badges that a User has earned, in DTO form.
    */
   public Set<BadgeDto> getAllBadgesByUserId(Long userId) {
-    return userRepository.findById(userId)
-            .map(user -> user.getEarnedBadges()
-                    .stream()
-                    .map(BadgeDto::new) // conversion to DTO here
-                    .collect(Collectors.toSet()))
-            .orElse(Collections.emptySet());
+    User user = userRepository.findById(userId)
+            .orElseThrow(
+                    () -> new InvalidIdException("User with ID " + userId + " not found")
+            );
+    Set<BadgeDto> badges = user.getEarnedBadges().stream()
+            .map(BadgeDto::new)
+            .collect(Collectors.toSet());
+    return badges;
   }
 
   /**
@@ -392,12 +394,15 @@ public class UserService implements UserDetailsService {
         userRepository
             .findById(userId)
             .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+
     Badge badge =
         badgeRepository
             .findById(badgeId)
             .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
-    user.getEarnedBadges().add(badge);
+    user.addBadge(badge);
+    badge.addUser(user);
     userRepository.save(user);
+    badgeRepository.save(badge);
   }
 
   /**
@@ -417,9 +422,9 @@ public class UserService implements UserDetailsService {
         badgeRepository
             .findById(badgeId)
             .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
-    if (user.getEarnedBadges().remove(badge)) {
-      userRepository.save(user);
-    }
+    user.removeBadge(badge);
+    badge.removeUser(user);
+    userRepository.save(user);
   }
 
   /**
