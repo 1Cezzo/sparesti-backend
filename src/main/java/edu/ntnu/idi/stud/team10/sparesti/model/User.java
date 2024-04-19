@@ -47,7 +47,8 @@ public class User {
       inverseJoinColumns = @JoinColumn(name = "challenge_id"))
   private List<Challenge> challenges;
 
-  @ManyToMany
+
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinTable(
       name = "userBadges",
       joinColumns = @JoinColumn(name = "user_id"),
