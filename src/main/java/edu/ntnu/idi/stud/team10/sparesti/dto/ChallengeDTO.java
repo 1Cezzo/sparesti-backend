@@ -7,10 +7,12 @@ import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
 import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 import lombok.*;
 
+/** Data transfer object for Challenge entities. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChallengeDTO {
+  private Long id;
   private String description;
   private double targetAmount;
   private double savedAmount;
@@ -20,7 +22,13 @@ public class ChallengeDTO {
   private LocalDate expiryDate;
   private boolean completed;
 
+  /**
+   * Constructor for creating a new ChallengeDTO.
+   *
+   * @param challenge The Challenge entity to convert.
+   */
   public ChallengeDTO(Challenge challenge) {
+    this.id = challenge.getId();
     this.description = challenge.getDescription();
     this.targetAmount = challenge.getTargetAmount();
     this.savedAmount = challenge.getSavedAmount();
@@ -38,6 +46,7 @@ public class ChallengeDTO {
    */
   public Challenge toEntity() {
     Challenge challenge = new Challenge();
+    challenge.setId(this.id);
     challenge.setDescription(this.description);
     challenge.setTargetAmount(this.targetAmount);
     challenge.setSavedAmount(this.savedAmount);

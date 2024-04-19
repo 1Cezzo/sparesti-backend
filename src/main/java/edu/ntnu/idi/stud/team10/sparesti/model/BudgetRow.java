@@ -26,9 +26,9 @@ public class BudgetRow {
   /**
    * Constructor for creating a budget row.
    *
-   * @param name
-   * @param amount
-   * @param category
+   * @param name The name of the budget row.
+   * @param amount The amount of the budget row.
+   * @param category The category of the budget row.
    */
   public BudgetRow(String name, double amount, CategoryEnum category) {
     this.name = name;

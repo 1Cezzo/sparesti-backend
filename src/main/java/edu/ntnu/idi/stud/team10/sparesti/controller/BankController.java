@@ -31,6 +31,12 @@ public class BankController {
     this.bankService = bankService;
   }
 
+  /**
+   * Create a new account.
+   *
+   * @param accountDto (AccountDto) The account to create
+   * @return (ResponseEntity<AccountDto>) The created account
+   */
   @PutMapping("/account/create")
   @Operation(summary = "Create a new account")
   public ResponseEntity<AccountDto> createAccount(@RequestBody AccountDto accountDto) {
@@ -38,6 +44,12 @@ public class BankController {
     return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
   }
 
+  /**
+   * Add a transaction to an account.
+   *
+   * @param transaction (TransactionDto) The transaction to add
+   * @return (ResponseEntity<Void>) The response entity
+   */
   @PostMapping("/account/transactions")
   @Operation(summary = "Add a transaction to an account.")
   public ResponseEntity<Void> addTransaction(@RequestBody TransactionDto transaction) {
@@ -45,6 +57,12 @@ public class BankController {
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
+  /**
+   * Get account details for an account number.
+   *
+   * @param accountNr (int) The account number
+   * @return (ResponseEntity<AccountDto>) The account details
+   */
   @GetMapping("/account/details/{accountNr}")
   @Operation(summary = "Get account details for an account number.")
   public ResponseEntity<AccountDto> getAccountDetails(@PathVariable int accountNr) {
@@ -52,6 +70,12 @@ public class BankController {
     return ResponseEntity.ok(accountDetails);
   }
 
+  /**
+   * Get all accounts for a user.
+   *
+   * @param userId (Long) The user ID
+   * @return (ResponseEntity<Set<AccountDto>>) The set of account details
+   */
   @GetMapping("/account/all/{userId}")
   @Operation(summary = "Get all accounts for a user.")
   public ResponseEntity<Set<AccountDto>> getAllAccounts(@PathVariable Long userId) {

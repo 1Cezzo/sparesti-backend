@@ -29,7 +29,7 @@ public class BadgeDto {
     this.imageUrl = badge.getImageUrl();
   }
 
-  /** */
+  /** Converts DTO to Badge entity. */
   public Badge toEntity() {
     Badge badge = new Badge();
     badge.setId(this.id);

@@ -229,6 +229,13 @@ public class UserController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Add a challenge to a user.
+   *
+   * @param userId the ID of the user
+   * @param challengeId the ID of the challenge
+   * @return the updated user DTO
+   */
   @PostMapping("/{userId}/challenges/add")
   @Operation(summary = "Add a challenge to a user")
   public ResponseEntity<UserDto> addChallengeToUser(
@@ -241,6 +248,13 @@ public class UserController {
     }
   }
 
+  /**
+   * Remove a challenge from a user.
+   *
+   * @param userId the ID of the user
+   * @param challengeId the ID of the challenge
+   * @return the updated user DTO
+   */
   @DeleteMapping("/{userId}/challenges/{challengeId}")
   @Operation(summary = "Remove a challenge from a user")
   public ResponseEntity<UserDto> removeChallengeFromUser(
@@ -253,6 +267,12 @@ public class UserController {
     }
   }
 
+  /**
+   * Get all challenges for a user.
+   *
+   * @param userId the ID of the user
+   * @return a map of challenges
+   */
   @GetMapping("/{userId}/challenges")
   @Operation(summary = "Get all challenges for a user")
   public ResponseEntity<Map<String, List<? extends ChallengeDTO>>> getChallengesByUser(

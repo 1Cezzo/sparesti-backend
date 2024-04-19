@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import edu.ntnu.idi.stud.team10.sparesti.model.Account;
 import jakarta.persistence.LockModeType;
 
+/** Repository for Account entities. */
 public interface AccountRepository extends JpaRepository<Account, Long> {
   Optional<Account> findByAccountNr(int accountNr);
 

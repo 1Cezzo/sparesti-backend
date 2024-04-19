@@ -12,6 +12,7 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.ConsumptionChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ConsumptionChallengeRepository;
 
+/** Service for Consumption Challenge entities. */
 @Service
 public class ConsumptionChallengeService {
 
@@ -26,6 +27,12 @@ public class ConsumptionChallengeService {
     this.challengeService = challengeService;
   }
 
+  /**
+   * Create a new consumption challenge.
+   *
+   * @param dto the DTO representing the consumption challenge to create.
+   * @return the created consumption challenge.
+   */
   @Transactional
   public ConsumptionChallenge create(ConsumptionChallengeDTO dto) {
     ConsumptionChallenge challenge = dto.toEntity();
@@ -36,6 +43,13 @@ public class ConsumptionChallengeService {
     return consumptionChallengeRepository.save(challenge);
   }
 
+  /**
+   * Update a consumption challenge.
+   *
+   * @param id the id of the consumption challenge.
+   * @param consumptionChallengeDTO the DTO representing the consumption challenge to update.
+   * @return the updated consumption challenge.
+   */
   @Transactional
   public ConsumptionChallenge update(Long id, ConsumptionChallengeDTO consumptionChallengeDTO) {
     Optional<ConsumptionChallenge> optionalChallenge = consumptionChallengeRepository.findById(id);
@@ -76,6 +90,11 @@ public class ConsumptionChallengeService {
     }
   }
 
+  /**
+   * Delete a consumption challenge.
+   *
+   * @param id the id of the consumption challenge.
+   */
   @Transactional
   public void delete(Long id) {
     Optional<ConsumptionChallenge> optionalChallenge = consumptionChallengeRepository.findById(id);
@@ -86,16 +105,33 @@ public class ConsumptionChallengeService {
     }
   }
 
+  /**
+   * Get all consumption challenges.
+   *
+   * @return a list of all consumption challenges.
+   */
   @Transactional(readOnly = true)
   public List<ConsumptionChallenge> getAll() {
     return consumptionChallengeRepository.findAll();
   }
 
+  /**
+   * Get a consumption challenge by id.
+   *
+   * @param id the id of the consumption challenge.
+   * @return the consumption challenge if it exists, or an empty Optional otherwise.
+   */
   @Transactional(readOnly = true)
   public Optional<ConsumptionChallenge> getById(Long id) {
     return consumptionChallengeRepository.findById(id);
   }
 
+  /**
+   * Add to the saved amount of a consumption challenge.
+   *
+   * @param id the id of the consumption challenge.
+   * @param amount the amount to add to the saved amount.
+   */
   @Transactional
   public void addToSavedAmount(Long id, double amount) {
     Optional<ConsumptionChallenge> optionalChallenge = consumptionChallengeRepository.findById(id);

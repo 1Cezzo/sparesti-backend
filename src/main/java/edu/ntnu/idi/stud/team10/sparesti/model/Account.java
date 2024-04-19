@@ -49,6 +49,12 @@ public class Account {
     balance += amount;
   }
 
+  /**
+   * Add a transaction to the account.
+   *
+   * @param o the transaction to add
+   * @return the account the transaction is associated with
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -65,11 +71,21 @@ public class Account {
         && Objects.equals(name, account.name);
   }
 
+  /**
+   * Returns the hash code of the account.
+   *
+   * @return the hash code of the account
+   */
   @Override
   public int hashCode() {
     return Objects.hash(id, ownerId, accountNr, name, balance);
   }
 
+  /**
+   * Returns a string representation of the account.
+   *
+   * @return a string representation of the account
+   */
   @Override
   public String toString() {
     return "Account{"

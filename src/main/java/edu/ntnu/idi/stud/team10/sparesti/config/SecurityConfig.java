@@ -16,11 +16,13 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/** Configuration class for security. */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
   @Bean
   @Order(3)
+  /** Configures the default security filter chain. */
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
@@ -29,11 +31,21 @@ public class SecurityConfig {
     return http.build();
   }
 
+  /**
+   * Configures the password encoder.
+   *
+   * @return (BCryptPasswordEncoder) The password encoder
+   */
   @Bean
   public BCryptPasswordEncoder encoder() {
     return new BCryptPasswordEncoder();
   }
 
+  /**
+   * Configures the CORS settings.
+   *
+   * @return (WebMvcConfigurer) The CORS settings
+   */
   @Bean
   public WebMvcConfigurer corsConfigurer() {
     return new WebMvcConfigurer() {

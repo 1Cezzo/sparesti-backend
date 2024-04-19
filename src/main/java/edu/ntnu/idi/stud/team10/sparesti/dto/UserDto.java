@@ -45,6 +45,11 @@ public class UserDto {
     }
   }
 
+  /**
+   * Convert UserDto to User entity.
+   *
+   * @return (User) The User entity.
+   */
   public User toEntity() {
     User user = new User();
     user.setId(this.id);

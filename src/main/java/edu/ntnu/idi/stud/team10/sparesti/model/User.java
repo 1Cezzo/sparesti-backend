@@ -30,11 +30,13 @@ public class User {
   @Column(unique = true)
   private String email;
 
+  // TODO: Add "Total amount saved" to the user?
+
   @Column() private String profilePictureUrl;
 
-  @Column() private int checkingAccountNr;
+  @Column() private Integer checkingAccountNr;
 
-  @Column() private int savingsAccountNr;
+  @Column() private Integer savingsAccountNr;
 
   @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -67,10 +69,20 @@ public class User {
     this.profilePictureUrl = dto.getProfilePictureUrl();
   }
 
+  /**
+   * Add a savings goal to the user.
+   *
+   * @param challenge (SavingsGoal) The savings goal to add.
+   */
   public void addChallenge(Challenge challenge) {
     this.challenges.add(challenge);
   }
 
+  /**
+   * Remove a savings goal from the user.
+   *
+   * @param challenge (SavingsGoal) The savings goal to remove.
+   */
   public void removeChallenge(Challenge challenge) {
     this.challenges.remove(challenge);
   }

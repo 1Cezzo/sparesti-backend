@@ -12,6 +12,7 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.PurchaseChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.PurchaseChallengeRepository;
 
+/** Service for Purchase Challenge entities. */
 @Service
 public class PurchaseChallengeService {
 
@@ -25,6 +26,12 @@ public class PurchaseChallengeService {
     this.challengeService = challengeService;
   }
 
+  /**
+   * Create a new purchase challenge.
+   *
+   * @param dto the DTO representing the purchase challenge to create.
+   * @return the created purchase challenge.
+   */
   @Transactional
   public PurchaseChallenge create(PurchaseChallengeDTO dto) {
     PurchaseChallenge challenge = dto.toEntity();
@@ -35,6 +42,13 @@ public class PurchaseChallengeService {
     return purchaseChallengeRepository.save(challenge);
   }
 
+  /**
+   * Update a purchase challenge.
+   *
+   * @param id the id of the purchase challenge.
+   * @param purchaseChallengeDTO the DTO representing the purchase challenge to update.
+   * @return the updated purchase challenge.
+   */
   @Transactional
   public PurchaseChallenge update(Long id, PurchaseChallengeDTO purchaseChallengeDTO) {
     Optional<PurchaseChallenge> optionalChallenge = purchaseChallengeRepository.findById(id);
@@ -69,6 +83,11 @@ public class PurchaseChallengeService {
     }
   }
 
+  /**
+   * Delete a purchase challenge.
+   *
+   * @param id the id of the purchase challenge.
+   */
   @Transactional
   public void delete(Long id) {
     Optional<PurchaseChallenge> optionalChallenge = purchaseChallengeRepository.findById(id);
@@ -79,16 +98,33 @@ public class PurchaseChallengeService {
     }
   }
 
+  /**
+   * Get all purchase challenges.
+   *
+   * @return a list of all purchase challenges.
+   */
   @Transactional(readOnly = true)
   public List<PurchaseChallenge> getAll() {
     return purchaseChallengeRepository.findAll();
   }
 
+  /**
+   * Get a purchase challenge by id.
+   *
+   * @param id the id of the purchase challenge.
+   * @return the purchase challenge if it exists, or an empty Optional otherwise.
+   */
   @Transactional(readOnly = true)
   public Optional<PurchaseChallenge> getById(Long id) {
     return purchaseChallengeRepository.findById(id);
   }
 
+  /**
+   * Add amount to the saved amount of a purchase challenge.
+   *
+   * @param id the id of the purchase challenge.
+   * @param amount the amount to add.
+   */
   @Transactional
   public void addToSavedAmount(Long id, Double amount) {
     Optional<PurchaseChallenge> optionalChallenge = purchaseChallengeRepository.findById(id);
