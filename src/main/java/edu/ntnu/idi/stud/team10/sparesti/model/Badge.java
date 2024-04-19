@@ -13,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "badges")
-@EqualsAndHashCode(exclude ="users")
+@EqualsAndHashCode(exclude = "users")
 public class Badge {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

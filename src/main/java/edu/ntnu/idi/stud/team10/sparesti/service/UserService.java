@@ -3,7 +3,6 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
@@ -371,15 +371,18 @@ public class UserService implements UserDetailsService {
    * @return A Set of all Badges that a User has earned, in DTO form.
    */
   public Set<BadgeDto> getAllBadgesByUserId(Long userId) {
-    User user = userRepository.findById(userId)
-            .orElseThrow(
-                    () -> new InvalidIdException("User with ID " + userId + " not found")
-            );
-    Set<BadgeDto> badges = user.getEarnedBadges().stream()
-            .map(BadgeDto::new)
-            .collect(Collectors.toSet());
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+    Set<BadgeDto> badges =
+        user.getEarnedBadges().stream().map(BadgeDto::new).collect(Collectors.toSet());
     return badges;
   }
+
+  // Possibly need a method that retrieves the 3 most recent badges of a user,
+  // which will display on the front of their profile-page
+  // Which could use a dateEarned field in the badge-user connection.
 
   /**
    * Awards a Badge of badgeId to a User of userId

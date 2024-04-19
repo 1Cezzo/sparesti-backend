@@ -3,17 +3,17 @@ package edu.ntnu.idi.stud.team10.sparesti.controller;
 import java.util.List;
 import java.util.Set;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
-import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
+import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -249,10 +249,11 @@ public class UserController {
    */
   @PostMapping("/{userId}/badges/{badgeId}")
   @Operation(summary = "Award a badge to a user")
-  public ResponseEntity<Void> awardBadgeToUser(@PathVariable Long userId, @PathVariable Long badgeId) {
+  public ResponseEntity<Void> awardBadgeToUser(
+      @PathVariable Long userId, @PathVariable Long badgeId) {
     try {
       userService.giveUserBadge(userId, badgeId);
-      return ResponseEntity.noContent().build(); //maybe should return something else.
+      return ResponseEntity.noContent().build(); // maybe should return something else.
     } catch (InvalidIdException e) {
       return ResponseEntity.badRequest().build();
     }

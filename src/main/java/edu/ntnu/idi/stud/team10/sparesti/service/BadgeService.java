@@ -31,7 +31,7 @@ public class BadgeService {
    * @return the created Badge
    */
   public BadgeDto createBadge(BadgeDto badgeDto) {
-    badgeRepository.save(badgeDto.toEntity());// unique id - should not need validation?
+    badgeRepository.save(badgeDto.toEntity()); // unique id - should not need validation?
     return badgeDto;
   }
 
