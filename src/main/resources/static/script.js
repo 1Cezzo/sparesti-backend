@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggleButton = document.getElementById('toggle-dark-mode');
     const signUp = document.getElementById('signup-link');
     const login = document.getElementById('login-link');
+    const signupForm = document.getElementById('signup-form');
 
     toggleButton.addEventListener('click', function() {
         if(document.body.classList.toggle('dark')) {
@@ -19,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     signUp.addEventListener('click', toggleForm);
     login.addEventListener('click', toggleForm);
+    signupForm.addEventListener('submit', submitSignUp);
 });
 
 function updateImageSource() {
@@ -36,5 +38,25 @@ function toggleForm() {
     document.getElementById('login-container').classList.toggle('hidden');
 }
 
+async function submitSignUp(event) {
+    event.preventDefault();
+    const res = await fetch('/api/users/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: document.getElementById('email').value,
+            password: document.getElementById('signup-password').value
+        })
+    })
+    if (res.ok) {
+        alert("Success!")
+        toggleForm();
+    } else {
+        console.error('Failed to create user');
+    }
+    return false;
+}
 
 

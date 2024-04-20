@@ -48,9 +48,7 @@ public class UserController {
    */
   @PostMapping("/create")
   @Operation(summary = "Create a new savings goal")
-  public ResponseEntity<String> createUser(@ModelAttribute UserDto userDTO) {
-    System.out.println(userDTO.getDisplayName());
-    System.out.println(userDTO.getPassword());
+  public ResponseEntity<String> createUser(@RequestBody UserDto userDTO) {
     try {
       userService.addUser(userDTO);
       return ResponseEntity.ok("User created successfully");
