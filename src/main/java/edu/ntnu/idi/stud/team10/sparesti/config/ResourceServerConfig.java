@@ -32,19 +32,19 @@ public class ResourceServerConfig {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
         // All endpoints are open for now, change this later when login is implemented.
-        //.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-        .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/api/users/create")
-            .permitAll()
-            .requestMatchers("/login.html")
-            .permitAll()
-            .requestMatchers("/stylesheet.css")
-            .permitAll()
-            .requestMatchers("/script.js")
-            .permitAll()
-            .requestMatchers("/images/**")
-            .permitAll()
-            .anyRequest().authenticated())
+        .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+//        .authorizeHttpRequests(authorize -> authorize
+//            .requestMatchers("/api/users/create")
+//            .permitAll()
+//            .requestMatchers("/login.html")
+//            .permitAll()
+//            .requestMatchers("/stylesheet.css")
+//            .permitAll()
+//            .requestMatchers("/script.js")
+//            .permitAll()
+//            .requestMatchers("/images/**")
+//            .permitAll()
+//            .anyRequest().authenticated())
         .formLogin(
             custom ->
                 custom
