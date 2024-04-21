@@ -22,11 +22,9 @@ public class User {
   @Column(unique = true)
   private String displayName;
 
-  @Column()
-  private String firstName;
+  @Column() private String firstName;
 
-  @Column()
-  private String lastName;
+  @Column() private String lastName;
 
   @Column(nullable = false)
   private String password;

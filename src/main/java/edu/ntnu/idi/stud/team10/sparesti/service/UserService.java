@@ -174,12 +174,13 @@ public class UserService implements UserDetailsService {
   private User findUserByDisplayName(String displayName) {
     return userRepository
         .findByDisplayName(displayName)
-        .orElseThrow(() -> new InvalidIdException("User with display name " + displayName + " not found"));
+        .orElseThrow(
+            () -> new InvalidIdException("User with display name " + displayName + " not found"));
   }
 
   /**
-   * Overridden method from Spring Security. Loads a user by a username,
-   * which in this application is the email of the user.
+   * Overridden method from Spring Security. Loads a user by a username, which in this application
+   * is the email of the user.
    *
    * @param username (String) The email of the user.
    * @return The UserDetails of the user.
@@ -187,7 +188,10 @@ public class UserService implements UserDetailsService {
    */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User foundUser = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    User foundUser =
+        userRepository
+            .findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     return org.springframework.security.core.userdetails.User.builder()
         .username(foundUser.getEmail())
         .password(foundUser.getPassword())
