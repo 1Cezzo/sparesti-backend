@@ -30,8 +30,9 @@ public class BadgeService {
    * @param badgeDto (BadgeDto): the data transfer object representing the Badge to create
    * @return the created Badge
    */
-  public Badge createBadge(BadgeDto badgeDto) {
-    return badgeRepository.save(badgeDto.toEntity()); // unique id - should not need validation?
+  public BadgeDto createBadge(BadgeDto badgeDto) {
+    badgeRepository.save(badgeDto.toEntity()); // unique id - should not need validation?
+    return badgeDto;
   }
 
   /**
@@ -75,10 +76,16 @@ public class BadgeService {
    * Returns an optional that includes a Badge entity with a given id - if the id exists in repo.
    *
    * @param id (Long): The unique id of the Badge entity.
-   * @return the Badge if it exists, otherwise an empty Optional
+   * @return the Badge if it exists, as DTO.
+   * @throws InvalidIdException if the badge id is not found within database.
    */
-  public Optional<Badge> getBadgeById(Long id) {
-    return badgeRepository.findById(id);
+  public Optional<BadgeDto> getBadgeById(Long id) {
+    Optional<Badge> badgeOptional = badgeRepository.findById(id);
+    if (badgeOptional.isPresent()) {
+      return badgeOptional.map(BadgeDto::new);
+    } else {
+      throw new InvalidIdException("Badge of id " + id + " not found");
+    }
   }
 
   /**
@@ -89,14 +96,15 @@ public class BadgeService {
    * @return the updated Badge.
    * @throws InvalidIdException If the badge id is not found.
    */
-  public Badge updateBadge(Long id, BadgeDto badgeDto) {
+  public BadgeDto updateBadge(Long id, BadgeDto badgeDto) {
     Optional<Badge> badgeOptional = badgeRepository.findById(id);
     if (badgeOptional.isPresent()) {
       Badge badge = badgeOptional.get();
       badge.setTitle(badgeDto.getTitle());
       badge.setDescription(badgeDto.getDescription());
       badge.setImageUrl(badgeDto.getImageUrl());
-      return badgeRepository.save(badge);
+      badgeRepository.save(badge);
+      return new BadgeDto(badge);
     } else {
       throw new InvalidIdException("Badge with id " + id + " not found...");
     }

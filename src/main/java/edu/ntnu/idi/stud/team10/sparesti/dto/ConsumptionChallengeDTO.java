@@ -1,8 +1,10 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
+import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import lombok.*;
 
+/** Data transfer object for ConsumptionChallenge entities. */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
@@ -11,6 +13,11 @@ public class ConsumptionChallengeDTO extends ChallengeDTO {
   private String productCategory;
   private double reductionPercentage;
 
+  /**
+   * The target amount for the challenge.
+   *
+   * @param savedChallenge The ConsumptionChallenge entity to convert.
+   */
   public ConsumptionChallengeDTO(ConsumptionChallenge savedChallenge) {
     this.setDescription(savedChallenge.getDescription());
     this.setTargetAmount(savedChallenge.getTargetAmount());
@@ -20,6 +27,24 @@ public class ConsumptionChallengeDTO extends ChallengeDTO {
     this.setReductionPercentage(savedChallenge.getReductionPercentage());
   }
 
+  /**
+   * Constructor for creating a new ConsumptionChallengeDTO.
+   *
+   * @param challenge The ConsumptionChallenge entity to convert.
+   */
+  public ConsumptionChallengeDTO(Challenge challenge) {
+    super(challenge);
+    if (challenge instanceof ConsumptionChallenge consumptionChallenge) {
+      this.productCategory = consumptionChallenge.getProductCategory();
+      this.reductionPercentage = consumptionChallenge.getReductionPercentage();
+    }
+  }
+
+  /**
+   * Converts the DTO to a ConsumptionChallenge entity.
+   *
+   * @return (ConsumptionChallenge) The ConsumptionChallenge entity.
+   */
   @Override
   public ConsumptionChallenge toEntity() {
     ConsumptionChallenge challenge = new ConsumptionChallenge();

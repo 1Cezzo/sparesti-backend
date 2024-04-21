@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 
+/** Configuration class for the resource server. */
 @Configuration
 @EnableWebSecurity
 public class ResourceServerConfig {
@@ -28,6 +29,7 @@ public class ResourceServerConfig {
 
   @Bean
   @Order(2)
+  /** Configures the security filter chain for the API. */
   public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
@@ -80,6 +82,7 @@ public class ResourceServerConfig {
     return http.build();
   }
 
+  /** Configures the JwtAuthenticationConverter. */
   private JwtAuthenticationConverter jwtAuthenticationConverter() {
     JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter =
         new JwtGrantedAuthoritiesConverter();

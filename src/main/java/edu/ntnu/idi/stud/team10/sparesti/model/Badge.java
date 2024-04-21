@@ -13,6 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "badges")
+@EqualsAndHashCode(exclude = "users")
 public class Badge {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +31,12 @@ public class Badge {
   @JsonIgnore
   @ManyToMany(mappedBy = "earnedBadges")
   Set<User> users;
+
+  public void addUser(User user) {
+    users.add(user);
+  }
+
+  public void removeUser(User user) {
+    users.remove(user);
+  }
 }

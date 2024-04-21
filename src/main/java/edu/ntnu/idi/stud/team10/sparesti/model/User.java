@@ -32,11 +32,13 @@ public class User {
   @Column(unique = true)
   private String email;
 
+  // TODO: Add "Total amount saved" to the user?
+
   @Column() private String profilePictureUrl;
 
-  @Column() private int checkingAccountNr;
+  @Column() private Integer checkingAccountNr;
 
-  @Column() private int savingsAccountNr;
+  @Column() private Integer savingsAccountNr;
 
   @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -44,7 +46,14 @@ public class User {
 
   @ManyToMany
   @JoinTable(
-      name = "userBadges",
+      name = "user_challenge",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "challenge_id"))
+  private List<Challenge> challenges;
+
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "user_badges",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "badge_id"))
   private Set<Badge> earnedBadges;
@@ -60,5 +69,31 @@ public class User {
     this.password = dto.getPassword();
     this.email = dto.getEmail();
     this.profilePictureUrl = dto.getProfilePictureUrl();
+  }
+
+  /**
+   * Add a savings goal to the user.
+   *
+   * @param challenge (SavingsGoal) The savings goal to add.
+   */
+  public void addChallenge(Challenge challenge) {
+    this.challenges.add(challenge);
+  }
+
+  /**
+   * Remove a savings goal from the user.
+   *
+   * @param challenge (SavingsGoal) The savings goal to remove.
+   */
+  public void removeChallenge(Challenge challenge) {
+    this.challenges.remove(challenge);
+  }
+
+  public void addBadge(Badge badge) {
+    this.earnedBadges.add(badge);
+  }
+
+  public void removeBadge(Badge badge) {
+    this.earnedBadges.remove(badge);
   }
 }

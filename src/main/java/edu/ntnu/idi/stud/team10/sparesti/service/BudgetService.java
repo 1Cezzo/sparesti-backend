@@ -11,6 +11,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
 
+/** Service for Budget entities. */
 @Service
 public class BudgetService {
   private final BudgetRepository budgetRepository;
