@@ -59,7 +59,7 @@ public class UserDto {
   public User toEntity() {
     User user = new User();
     user.setId(this.id);
-    user.setUsername(this.username);
+    user.setDisplayName(this.displayName);
     user.setPassword(this.password);
     user.setEmail(this.email);
     user.setProfilePictureUrl(this.profilePictureUrl);
