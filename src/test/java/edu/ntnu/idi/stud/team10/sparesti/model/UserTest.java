@@ -19,7 +19,7 @@ public class UserTest {
   public void setUp() {
     user = new User();
     user.setId(1L);
-    user.setUsername("testUser");
+    user.setDisplayName("testUser");
     user.setPassword("testPassword");
     user.setEmail("test@example.com");
     user.setProfilePictureUrl("https://example.com/profile.jpg");
@@ -33,7 +33,7 @@ public class UserTest {
   @Test
   public void testUserFields() {
     assertEquals(1L, user.getId());
-    assertEquals("testUser", user.getUsername());
+    assertEquals("testUser", user.getDisplayName());
     assertEquals("testPassword", user.getPassword());
     assertEquals("test@example.com", user.getEmail());
     assertEquals("https://example.com/profile.jpg", user.getProfilePictureUrl());
@@ -48,7 +48,7 @@ public class UserTest {
   public void testUserConstructorFromDto() {
     UserDto userDto = new UserDto();
     userDto.setId(1L);
-    userDto.setUsername("testUser");
+    userDto.setDisplayName("testUser");
     userDto.setPassword("testPassword");
     userDto.setEmail("test@example.com");
     userDto.setProfilePictureUrl("https://example.com/profile.jpg");
@@ -56,7 +56,7 @@ public class UserTest {
     User userFromDto = new User(userDto);
 
     assertEquals(userDto.getId(), userFromDto.getId());
-    assertEquals(userDto.getUsername(), userFromDto.getUsername());
+    assertEquals(userDto.getDisplayName(), userFromDto.getDisplayName());
     assertEquals(userDto.getPassword(), userFromDto.getPassword());
     assertEquals(userDto.getEmail(), userFromDto.getEmail());
     assertEquals(userDto.getProfilePictureUrl(), userFromDto.getProfilePictureUrl());

@@ -26,7 +26,7 @@ public class BudgetTest {
     budget.setExpiryDate(LocalDate.of(2024, 12, 31));
     user = new User();
     user.setId(1L);
-    user.setUsername("testUser");
+    user.setDisplayName("testUser");
     user.setPassword("testPassword");
     user.setEmail("test@example.com");
     user.setProfilePictureUrl("https://example.com/profile.jpg");
@@ -48,7 +48,7 @@ public class BudgetTest {
     Set<BudgetRow> rows = new HashSet<>();
     budgetRow.setId(1L);
     budgetRow.setName("Test Budget Row");
-    budgetRow.setAmount(500.0);
+    budgetRow.setMaxAmount(500.0);
     budgetRow.setCategory(CategoryEnum.GROCERIES);
     rows.add(budgetRow);
     budget.setRow(rows);
@@ -60,7 +60,7 @@ public class BudgetTest {
   @Test
   public void testToString() {
     String expectedString =
-        "Budget(id=1, row=[], expiryDate=2024-12-31, user=User(id=1, username=testUser, password=testPassword, email=test@example.com, profilePictureUrl=https://example.com/profile.jpg, checkingAccountNr=null, savingsAccountNr=null, savingsGoals=null, challenges=null, earnedBadges=null))";
+        "Budget(id=1, row=[], expiryDate=2024-12-31, user=User(id=1, displayName=testUser, firstName=null, lastName=null, password=testPassword, email=test@example.com, profilePictureUrl=https://example.com/profile.jpg, checkingAccountNr=null, savingsAccountNr=null, savingsGoals=null, challenges=null, earnedBadges=null))";
     assertEquals(expectedString, budget.toString());
   }
 }

@@ -27,7 +27,7 @@ public class UserDtoTest {
   public void setUp() {
     userDto = new UserDto();
     userDto.setId(testId);
-    userDto.setUsername(testUsername);
+    userDto.setDisplayName(testUsername);
     userDto.setPassword(testPassword);
     userDto.setEmail(testEmail);
     userDto.setProfilePictureUrl(testProfilePictureUrl);
@@ -38,7 +38,7 @@ public class UserDtoTest {
     userDto.setChallenges(testChallenges);
     userDto2 = new UserDto();
     userDto2.setId(testId);
-    userDto2.setUsername(testUsername);
+    userDto2.setDisplayName(testUsername);
     userDto2.setPassword(testPassword);
     userDto2.setEmail(testEmail);
     userDto2.setProfilePictureUrl(testProfilePictureUrl);
@@ -49,7 +49,7 @@ public class UserDtoTest {
 
     user = new User();
     user.setId(1L);
-    user.setUsername("testuser");
+    user.setDisplayName("testuser");
     user.setEmail("test@example.com");
   }
 
@@ -57,7 +57,7 @@ public class UserDtoTest {
   public void testUserDtoAttributes() {
     assertNotNull(userDto);
     assertEquals(testId, userDto.getId());
-    assertEquals(testUsername, userDto.getUsername());
+    assertEquals(testUsername, userDto.getDisplayName());
     assertEquals(testPassword, userDto.getPassword());
     assertEquals(testEmail, userDto.getEmail());
     assertEquals(testProfilePictureUrl, userDto.getProfilePictureUrl());
@@ -84,11 +84,11 @@ public class UserDtoTest {
 
     // Test with different username
     userDto2.setId(1L);
-    userDto2.setUsername("differentuser");
+    userDto2.setDisplayName("differentuser");
     assertFalse(userDto.equals(userDto2));
 
     // Test with different email
-    userDto2.setUsername("testuser");
+    userDto2.setDisplayName("testuser");
     userDto2.setEmail("different@example.com");
     assertFalse(userDto.equals(userDto2));
 
@@ -106,7 +106,7 @@ public class UserDtoTest {
     User convertedUser = userDto.toEntity();
     assertNotNull(convertedUser);
     assertEquals(user.getId(), convertedUser.getId());
-    assertEquals(user.getUsername(), convertedUser.getUsername());
+    assertEquals(user.getDisplayName(), convertedUser.getDisplayName());
     assertEquals(user.getEmail(), convertedUser.getEmail());
   }
 
@@ -115,7 +115,7 @@ public class UserDtoTest {
     UserDto mappedUserDto = new UserDto(user);
     assertNotNull(mappedUserDto);
     assertEquals(user.getId(), mappedUserDto.getId());
-    assertEquals(user.getUsername(), mappedUserDto.getUsername());
+    assertEquals(user.getDisplayName(), mappedUserDto.getDisplayName());
     assertEquals(user.getEmail(), mappedUserDto.getEmail());
   }
 

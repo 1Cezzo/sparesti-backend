@@ -18,13 +18,13 @@ public class BudgetRowDtoTest {
     budgetRowDto1 = new BudgetRowDto();
     budgetRowDto1.setId(1L);
     budgetRowDto1.setName("Test Category");
-    budgetRowDto1.setAmount(500.0);
+    budgetRowDto1.setMaxAmount(500.0);
     budgetRowDto1.setCategory(CategoryEnum.GROCERIES);
 
     budgetRowDto2 = new BudgetRowDto();
     budgetRowDto2.setId(1L);
     budgetRowDto2.setName("Test Category");
-    budgetRowDto2.setAmount(500.0);
+    budgetRowDto2.setMaxAmount(500.0);
     budgetRowDto2.setCategory(CategoryEnum.GROCERIES);
   }
 
@@ -32,7 +32,7 @@ public class BudgetRowDtoTest {
   public void testBudgetRowDtoFields() {
     assertEquals(1L, budgetRowDto1.getId());
     assertEquals("Test Category", budgetRowDto1.getName());
-    assertEquals(500.0, budgetRowDto1.getAmount());
+    assertEquals(500.0, budgetRowDto1.getMaxAmount());
     assertEquals(CategoryEnum.GROCERIES, budgetRowDto1.getCategory());
   }
 
@@ -42,7 +42,7 @@ public class BudgetRowDtoTest {
 
     assertEquals(1L, budgetRow.getId());
     assertEquals("Test Category", budgetRow.getName());
-    assertEquals(500.0, budgetRow.getAmount());
+    assertEquals(500.0, budgetRow.getMaxAmount());
     assertEquals(CategoryEnum.GROCERIES, budgetRow.getCategory());
   }
 
@@ -53,7 +53,7 @@ public class BudgetRowDtoTest {
 
   @Test
   public void testNotEquals() {
-    budgetRowDto2.setAmount(1000.0);
+    budgetRowDto2.setMaxAmount(1000.0);
     assertFalse(budgetRowDto1.equals(budgetRowDto2));
   }
 

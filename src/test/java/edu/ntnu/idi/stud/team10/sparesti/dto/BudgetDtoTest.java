@@ -24,8 +24,8 @@ public class BudgetDtoTest {
     budgetDto.setId(1L);
 
     Set<BudgetRow> rows = new HashSet<>();
-    rows.add(new BudgetRow("Matvarer", 500, CategoryEnum.GROCERIES));
-    rows.add(new BudgetRow("Spill", 500, CategoryEnum.ENTERTAINMENT));
+    rows.add(new BudgetRow("Matvarer", 200, 500, CategoryEnum.GROCERIES));
+    rows.add(new BudgetRow("Spill", 200, 500, CategoryEnum.ENTERTAINMENT));
     budgetDto.setRow(rows);
 
     budgetDto.setExpiryDate(LocalDate.now().plusMonths(1));
