@@ -77,6 +77,14 @@ public class BankController {
     return ResponseEntity.ok(accountDetails);
   }
 
+  /**
+   * Endpoint for transferring money between two accounts.
+   *
+   * @param fromAccountNr the account number where money is coming from
+   * @param toAccountNr the account number receiving money
+   * @param amount the amount of money being transferred, in NOK.
+   * @return An ("ok") ResponseEntity stating that the transfer was successful.
+   */
   @PutMapping("/account/transfer")
   @Operation(summary = "Transfer money from one account to another")
   public ResponseEntity<?> transferMoney(@RequestParam Integer fromAccountNr, @RequestParam Integer toAccountNr, @RequestParam double amount) {
