@@ -2,7 +2,6 @@ package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
 
-import edu.ntnu.idi.stud.team10.sparesti.service.UserBudgetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserBudgetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -20,7 +20,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class BudgetController {
 
   private final UserBudgetService userBudgetService;
-  
 
   @Autowired
   public BudgetController(UserBudgetService userBudgetService) {
