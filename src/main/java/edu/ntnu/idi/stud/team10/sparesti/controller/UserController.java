@@ -162,4 +162,14 @@ public class UserController {
         userService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
     return ResponseEntity.ok(updatedBudgetRowDto);
   }
+
+
+  @PostMapping("/mock/account/add")
+  @Operation(summary = "Add a mock account to a user")
+  public ResponseEntity<?> addMockAccountToUser(@RequestParam String displayName,
+                                                @RequestParam boolean isSavingsAccount,
+                                                @RequestParam Integer accountNr) {
+    userService.addMockBankAccount(displayName, accountNr, isSavingsAccount);
+    return ResponseEntity.ok().body("Account added successfully");
+  }
 }

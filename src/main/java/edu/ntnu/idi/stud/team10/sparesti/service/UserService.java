@@ -450,7 +450,6 @@ public class UserService implements UserDetailsService {
   @Transactional
   public AccountDto addMockBankAccount(String displayName, Integer accountNr, boolean isSavingsAcc) {
     // Bad and can be removed/altered in any way, but should work for mock data.
-    // Protected for now
     User mockUser = findUserByDisplayName(displayName);
     AccountDto accountDto = new AccountDto();
     accountDto.setAccountNr(accountNr);
