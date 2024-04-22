@@ -1,8 +1,12 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,10 +53,22 @@ public class BankService {
       throw new IllegalArgumentException("Account parameter cannot be null");
     }
     Account account = accountMapper.toEntity(accountDto);
-    account.setId(null);
+    account.setId(null); // note to self: id is set to null first in case request input anything as id :)
     account.setBalance(0);
     accountRepository.save(account);
     return accountMapper.toDto(account);
+  }
+
+  public void initMockAccount(AccountDto accountDto) {
+    //Input could be either of type AccountDto or just Long accountId
+
+    //Account account = accountMapper.toEntity(accountDto);
+    //TODO: when an account is created; mock random transactions and create a "history"
+  }
+
+  public List<TransactionDto> createMockTransactions() {
+    return null;
+    //TODO: Make.
   }
 
   /**
@@ -92,7 +108,7 @@ public class BankService {
   @Transactional
   public void addTransaction(TransactionDto transactionDto) {
     if (transactionDto == null) {
-      throw new IllegalArgumentException("Transaction parameter cannot be null");
+      throw new IllegalArgumentException("TransactionDto parameter cannot be null");
     }
     Account account =
         accountRepository
@@ -104,6 +120,28 @@ public class BankService {
     Transaction transaction = transactionMapper.toEntity(transactionDto);
     transaction.setAccount(account);
     transactionRepository.save(transaction);
+  }
+
+
+  /**
+   * Creates and returns a random transaction to an account.
+   * Intended for creation of mock data for bank.
+   *
+   * @param accountNr number of the account (who the transaction is coming from)
+   * @return a randomly generated transaction
+   */
+  private TransactionDto generateRandomTransaction(Long accountNr) {
+    // method should be simple enough to be moved anywhere else where it fits better.
+    // krisjm: I moved it into BankService because (I believe) it would be simplest to use addTransaction method to add it afterwards.
+    //    Especially when that already checks whether the accountNr is valid.
+    DecimalFormat df = new DecimalFormat("#.##");
+    TransactionDto transactionDto = new TransactionDto();
+    Random random = new Random();
+    transactionDto.setAmount(Double.parseDouble(df.format(random.nextDouble(20,500))));
+    //bounds of transaction could be moved to args for this method, which would allow for more dynamic transactions.
+    transactionDto.setCategory(CategoryEnum.getRandomCategory());
+    transactionDto.setAccountNr(Integer.parseInt(String.valueOf(accountNr)));
+    return transactionDto;
   }
 
   /**
