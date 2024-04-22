@@ -1,14 +1,11 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
-import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +23,6 @@ import jakarta.transaction.Transactional;
 /** Service for bank operations. */
 @Service
 public class BankService {
-  private final UserRepository userRepository;
   private final AccountRepository accountRepository;
   private final TransactionRepository transactionRepository;
   private final AccountMapper accountMapper;
@@ -37,13 +33,11 @@ public class BankService {
       AccountRepository accountRepository,
       TransactionRepository transactionRepository,
       AccountMapper accountMapper,
-      TransactionMapper transactionMapper,
-      UserRepository userRepository) {
+      TransactionMapper transactionMapper) {
     this.accountRepository = accountRepository;
     this.transactionRepository = transactionRepository;
     this.accountMapper = accountMapper;
     this.transactionMapper = transactionMapper;
-    this.userRepository = userRepository;
   }
 
   /**
