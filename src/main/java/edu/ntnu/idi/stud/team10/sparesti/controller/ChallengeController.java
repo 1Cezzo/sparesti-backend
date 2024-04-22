@@ -1,7 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -107,8 +106,7 @@ public class ChallengeController {
   @GetMapping("/purchase/{id}")
   @Operation(summary = "Get a purchase challenge by id")
   public ResponseEntity<PurchaseChallenge> getPurchaseChallengeById(@PathVariable Long id) {
-    Optional<PurchaseChallenge> challenge = purchaseChallengeService.getById(id);
-    return challenge.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    return ResponseEntity.ok(purchaseChallengeService.getById(id));
   }
 
   /**
@@ -122,16 +120,8 @@ public class ChallengeController {
   @Operation(summary = "Add an amount to the saved amount")
   public ResponseEntity<String> addAmountToPurchaseChallenge(
       @PathVariable Long id, @RequestParam Double amount) {
-    try {
-      if (amount > 0) {
-        purchaseChallengeService.addToSavedAmount(id, amount);
-        return ResponseEntity.ok("Amount added successfully");
-      } else {
-        return ResponseEntity.badRequest().body("Amount must be greater than 0");
-      }
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.notFound().build();
-    }
+    purchaseChallengeService.addToSavedAmount(id, amount);
+    return ResponseEntity.ok("Amount added successfully");
   }
 
   /**
@@ -197,8 +187,8 @@ public class ChallengeController {
   @GetMapping("/saving/{id}")
   @Operation(summary = "Get a saving challenge by id")
   public ResponseEntity<SavingChallenge> getSavingChallengeById(@PathVariable Long id) {
-    Optional<SavingChallenge> challenge = savingChallengeService.getById(id);
-    return challenge.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    SavingChallenge challenge = savingChallengeService.getById(id);
+    return ResponseEntity.ok(challenge);
   }
 
   /**
@@ -212,16 +202,8 @@ public class ChallengeController {
   @Operation(summary = "Add an amount to the saved amount")
   public ResponseEntity<String> addAmountToSavingChallenge(
       @PathVariable Long id, @RequestParam Double amount) {
-    try {
-      if (amount > 0) {
-        savingChallengeService.addToSavedAmount(id, amount);
-        return ResponseEntity.ok("Amount added successfully");
-      } else {
-        return ResponseEntity.badRequest().body("Amount must be greater than 0");
-      }
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.notFound().build();
-    }
+    savingChallengeService.addToSavedAmount(id, amount);
+    return ResponseEntity.ok("Amount added successfully");
   }
 
   /**
@@ -287,8 +269,8 @@ public class ChallengeController {
   @GetMapping("/consumption/{id}")
   @Operation(summary = "Get a consumption challenge by id")
   public ResponseEntity<ConsumptionChallenge> getConsumptionChallengeById(@PathVariable Long id) {
-    Optional<ConsumptionChallenge> challenge = consumptionChallengeService.getById(id);
-    return challenge.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    ConsumptionChallenge challenge = consumptionChallengeService.getById(id);
+    return ResponseEntity.ok(challenge);
   }
 
   /**
@@ -302,15 +284,7 @@ public class ChallengeController {
   @Operation(summary = "Add an amount to the saved amount")
   public ResponseEntity<String> addAmountToConsumptionChallenge(
       @PathVariable Long id, @RequestParam Double amount) {
-    try {
-      if (amount > 0) {
-        consumptionChallengeService.addToSavedAmount(id, amount);
-        return ResponseEntity.ok("Amount added successfully");
-      } else {
-        return ResponseEntity.badRequest().body("Amount must be greater than 0");
-      }
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.notFound().build();
-    }
+    consumptionChallengeService.addToSavedAmount(id, amount);
+    return ResponseEntity.ok("Amount added successfully");
   }
 }

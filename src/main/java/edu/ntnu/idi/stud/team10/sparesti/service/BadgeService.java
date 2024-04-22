@@ -10,7 +10,7 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
-import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for Badge entities */
 @Service
@@ -36,10 +36,10 @@ public class BadgeService {
   }
 
   /**
-   * Using its unique id, deletes a Badge entity from the repository. Will also delete every
-   * badge-user relationship with this badge id.
+   * Deletes a Badge by its id, and removes the badge from all users that have it.
    *
-   * @param id (Long): The unique id of the Badge entity.
+   * @param id (Long) The unique id of the Badge entity.
+   * @throws NotFoundException if the badge is not found.
    */
   public void deleteBadgeById(Long id) {
     badgeRepository
@@ -50,13 +50,16 @@ public class BadgeService {
               userRepository.saveAll(badge.getUsers());
               badgeRepository.delete(badge);
             },
-            () ->
-                System.out.println(
-                    "Badge wasn't found")); // Might need to throw exception in the future, for bug
-    // fixing's sake.
+            () -> {
+              throw new NotFoundException("Badge with id " + id + " not found");
+            });
   }
 
-  /** Returns all stored badges. */
+  /**
+   * Gets all badges.
+   *
+   * @return a list of all badges.
+   */
   public List<Badge> getAllBadges() {
     return badgeRepository.findAll();
   }
@@ -73,19 +76,18 @@ public class BadgeService {
   }
 
   /**
-   * Returns an optional that includes a Badge entity with a given id - if the id exists in repo.
+   * Gets a Badge by its id.
    *
    * @param id (Long): The unique id of the Badge entity.
-   * @return the Badge if it exists, as DTO.
-   * @throws InvalidIdException if the badge id is not found within database.
+   * @return a DTO representing the Badge.
+   * @throws NotFoundException if the badge is not found.
    */
-  public Optional<BadgeDto> getBadgeById(Long id) {
-    Optional<Badge> badgeOptional = badgeRepository.findById(id);
-    if (badgeOptional.isPresent()) {
-      return badgeOptional.map(BadgeDto::new);
-    } else {
-      throw new InvalidIdException("Badge of id " + id + " not found");
-    }
+  public BadgeDto getBadgeById(Long id) {
+    Badge badge =
+        badgeRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Badge of id " + id + " not found"));
+    return new BadgeDto(badge);
   }
 
   /**
@@ -94,7 +96,7 @@ public class BadgeService {
    * @param id (Long): The unique id of the Badge.
    * @param badgeDto (BadgeDto): The data transfer object representing the Badge to alter.
    * @return the updated Badge.
-   * @throws InvalidIdException If the badge id is not found.
+   * @throws NotFoundException If the badge id is not found.
    */
   public BadgeDto updateBadge(Long id, BadgeDto badgeDto) {
     Optional<Badge> badgeOptional = badgeRepository.findById(id);
@@ -106,7 +108,7 @@ public class BadgeService {
       badgeRepository.save(badge);
       return new BadgeDto(badge);
     } else {
-      throw new InvalidIdException("Badge with id " + id + " not found...");
+      throw new NotFoundException("Badge with id " + id + " not found...");
     }
   }
 
@@ -115,7 +117,7 @@ public class BadgeService {
    *
    * @param badgeId (Long): The id of the badge being checked.
    * @return The percentage of users that have the badge.
-   * @throws InvalidIdException If the badge id is not found.
+   * @throws NotFoundException If the badge id is not found.
    */
   public double findBadgeRarity(Long badgeId) { // unsure if this should be in UserService
     if (badgeRepository.findById(badgeId).isPresent()) {
@@ -126,7 +128,7 @@ public class BadgeService {
       // by zero
       return ratio * 100; // percentage conversion
     } else {
-      throw new InvalidIdException("Badge with id " + badgeId + " not found...");
+      throw new NotFoundException("Badge with id " + badgeId + " not found...");
     }
   }
 }
