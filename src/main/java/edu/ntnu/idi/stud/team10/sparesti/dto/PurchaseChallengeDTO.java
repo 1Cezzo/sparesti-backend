@@ -13,19 +13,6 @@ public class PurchaseChallengeDTO extends ChallengeDTO {
   private String productName;
 
   /**
-   * The target amount for the challenge.
-   *
-   * @param savedChallenge The PurchaseChallenge entity to convert.
-   */
-  public PurchaseChallengeDTO(PurchaseChallenge savedChallenge) {
-    this.setDescription(savedChallenge.getDescription());
-    this.setTargetAmount(savedChallenge.getTargetAmount());
-    this.setTimeInterval(savedChallenge.getTimeInterval());
-    this.setDifficultyLevel(savedChallenge.getDifficultyLevel());
-    this.setProductName(savedChallenge.getProductName());
-  }
-
-  /**
    * Constructor for creating a new PurchaseChallengeDTO.
    *
    * @param challenge The PurchaseChallenge entity to convert.
@@ -47,9 +34,13 @@ public class PurchaseChallengeDTO extends ChallengeDTO {
     PurchaseChallenge challenge = new PurchaseChallenge();
     challenge.setDescription(this.getDescription());
     challenge.setTargetAmount(this.getTargetAmount());
+    challenge.setSavedAmount(this.getSavedAmount());
+    challenge.setMediaUrl(this.getMediaUrl());
     challenge.setTimeInterval(this.getTimeInterval());
+    challenge.setExpiryDate(this.getExpiryDate());
     challenge.setDifficultyLevel(this.getDifficultyLevel());
     challenge.setProductName(this.getProductName());
+    challenge.setCompleted(this.isCompleted());
     return challenge;
   }
 }

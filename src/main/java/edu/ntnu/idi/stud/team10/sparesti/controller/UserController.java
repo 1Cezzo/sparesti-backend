@@ -1,17 +1,13 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
-import edu.ntnu.idi.stud.team10.sparesti.dto.ChallengeDTO;
-import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -180,109 +176,6 @@ public class UserController {
       return ResponseEntity.ok(updatedBudgetRowDto); // Return 200 OK status
     } catch (IllegalArgumentException e) {
       return ResponseEntity.badRequest().build(); // Return 400 Bad Request status
-    }
-  }
-
-  /**
-   * Add a savings goal to a user.
-   *
-   * @param userId The ID of the user.
-   * @param savingsGoalDTO The savings goal to add.
-   * @return The updated user DTO.
-   */
-  @PostMapping("/{userId}/savings-goals/add")
-  @Operation(summary = "Add a savings goal to a user")
-  public ResponseEntity<String> addSavingsGoalToUser(
-      @PathVariable Long userId, @RequestBody SavingsGoalDTO savingsGoalDTO) {
-    try {
-      UserDto updatedUserDto = userService.addSavingsGoalToUser(userId, savingsGoalDTO);
-      return ResponseEntity.ok("Saving goal created and added to user"); // Return 200 OK status
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(e.getMessage()); // Return 400 Bad Request status
-    }
-  }
-
-  /**
-   * Get all savings goals for a user.
-   *
-   * @param userId The ID of the user.
-   * @return A list of savings goal DTOs.
-   */
-  @GetMapping("/{userId}/savings-goals")
-  @Operation(summary = "Get all savings goals for a user")
-  public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(@PathVariable Long userId) {
-    List<SavingsGoalDTO> savingsGoals = userService.getAllSavingsGoalsForUser(userId);
-    return ResponseEntity.ok(savingsGoals);
-  }
-
-  /**
-   * Delete a savings goal from a user.
-   *
-   * @param userId The ID of the user.
-   * @param savingsGoalId The ID of the savings goal.
-   */
-  @DeleteMapping("/{userId}/savings-goals/{savingsGoalId}")
-  @Operation(summary = "Delete a savings goal from a user")
-  public ResponseEntity<Void> deleteSavingsGoalFromUser(
-      @PathVariable Long userId, @PathVariable Long savingsGoalId) {
-    userService.deleteSavingsGoalFromUser(userId, savingsGoalId);
-    return ResponseEntity.noContent().build();
-  }
-
-  /**
-   * Add a challenge to a user.
-   *
-   * @param userId the ID of the user
-   * @param challengeId the ID of the challenge
-   * @return the updated user DTO
-   */
-  @PostMapping("/{userId}/challenges/add")
-  @Operation(summary = "Add a challenge to a user")
-  public ResponseEntity<UserDto> addChallengeToUser(
-      @PathVariable Long userId, @RequestParam Long challengeId) {
-    try {
-      UserDto updatedUserDto = userService.addChallengeToUser(userId, challengeId);
-      return ResponseEntity.ok(updatedUserDto);
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().build();
-    }
-  }
-
-  /**
-   * Remove a challenge from a user.
-   *
-   * @param userId the ID of the user
-   * @param challengeId the ID of the challenge
-   * @return the updated user DTO
-   */
-  @DeleteMapping("/{userId}/challenges/{challengeId}")
-  @Operation(summary = "Remove a challenge from a user")
-  public ResponseEntity<UserDto> removeChallengeFromUser(
-      @PathVariable Long userId, @PathVariable Long challengeId) {
-    try {
-      UserDto updatedUserDto = userService.removeChallengeFromUser(userId, challengeId);
-      return ResponseEntity.ok(updatedUserDto);
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    }
-  }
-
-  /**
-   * Get all challenges for a user.
-   *
-   * @param userId the ID of the user
-   * @return a map of challenges
-   */
-  @GetMapping("/{userId}/challenges")
-  @Operation(summary = "Get all challenges for a user")
-  public ResponseEntity<Map<String, List<? extends ChallengeDTO>>> getChallengesByUser(
-      @PathVariable Long userId) {
-    try {
-      Map<String, List<? extends ChallengeDTO>> challengesMap =
-          userService.getChallengesByUser(userId);
-      return ResponseEntity.ok(challengesMap);
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
   }
 }

@@ -9,8 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.service.SavingsGoalService;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -21,10 +23,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class SavingsGoalController {
 
   private final SavingsGoalService savingsGoalService;
+  private final UserService userService;
 
   @Autowired
-  public SavingsGoalController(SavingsGoalService savingsGoalService) {
+  public SavingsGoalController(SavingsGoalService savingsGoalService, UserService userService) {
     this.savingsGoalService = savingsGoalService;
+    this.userService = userService;
   }
 
   /**
@@ -105,5 +109,47 @@ public class SavingsGoalController {
       @PathVariable Long id, @RequestParam double savedAmount) {
     savingsGoalService.updateSavedAmount(id, savedAmount);
     return ResponseEntity.ok().build();
+  }
+
+  /**
+   * Add a savings goal to a user.
+   *
+   * @param userId The ID of the user.
+   * @param savingsGoalDTO The savings goal to add.
+   * @return The updated user DTO.
+   */
+  @PostMapping("/{userId}/savings-goals/add")
+  @Operation(summary = "Add a savings goal to a user")
+  public ResponseEntity<UserDto> addSavingsGoalToUser(
+      @PathVariable Long userId, @RequestBody SavingsGoalDTO savingsGoalDTO) {
+    UserDto updatedUserDto = savingsGoalService.addSavingsGoalToUser(userId, savingsGoalDTO);
+    return ResponseEntity.ok(updatedUserDto);
+  }
+
+  /**
+   * Get all savings goals for a user.
+   *
+   * @param userId The ID of the user.
+   * @return A list of savings goal DTOs.
+   */
+  @GetMapping("/{userId}/savings-goals")
+  @Operation(summary = "Get all savings goals for a user")
+  public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(@PathVariable Long userId) {
+    List<SavingsGoalDTO> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
+    return ResponseEntity.ok(savingsGoals);
+  }
+
+  /**
+   * Delete a savings goal from a user.
+   *
+   * @param userId The ID of the user.
+   * @param savingsGoalId The ID of the savings goal.
+   */
+  @DeleteMapping("/{userId}/savings-goals/{savingsGoalId}")
+  @Operation(summary = "Delete a savings goal from a user")
+  public ResponseEntity<Void> deleteSavingsGoalFromUser(
+      @PathVariable Long userId, @PathVariable Long savingsGoalId) {
+    savingsGoalService.deleteSavingsGoalFromUser(userId, savingsGoalId);
+    return ResponseEntity.noContent().build();
   }
 }
