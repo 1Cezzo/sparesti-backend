@@ -32,9 +32,9 @@ public class User {
 
   @Column() private String profilePictureUrl;
 
-  @Column() private int checkingAccountNr;
+  @Column() private Integer checkingAccountNr;
 
-  @Column() private int savingsAccountNr;
+  @Column() private Integer savingsAccountNr;
 
   @JsonIgnore
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

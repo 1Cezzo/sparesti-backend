@@ -6,41 +6,65 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AccountDtoTest {
 
-  private AccountDto account;
+  private AccountDto accountDto1;
+  private AccountDto accountDto2;
 
   @BeforeEach
   public void setUp() {
-    account = new AccountDto();
-    account.setId(1L);
-    account.setOwnerId(123L);
-    account.setAccountNr(456789);
-    account.setName("Test Account");
-    account.setBalance(1000.0);
+    accountDto1 = new AccountDto();
+    accountDto1.setId(1L);
+    accountDto1.setOwnerId(123L);
+    accountDto1.setAccountNr(456789);
+    accountDto1.setName("Test Account");
+    accountDto1.setBalance(1000.0);
 
     // Adding transactions for testing
     Set<TransactionDto> transactions = new HashSet<>();
     transactions.add(new TransactionDto(1L, 100.0, 1));
     transactions.add(new TransactionDto(2L, -50.0, 1));
-    account.setTransactions(transactions);
+    accountDto1.setTransactions(transactions);
+
+    accountDto2 = new AccountDto();
+    accountDto2.setId(1L);
+    accountDto2.setOwnerId(123L);
+    accountDto2.setAccountNr(456789);
+    accountDto2.setName("Test Account");
+    accountDto2.setBalance(1000.0);
+    accountDto2.setTransactions(transactions);
   }
 
   @Test
   public void testAccountDtoFields() {
-    assertEquals(1L, account.getId());
-    assertEquals(123L, account.getOwnerId());
-    assertEquals(456789, account.getAccountNr());
-    assertEquals("Test Account", account.getName());
-    assertEquals(1000.0, account.getBalance());
+    assertEquals(1L, accountDto1.getId());
+    assertEquals(123L, accountDto1.getOwnerId());
+    assertEquals(456789, accountDto1.getAccountNr());
+    assertEquals("Test Account", accountDto1.getName());
+    assertEquals(1000.0, accountDto1.getBalance());
   }
 
   @Test
   public void testAccountDtoTransactions() {
-    assertNotNull(account.getTransactions());
-    assertEquals(2, account.getTransactions().size());
+    assertNotNull(accountDto1.getTransactions());
+    assertEquals(2, accountDto1.getTransactions().size());
+  }
+
+  @Test
+  public void testEquals() {
+    assertTrue(accountDto1.equals(accountDto2));
+  }
+
+  @Test
+  public void testNotEquals() {
+    accountDto2.setOwnerId(456L);
+    assertFalse(accountDto1.equals(accountDto2));
+  }
+
+  @Test
+  public void testHashCode() {
+    assertEquals(accountDto1.hashCode(), accountDto2.hashCode());
   }
 }
