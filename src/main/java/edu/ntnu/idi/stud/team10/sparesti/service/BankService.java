@@ -6,7 +6,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
+import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ import jakarta.transaction.Transactional;
 /** Service for bank operations. */
 @Service
 public class BankService {
+  private final UserRepository userRepository;
   private final AccountRepository accountRepository;
   private final TransactionRepository transactionRepository;
   private final AccountMapper accountMapper;
@@ -34,11 +37,13 @@ public class BankService {
       AccountRepository accountRepository,
       TransactionRepository transactionRepository,
       AccountMapper accountMapper,
-      TransactionMapper transactionMapper) {
+      TransactionMapper transactionMapper,
+      UserRepository userRepository) {
     this.accountRepository = accountRepository;
     this.transactionRepository = transactionRepository;
     this.accountMapper = accountMapper;
     this.transactionMapper = transactionMapper;
+    this.userRepository = userRepository;
   }
 
   /**
@@ -57,18 +62,6 @@ public class BankService {
     account.setBalance(0);
     accountRepository.save(account);
     return accountMapper.toDto(account);
-  }
-
-  public void initMockAccount(AccountDto accountDto) {
-    //Input could be either of type AccountDto or just Long accountId
-
-    //Account account = accountMapper.toEntity(accountDto);
-    //TODO: when an account is created; mock random transactions and create a "history"
-  }
-
-  public List<TransactionDto> createMockTransactions() {
-    return null;
-    //TODO: Make.
   }
 
   /**
@@ -163,10 +156,10 @@ public class BankService {
    * @param toAccountNr
    * @param amount
    */
-  private void transferMoney(Integer fromAccountNr, Integer toAccountNr, double amount) {
+  public void transferMoney(Integer fromAccountNr, Integer toAccountNr, double amount) {
     if (amount < 0 ) {
       throw new IllegalArgumentException(
-              "Cannot transfer a negative amount. The positive amount is deducted from one account and added to the other");
+              "Cannot transfer a negative amount.");
     }
 
     TransactionDto fromTransactionDto = new TransactionDto();

@@ -5,13 +5,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
@@ -81,5 +75,12 @@ public class BankController {
   public ResponseEntity<Set<AccountDto>> getAllAccounts(@PathVariable Long userId) {
     Set<AccountDto> accountDetails = bankService.getUserAccounts(userId);
     return ResponseEntity.ok(accountDetails);
+  }
+
+  @PutMapping("/account/transfer")
+  @Operation(summary = "Transfer money from one account to another")
+  public ResponseEntity<?> transferMoney(@RequestParam Integer fromAccountNr, @RequestParam Integer toAccountNr, @RequestParam double amount) {
+    bankService.transferMoney(fromAccountNr, toAccountNr, amount);
+    return ResponseEntity.ok().body("Transfer successful");
   }
 }
