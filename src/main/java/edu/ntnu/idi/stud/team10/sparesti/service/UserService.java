@@ -37,6 +37,7 @@ public class UserService implements UserDetailsService {
   private final BudgetRowRepository budgetRowRepository;
   private final BadgeRepository badgeRepository;
   private final ChallengeRepository challengeRepository;
+  private BankService bankService;
 
   /**
    * Constructor for UserService, with automatic injection of dependencies.
@@ -374,10 +375,6 @@ public class UserService implements UserDetailsService {
     return badges;
   }
 
-  // Possibly need a method that retrieves the 3 most recent badges of a user,
-  // which will display on the front of their profile-page
-  // Which could use a dateEarned field in the badge-user connection.
-
   /**
    * Awards a Badge of badgeId to a User of userId
    *
@@ -437,5 +434,37 @@ public class UserService implements UserDetailsService {
             .findById(badgeId)
             .orElseThrow(() -> new NotFoundException("Badge with ID " + badgeId + " not found."));
     return new ArrayList<>(badge.getUsers()); // possible null exception
+  }
+
+  /**
+   * Creates a new mock account and adds it to the user.
+   *
+   * @param isSavingsAcc (boolean): Whether the account is going to be the savings account
+   * @param displayName (String): The username of the user the account is being added to
+   * @param accountNr (Integer): The account number being created
+   * @return the AccountDto
+   */
+  @Transactional
+  protected AccountDto addMockBankAccount(String displayName, Integer accountNr, boolean isSavingsAcc) {
+    // Bad and can be removed/altered in any way, but should work for mock data.
+    // Protected for now
+    User mockUser = findUserByDisplayName(displayName);
+    AccountDto accountDto = new AccountDto();
+    accountDto.setAccountNr(accountNr);
+    accountDto.setName(mockUser.getDisplayName());
+    accountDto.setBalance(5000.00);
+    accountDto.setOwnerId(mockUser.getId());
+
+    if (isSavingsAcc) {
+      accountDto.setName(accountDto.getName() + "'s savings account");
+      mockUser.setSavingsAccountNr(accountNr);
+    } else {
+      accountDto.setName(accountDto.getName() + "'s checking account");
+      mockUser.setCheckingAccountNr(accountNr);
+    }
+
+    userRepository.save(mockUser);
+    bankService.createAccount(accountDto);
+    return accountDto;
   }
 }
