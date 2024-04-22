@@ -4,4 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 
+/** Repository for Challenge entities. */
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {}

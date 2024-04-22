@@ -9,6 +9,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/** Data transfer object for Budget entities. */
 @Data
 @AllArgsConstructor
 public class BudgetDto {
@@ -16,16 +17,27 @@ public class BudgetDto {
   private Set<BudgetRow> row = new HashSet<>();
   private LocalDate expiryDate;
 
+  /**
+   * Constructor for converting Budget entity to BudgetDto.
+   *
+   * @param budget The Budget entity to convert.
+   */
   public BudgetDto(Budget budget) {
     this.id = budget.getId();
     this.row = budget.getRow();
     this.expiryDate = LocalDate.now().plusMonths(1);
   }
 
+  /** Constructor for creating a new BudgetDto. */
   public BudgetDto() {
     this.expiryDate = LocalDate.now().plusMonths(1);
   }
 
+  /**
+   * Convert BudgetDto to Budget entity.
+   *
+   * @return (Budget) The Budget entity.
+   */
   public Budget toEntity() {
     Budget budget = new Budget();
     budget.setId(id);

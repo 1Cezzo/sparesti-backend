@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.ntnu.idi.stud.team10.sparesti.dto.PurchaseChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.PurchaseChallengeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
+/** Service for Purchase Challenge entities. */
 @Service
 public class PurchaseChallengeService {
 
@@ -25,6 +27,12 @@ public class PurchaseChallengeService {
     this.challengeService = challengeService;
   }
 
+  /**
+   * Create a new purchase challenge.
+   *
+   * @param dto the DTO representing the purchase challenge to create.
+   * @return the created purchase challenge.
+   */
   @Transactional
   public PurchaseChallenge create(PurchaseChallengeDTO dto) {
     PurchaseChallenge challenge = dto.toEntity();
@@ -35,6 +43,13 @@ public class PurchaseChallengeService {
     return purchaseChallengeRepository.save(challenge);
   }
 
+  /**
+   * Update a purchase challenge.
+   *
+   * @param id the id of the purchase challenge.
+   * @param purchaseChallengeDTO the DTO representing the purchase challenge to update.
+   * @return the updated purchase challenge.
+   */
   @Transactional
   public PurchaseChallenge update(Long id, PurchaseChallengeDTO purchaseChallengeDTO) {
     Optional<PurchaseChallenge> optionalChallenge = purchaseChallengeRepository.findById(id);
@@ -69,6 +84,11 @@ public class PurchaseChallengeService {
     }
   }
 
+  /**
+   * Delete a purchase challenge.
+   *
+   * @param id the id of the purchase challenge.
+   */
   @Transactional
   public void delete(Long id) {
     Optional<PurchaseChallenge> optionalChallenge = purchaseChallengeRepository.findById(id);
@@ -79,26 +99,47 @@ public class PurchaseChallengeService {
     }
   }
 
+  /**
+   * Get all purchase challenges.
+   *
+   * @return a list of all purchase challenges.
+   */
   @Transactional(readOnly = true)
   public List<PurchaseChallenge> getAll() {
     return purchaseChallengeRepository.findAll();
   }
 
+  /**
+   * Get a purchase challenge by id.
+   *
+   * @param id the id of the purchase challenge.
+   * @return the purchase challenge if it exists, or an empty Optional otherwise.
+   */
   @Transactional(readOnly = true)
-  public Optional<PurchaseChallenge> getById(Long id) {
-    return purchaseChallengeRepository.findById(id);
+  public PurchaseChallenge getById(Long id) {
+    return purchaseChallengeRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException("Challenge with id " + id + " not found."));
   }
 
+  /**
+   * Add amount to the saved amount of a purchase challenge.
+   *
+   * @param id the id of the purchase challenge.
+   * @param amount the amount to add.
+   */
   @Transactional
   public void addToSavedAmount(Long id, Double amount) {
-    Optional<PurchaseChallenge> optionalChallenge = purchaseChallengeRepository.findById(id);
-    if (optionalChallenge.isPresent()) {
-      PurchaseChallenge challenge = optionalChallenge.get();
-      challenge.setSavedAmount(challenge.getSavedAmount() + amount);
-      challenge.setCompleted(challenge.getSavedAmount() >= challenge.getTargetAmount());
-      purchaseChallengeRepository.save(challenge);
-    } else {
-      throw new IllegalArgumentException("Purchase Challenge not found");
+    if (amount < 0) {
+      throw new IllegalArgumentException("Amount must be positive.");
     }
+
+    PurchaseChallenge challenge =
+        purchaseChallengeRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Challenge with id " + id + " not found."));
+    challenge.setSavedAmount(challenge.getSavedAmount() + amount);
+    challenge.setCompleted(challenge.getSavedAmount() >= challenge.getTargetAmount());
+    purchaseChallengeRepository.save(challenge);
   }
 }

@@ -20,15 +20,19 @@ public class User {
   private Long id;
 
   @Column(unique = true)
-  private String username;
+  private String displayName;
 
-  // TODO: add full name here? (might come from the mock bank?) Designer(s) claimed that since we
-  // are connecting to the bank, the user's name should be visible on profile page
+  @Column() private String firstName;
+
+  @Column() private String lastName;
+
   @Column(nullable = false)
   private String password;
 
   @Column(unique = true)
   private String email;
+
+  // TODO: Add "Total amount saved" to the user?
 
   @Column() private String profilePictureUrl;
 
@@ -47,9 +51,9 @@ public class User {
       inverseJoinColumns = @JoinColumn(name = "challenge_id"))
   private List<Challenge> challenges;
 
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
-      name = "userBadges",
+      name = "user_badges",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "badge_id"))
   private Set<Badge> earnedBadges;
@@ -61,17 +65,35 @@ public class User {
    */
   public User(UserDto dto) {
     this.id = dto.getId();
-    this.username = dto.getUsername();
+    this.displayName = dto.getDisplayName();
     this.password = dto.getPassword();
     this.email = dto.getEmail();
     this.profilePictureUrl = dto.getProfilePictureUrl();
   }
 
+  /**
+   * Add a savings goal to the user.
+   *
+   * @param challenge (SavingsGoal) The savings goal to add.
+   */
   public void addChallenge(Challenge challenge) {
     this.challenges.add(challenge);
   }
 
+  /**
+   * Remove a savings goal from the user.
+   *
+   * @param challenge (SavingsGoal) The savings goal to remove.
+   */
   public void removeChallenge(Challenge challenge) {
     this.challenges.remove(challenge);
+  }
+
+  public void addBadge(Badge badge) {
+    this.earnedBadges.add(badge);
+  }
+
+  public void removeBadge(Badge badge) {
+    this.earnedBadges.remove(badge);
   }
 }

@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 
+/** Configuration class for the resource server. */
 @Configuration
 @EnableWebSecurity
 public class ResourceServerConfig {
@@ -28,11 +29,24 @@ public class ResourceServerConfig {
 
   @Bean
   @Order(2)
+  /** Configures the security filter chain for the API. */
   public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
         // All endpoints are open for now, change this later when login is implemented.
         .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+        //        .authorizeHttpRequests(authorize -> authorize
+        //            .requestMatchers("/api/users/create")
+        //            .permitAll()
+        //            .requestMatchers("/login.html")
+        //            .permitAll()
+        //            .requestMatchers("/stylesheet.css")
+        //            .permitAll()
+        //            .requestMatchers("/script.js")
+        //            .permitAll()
+        //            .requestMatchers("/images/**")
+        //            .permitAll()
+        //            .anyRequest().authenticated())
         .formLogin(
             custom ->
                 custom
@@ -68,6 +82,7 @@ public class ResourceServerConfig {
     return http.build();
   }
 
+  /** Configures the JwtAuthenticationConverter. */
   private JwtAuthenticationConverter jwtAuthenticationConverter() {
     JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter =
         new JwtGrantedAuthoritiesConverter();

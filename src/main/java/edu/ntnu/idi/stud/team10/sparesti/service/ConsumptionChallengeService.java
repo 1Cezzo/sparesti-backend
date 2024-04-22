@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.ntnu.idi.stud.team10.sparesti.dto.ConsumptionChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ConsumptionChallengeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
+/** Service for Consumption Challenge entities. */
 @Service
 public class ConsumptionChallengeService {
 
@@ -26,6 +28,12 @@ public class ConsumptionChallengeService {
     this.challengeService = challengeService;
   }
 
+  /**
+   * Create a new consumption challenge.
+   *
+   * @param dto the DTO representing the consumption challenge to create.
+   * @return the created consumption challenge.
+   */
   @Transactional
   public ConsumptionChallenge create(ConsumptionChallengeDTO dto) {
     ConsumptionChallenge challenge = dto.toEntity();
@@ -36,6 +44,13 @@ public class ConsumptionChallengeService {
     return consumptionChallengeRepository.save(challenge);
   }
 
+  /**
+   * Update a consumption challenge.
+   *
+   * @param id the id of the consumption challenge.
+   * @param consumptionChallengeDTO the DTO representing the consumption challenge to update.
+   * @return the updated consumption challenge.
+   */
   @Transactional
   public ConsumptionChallenge update(Long id, ConsumptionChallengeDTO consumptionChallengeDTO) {
     Optional<ConsumptionChallenge> optionalChallenge = consumptionChallengeRepository.findById(id);
@@ -72,40 +87,71 @@ public class ConsumptionChallengeService {
 
       return consumptionChallengeRepository.save(existingChallenge);
     } else {
-      throw new IllegalArgumentException("Consumption Challenge not found");
+      throw new NotFoundException("Consumption Challenge not found");
     }
   }
 
+  /**
+   * Delete a consumption challenge.
+   *
+   * @param id the id of the consumption challenge.
+   */
   @Transactional
   public void delete(Long id) {
-    Optional<ConsumptionChallenge> optionalChallenge = consumptionChallengeRepository.findById(id);
-    if (optionalChallenge.isPresent()) {
-      consumptionChallengeRepository.delete(optionalChallenge.get());
-    } else {
-      throw new IllegalArgumentException("Consumption Challenge not found");
-    }
+    ConsumptionChallenge challenge =
+        consumptionChallengeRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new NotFoundException("Consumption challenge with id " + id + " not found."));
+    consumptionChallengeRepository.delete(challenge);
   }
 
+  /**
+   * Get all consumption challenges.
+   *
+   * @return a list of all consumption challenges.
+   */
   @Transactional(readOnly = true)
   public List<ConsumptionChallenge> getAll() {
     return consumptionChallengeRepository.findAll();
   }
 
+  /**
+   * Get a consumption challenge by id.
+   *
+   * @param id the id of the consumption challenge.
+   * @return the consumption challenge if it exists, or an empty Optional otherwise.
+   * @throws NotFoundException if the consumption challenge does not exist.
+   */
   @Transactional(readOnly = true)
-  public Optional<ConsumptionChallenge> getById(Long id) {
-    return consumptionChallengeRepository.findById(id);
+  public ConsumptionChallenge getById(Long id) {
+    return consumptionChallengeRepository
+        .findById(id)
+        .orElseThrow(
+            () -> new NotFoundException("Consumption challenge with id " + id + " not found."));
   }
 
+  /**
+   * Add to the saved amount of a consumption challenge.
+   *
+   * @param id the id of the consumption challenge.
+   * @param amount the amount to add to the saved amount.
+   * @throws IllegalArgumentException if the amount is negative.
+   * @throws NotFoundException if the consumption challenge does not exist.
+   */
   @Transactional
   public void addToSavedAmount(Long id, double amount) {
-    Optional<ConsumptionChallenge> optionalChallenge = consumptionChallengeRepository.findById(id);
-    if (optionalChallenge.isPresent()) {
-      ConsumptionChallenge challenge = optionalChallenge.get();
-      challenge.setSavedAmount(challenge.getSavedAmount() + amount);
-      challenge.setCompleted(challenge.getSavedAmount() > challenge.getTargetAmount());
-      consumptionChallengeRepository.save(challenge);
-    } else {
-      throw new IllegalArgumentException("Consumption Challenge not found");
+    if (amount < 0) {
+      throw new IllegalArgumentException("Amount must be positive");
     }
+
+    ConsumptionChallenge challenge =
+        consumptionChallengeRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new NotFoundException("Consumption challenge with id " + id + " not found."));
+    challenge.setSavedAmount(challenge.getSavedAmount() + amount);
+    challenge.setCompleted(challenge.getSavedAmount() > challenge.getTargetAmount());
+    consumptionChallengeRepository.save(challenge);
   }
 }

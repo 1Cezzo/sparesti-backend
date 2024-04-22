@@ -18,6 +18,11 @@ public class SavingsGoalDTO {
   private LocalDate deadline;
   private boolean completed;
 
+  /**
+   * Constructor for converting a SavingsGoal entity to a DTO.
+   *
+   * @param savingsGoal The SavingsGoal entity to convert.
+   */
   public SavingsGoalDTO(SavingsGoal savingsGoal) {
     this.id = savingsGoal.getId();
     this.name = savingsGoal.getName();
@@ -28,6 +33,14 @@ public class SavingsGoalDTO {
     this.completed = savingsGoal.isCompleted();
   }
 
+  /**
+   * Constructor for creating a new SavingsGoalDTO.
+   *
+   * @param name The name of the savings goal.
+   * @param targetAmount The target amount of the savings goal.
+   * @param mediaUrl The media URL of the savings goal.
+   * @param deadline The deadline of the savings goal.
+   */
   public SavingsGoalDTO(String name, double targetAmount, String mediaUrl, LocalDate deadline) {
     this.name = name;
     this.targetAmount = targetAmount;

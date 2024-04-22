@@ -1,6 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
@@ -14,12 +15,15 @@ import lombok.*;
 @Setter
 public class UserDto {
   private Long id;
-  private String username;
+  private String displayName;
+  private String firstName;
+  private String lastName;
   private String password;
   private String email;
   private String profilePictureUrl;
   private List<SavingsGoalDTO> savingsGoals;
   private List<ChallengeDTO> challenges;
+  private Set<BadgeDto> badges;
 
   /**
    * Constructor for converting User entity to UserDto. Does not include password.
@@ -28,12 +32,11 @@ public class UserDto {
    */
   public UserDto(User user) {
     this.id = user.getId();
-    this.username = user.getUsername();
+    this.displayName = user.getDisplayName();
     this.email = user.getEmail();
     this.profilePictureUrl = user.getProfilePictureUrl();
     if (user.getSavingsGoals() != null) {
-      this.savingsGoals =
-          user.getSavingsGoals().stream().map(SavingsGoalDTO::new).collect(Collectors.toList());
+      this.savingsGoals = user.getSavingsGoals().stream().map(SavingsGoalDTO::new).toList();
     } else {
       this.savingsGoals = null;
     }
@@ -43,12 +46,20 @@ public class UserDto {
     } else {
       this.challenges = null;
     }
+    if (user.getEarnedBadges() != null) {
+      this.badges = user.getEarnedBadges().stream().map(BadgeDto::new).collect(Collectors.toSet());
+    }
   }
 
+  /**
+   * Convert UserDto to User entity.
+   *
+   * @return (User) The User entity.
+   */
   public User toEntity() {
     User user = new User();
     user.setId(this.id);
-    user.setUsername(this.username);
+    user.setDisplayName(this.displayName);
     user.setPassword(this.password);
     user.setEmail(this.email);
     user.setProfilePictureUrl(this.profilePictureUrl);
@@ -64,6 +75,7 @@ public class UserDto {
     } else {
       user.setChallenges(null);
     }
+    user.setEarnedBadges(null);
     return user;
   }
 }
