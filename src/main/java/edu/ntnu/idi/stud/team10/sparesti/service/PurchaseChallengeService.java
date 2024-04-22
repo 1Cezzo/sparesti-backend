@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.ntnu.idi.stud.team10.sparesti.dto.PurchaseChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.PurchaseChallengeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for Purchase Challenge entities. */
 @Service
@@ -115,8 +116,10 @@ public class PurchaseChallengeService {
    * @return the purchase challenge if it exists, or an empty Optional otherwise.
    */
   @Transactional(readOnly = true)
-  public Optional<PurchaseChallenge> getById(Long id) {
-    return purchaseChallengeRepository.findById(id);
+  public PurchaseChallenge getById(Long id) {
+    return purchaseChallengeRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException("Challenge with id " + id + " not found."));
   }
 
   /**
@@ -127,14 +130,16 @@ public class PurchaseChallengeService {
    */
   @Transactional
   public void addToSavedAmount(Long id, Double amount) {
-    Optional<PurchaseChallenge> optionalChallenge = purchaseChallengeRepository.findById(id);
-    if (optionalChallenge.isPresent()) {
-      PurchaseChallenge challenge = optionalChallenge.get();
-      challenge.setSavedAmount(challenge.getSavedAmount() + amount);
-      challenge.setCompleted(challenge.getSavedAmount() >= challenge.getTargetAmount());
-      purchaseChallengeRepository.save(challenge);
-    } else {
-      throw new IllegalArgumentException("Purchase Challenge not found");
+    if (amount < 0) {
+      throw new IllegalArgumentException("Amount must be positive.");
     }
+
+    PurchaseChallenge challenge =
+        purchaseChallengeRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Challenge with id " + id + " not found."));
+    challenge.setSavedAmount(challenge.getSavedAmount() + amount);
+    challenge.setCompleted(challenge.getSavedAmount() >= challenge.getTargetAmount());
+    purchaseChallengeRepository.save(challenge);
   }
 }

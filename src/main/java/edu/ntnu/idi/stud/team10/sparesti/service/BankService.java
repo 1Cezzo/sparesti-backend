@@ -14,7 +14,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.Account;
 import edu.ntnu.idi.stud.team10.sparesti.model.Transaction;
 import edu.ntnu.idi.stud.team10.sparesti.repository.bank.AccountRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.bank.TransactionRepository;
-import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import jakarta.transaction.Transactional;
 
 /** Service for bank operations. */
@@ -60,7 +60,7 @@ public class BankService {
    *
    * @param accountNr (int) The account number to get details for.
    * @return A Dto with the account details.
-   * @throws InvalidIdException If the account is not found.
+   * @throws NotFoundException If the account is not found.
    */
   public AccountDto getAccountDetails(int accountNr) {
     Account account = findAccountByAccountNr(accountNr);
@@ -86,7 +86,7 @@ public class BankService {
    * Adds a transaction to an account.
    *
    * @param transactionDto (TransactionDto) The transaction details.
-   * @throws InvalidIdException If the account is not found.
+   * @throws NotFoundException If the account is not found.
    * @throws IllegalArgumentException If the transaction parameter is null.
    */
   @Transactional
@@ -97,7 +97,7 @@ public class BankService {
     Account account =
         accountRepository
             .findByAccountNrWithLock(transactionDto.getAccountNr())
-            .orElseThrow(() -> new InvalidIdException("Account not found"));
+            .orElseThrow(() -> new NotFoundException("Account not found"));
     account.alterBalance(transactionDto.getAmount());
     accountRepository.save(account);
 
@@ -111,11 +111,11 @@ public class BankService {
    *
    * @param accountNr (int) The account number to search for.
    * @return (Account) The account entity.
-   * @throws InvalidIdException If the account is not found.
+   * @throws NotFoundException If the account is not found.
    */
   private Account findAccountByAccountNr(int accountNr) {
     return accountRepository
         .findByAccountNr(accountNr)
-        .orElseThrow(() -> new InvalidIdException("Account not found"));
+        .orElseThrow(() -> new NotFoundException("Account not found"));
   }
 }

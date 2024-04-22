@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
-import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for Budget entities. */
 @Service
@@ -43,7 +43,7 @@ public class BudgetService {
   public Budget getBudgetById(Long id) {
     return budgetRepository
         .findById(id)
-        .orElseThrow(() -> new InvalidIdException("Budget with id " + id + " not found"));
+        .orElseThrow(() -> new NotFoundException("Budget with id " + id + " not found"));
   }
 
   /**
@@ -71,7 +71,7 @@ public class BudgetService {
    */
   public void deleteBudget(Long id) {
     if (!budgetRepository.existsById(id)) {
-      throw new InvalidIdException("Budget with id " + id + " not found");
+      throw new NotFoundException("Budget with id " + id + " not found");
     }
     budgetRepository.deleteById(id);
   }
@@ -87,7 +87,7 @@ public class BudgetService {
     Budget budget =
         budgetRepository
             .findById(budgetId)
-            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+            .orElseThrow(() -> new NotFoundException("Budget with ID " + budgetId + " not found"));
 
     budgetRow.setBudget(budget);
     budget.getRow().add(budgetRow);
@@ -105,7 +105,7 @@ public class BudgetService {
     Budget budget =
         budgetRepository
             .findById(budgetId)
-            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+            .orElseThrow(() -> new NotFoundException("Budget with ID " + budgetId + " not found"));
 
     return new ArrayList<>(budget.getRow());
   }
@@ -120,14 +120,14 @@ public class BudgetService {
     Budget budget =
         budgetRepository
             .findById(budgetId)
-            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+            .orElseThrow(() -> new NotFoundException("Budget with ID " + budgetId + " not found"));
 
     BudgetRow budgetRow =
         budget.getRow().stream()
             .filter(row -> row.getId().equals(budgetRowId))
             .findFirst()
             .orElseThrow(
-                () -> new InvalidIdException("BudgetRow with ID " + budgetRowId + " not found"));
+                () -> new NotFoundException("BudgetRow with ID " + budgetRowId + " not found"));
 
     budget.getRow().remove(budgetRow);
     budgetRepository.save(budget);

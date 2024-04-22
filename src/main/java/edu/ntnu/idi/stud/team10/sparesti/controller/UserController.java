@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
-import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -49,13 +49,8 @@ public class UserController {
    */
   @PostMapping("/create")
   @Operation(summary = "Create a new user")
-  public ResponseEntity<String> createUser(@RequestBody UserDto userDTO) {
-    try {
-      userService.addUser(userDTO);
-      return ResponseEntity.ok("User created successfully");
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
+  public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDTO) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(userService.addUser(userDTO));
   }
 
   /**
@@ -82,12 +77,8 @@ public class UserController {
   @Operation(summary = "Add a budget to a user")
   public ResponseEntity<UserDto> addBudgetToUser(
       @PathVariable Long userId, @RequestBody BudgetDto budgetDTO) {
-    try {
-      UserDto updatedUserDto = userService.addBudgetToUser(userId, budgetDTO);
-      return ResponseEntity.ok(updatedUserDto); // Return 200 OK status
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().build(); // Return 400 Bad Request status
-    }
+    UserDto updatedUserDto = userService.addBudgetToUser(userId, budgetDTO);
+    return ResponseEntity.ok(updatedUserDto);
   }
 
   /**
@@ -131,13 +122,9 @@ public class UserController {
       @PathVariable Long userId,
       @PathVariable Long budgetId,
       @RequestBody BudgetRowDto budgetRowDTO) {
-    try {
-      BudgetDto updatedBudgetDto =
-          userService.addBudgetRowToUserBudget(userId, budgetId, budgetRowDTO);
-      return ResponseEntity.ok(updatedBudgetDto); // Return 200 OK status
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().build(); // Return 400 Bad Request status
-    }
+    BudgetDto updatedBudgetDto =
+        userService.addBudgetRowToUserBudget(userId, budgetId, budgetRowDTO);
+    return ResponseEntity.ok(updatedBudgetDto);
   }
 
   /**
@@ -172,13 +159,9 @@ public class UserController {
       @PathVariable Long budgetId,
       @PathVariable Long budgetRowId,
       @RequestBody BudgetRowDto budgetRowDto) {
-    try {
-      BudgetRowDto updatedBudgetRowDto =
-          userService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
-      return ResponseEntity.ok(updatedBudgetRowDto); // Return 200 OK status
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().build(); // Return 400 Bad Request status
-    }
+    BudgetRowDto updatedBudgetRowDto =
+        userService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
+    return ResponseEntity.ok(updatedBudgetRowDto);
   }
 
   /**
@@ -192,12 +175,8 @@ public class UserController {
   @Operation(summary = "Add a savings goal to a user")
   public ResponseEntity<String> addSavingsGoalToUser(
       @PathVariable Long userId, @RequestBody SavingsGoalDTO savingsGoalDTO) {
-    try {
-      UserDto updatedUserDto = userService.addSavingsGoalToUser(userId, savingsGoalDTO);
-      return ResponseEntity.ok("Saving goal created and added to user"); // Return 200 OK status
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(e.getMessage()); // Return 400 Bad Request status
-    }
+    UserDto updatedUserDto = userService.addSavingsGoalToUser(userId, savingsGoalDTO);
+    return ResponseEntity.ok("Saving goal created and added to user");
   }
 
   /**
@@ -238,12 +217,8 @@ public class UserController {
   @Operation(summary = "Add a challenge to a user")
   public ResponseEntity<UserDto> addChallengeToUser(
       @PathVariable Long userId, @RequestParam Long challengeId) {
-    try {
-      UserDto updatedUserDto = userService.addChallengeToUser(userId, challengeId);
-      return ResponseEntity.ok(updatedUserDto);
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().build();
-    }
+    UserDto updatedUserDto = userService.addChallengeToUser(userId, challengeId);
+    return ResponseEntity.ok(updatedUserDto);
   }
 
   /**
@@ -257,12 +232,8 @@ public class UserController {
   @Operation(summary = "Remove a challenge from a user")
   public ResponseEntity<UserDto> removeChallengeFromUser(
       @PathVariable Long userId, @PathVariable Long challengeId) {
-    try {
-      UserDto updatedUserDto = userService.removeChallengeFromUser(userId, challengeId);
-      return ResponseEntity.ok(updatedUserDto);
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    }
+    UserDto updatedUserDto = userService.removeChallengeFromUser(userId, challengeId);
+    return ResponseEntity.ok(updatedUserDto);
   }
 
   /**
@@ -275,13 +246,9 @@ public class UserController {
   @Operation(summary = "Get all challenges for a user")
   public ResponseEntity<Map<String, List<? extends ChallengeDTO>>> getChallengesByUser(
       @PathVariable Long userId) {
-    try {
-      Map<String, List<? extends ChallengeDTO>> challengesMap =
-          userService.getChallengesByUser(userId);
-      return ResponseEntity.ok(challengesMap);
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    }
+    Map<String, List<? extends ChallengeDTO>> challengesMap =
+        userService.getChallengesByUser(userId);
+    return ResponseEntity.ok(challengesMap);
   }
 
   /**
@@ -306,11 +273,7 @@ public class UserController {
   @Operation(summary = "Award a badge to a user")
   public ResponseEntity<Void> awardBadgeToUser(
       @PathVariable Long userId, @PathVariable Long badgeId) {
-    try {
       userService.giveUserBadge(userId, badgeId);
       return ResponseEntity.noContent().build(); // maybe should return something else.
-    } catch (InvalidIdException e) {
-      return ResponseEntity.badRequest().build();
-    }
   }
 }

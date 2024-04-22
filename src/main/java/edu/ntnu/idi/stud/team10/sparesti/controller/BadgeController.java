@@ -1,12 +1,12 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.BadgeService;
-import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -30,8 +30,8 @@ public class BadgeController {
    */
   @PostMapping("/create")
   @Operation(summary = "Create a new badge")
-  public BadgeDto createBadge(@RequestBody final BadgeDto badgeDto) {
-    return badgeService.createBadge(badgeDto);
+  public ResponseEntity<BadgeDto> createBadge(@RequestBody final BadgeDto badgeDto) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(badgeService.createBadge(badgeDto));
   }
 
   /**
@@ -43,11 +43,7 @@ public class BadgeController {
   @GetMapping("/rarity/{badgeId}")
   @Operation(summary = "Get a badge's rarity")
   public ResponseEntity<Double> getBadgeRarity(@PathVariable final Long badgeId) {
-    try {
-      return ResponseEntity.ok(badgeService.findBadgeRarity(badgeId));
-    } catch (InvalidIdException e) {
-      return ResponseEntity.badRequest().build();
-    }
+    return ResponseEntity.ok(badgeService.findBadgeRarity(badgeId));
   }
 
   /**
@@ -59,12 +55,6 @@ public class BadgeController {
   @GetMapping("/{badgeId}")
   @Operation(summary = "Get a singular badge's info")
   public ResponseEntity<BadgeDto> getBadgeInfo(@PathVariable final Long badgeId) {
-    try {
-      return ResponseEntity.ok(badgeService.getBadgeById(badgeId).get());
-    } catch (InvalidIdException e) {
-      return ResponseEntity.badRequest().build();
-    }
+    return ResponseEntity.ok(badgeService.getBadgeById(badgeId));
   }
-
-  // more may be added if needed
 }

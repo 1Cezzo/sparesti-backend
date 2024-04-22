@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingChallengeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for Saving Challenge entities. */
 @Service
@@ -115,8 +116,8 @@ public class SavingChallengeService {
    * @return the saving challenge if it exists, or an empty Optional otherwise.
    */
   @Transactional(readOnly = true)
-  public Optional<SavingChallenge> getById(Long id) {
-    return savingChallengeRepository.findById(id);
+  public SavingChallenge getById(Long id) {
+    return savingChallengeRepository.findById(id).orElseThrow(() -> new NotFoundException("Saving Challenge not found"));
   }
 
   /**
@@ -124,17 +125,21 @@ public class SavingChallengeService {
    *
    * @param id the id of the saving challenge.
    * @param amount the amount to add to the saved amount.
+   * @throws IllegalArgumentException if the amount is negative.
+   * @throws NotFoundException if the saving challenge is not found.
    */
   @Transactional
   public void addToSavedAmount(Long id, Double amount) {
-    Optional<SavingChallenge> optionalChallenge = savingChallengeRepository.findById(id);
-    if (optionalChallenge.isPresent()) {
-      SavingChallenge challenge = optionalChallenge.get();
-      challenge.setSavedAmount(challenge.getSavedAmount() + amount);
-      challenge.setCompleted(challenge.getSavedAmount() >= challenge.getTargetAmount());
-      savingChallengeRepository.save(challenge);
-    } else {
-      throw new IllegalArgumentException("Saving Challenge not found");
+    if (amount < 0) {
+      throw new IllegalArgumentException("Amount must be positive");
     }
+
+    SavingChallenge challenge =
+        savingChallengeRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Saving Challenge not found"));
+    challenge.setSavedAmount(challenge.getSavedAmount() + amount);
+    challenge.setCompleted(challenge.getSavedAmount() >= challenge.getTargetAmount());
+    savingChallengeRepository.save(challenge);
   }
 }
