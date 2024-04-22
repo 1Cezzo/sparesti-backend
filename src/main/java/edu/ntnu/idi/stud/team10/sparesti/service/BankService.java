@@ -52,7 +52,7 @@ public class BankService {
       throw new IllegalArgumentException("Account parameter cannot be null");
     }
     Account account = accountMapper.toEntity(accountDto);
-    account.setId(null); // note to self: id is set to null first in case request input anything as id :)
+    account.setId(null);
     account.setBalance(0);
     accountRepository.save(account);
     return accountMapper.toDto(account);
@@ -95,7 +95,7 @@ public class BankService {
   @Transactional
   public void addTransaction(TransactionDto transactionDto) {
     if (transactionDto == null) {
-      throw new IllegalArgumentException("TransactionDto parameter cannot be null");
+      throw new IllegalArgumentException("Transaction parameter cannot be null");
     }
     Account account =
         accountRepository
