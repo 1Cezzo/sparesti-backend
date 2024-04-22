@@ -21,8 +21,6 @@ import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
@@ -32,32 +30,24 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-  private final SavingsGoalRepository savingsGoalRepository;
   private final BudgetRepository budgetRepository;
   private final BudgetRowRepository budgetRowRepository;
   private final BadgeRepository badgeRepository;
-  private final ChallengeRepository challengeRepository;
 
   /**
    * Constructor for UserService, with automatic injection of dependencies.
    *
    * @param userRepository (UserRepository) The repository for User entities.
-   * @param savingsGoalRepository (SavingsGoalRepository) The repository for SavingsGoal entities.
-   * @param challengeRepository (ChallengeRepository) The repository for Challenge entities.
    */
   @Autowired
   public UserService(
       UserRepository userRepository,
-      SavingsGoalRepository savingsGoalRepository,
-      ChallengeRepository challengeRepository,
       BudgetRepository budgetRepository,
       BudgetRowRepository budgetRowRepository,
       BadgeRepository badgeRepository) {
     this.userRepository = userRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
-    this.savingsGoalRepository = savingsGoalRepository;
-    this.challengeRepository = challengeRepository;
     this.badgeRepository = badgeRepository;
     this.passwordEncoder = new BCryptPasswordEncoder();
   }
