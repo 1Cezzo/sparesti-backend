@@ -1,8 +1,9 @@
 package edu.ntnu.idi.stud.team10.sparesti.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 
 /** Repository for ConsumptionChallenge entities. */
-public interface ConsumptionChallengeRepository extends JpaRepository<ConsumptionChallenge, Long> {}
+@Repository
+public interface ConsumptionChallengeRepository extends ChallengeRepository<ConsumptionChallenge> {}

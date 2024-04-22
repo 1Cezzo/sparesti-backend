@@ -1,22 +1,23 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.ConsumptionChallengeDTO;
-import edu.ntnu.idi.stud.team10.sparesti.dto.PurchaseChallengeDTO;
-import edu.ntnu.idi.stud.team10.sparesti.dto.SavingChallengeDTO;
+import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
-import edu.ntnu.idi.stud.team10.sparesti.service.ChallengeService;
 import edu.ntnu.idi.stud.team10.sparesti.service.ConsumptionChallengeService;
 import edu.ntnu.idi.stud.team10.sparesti.service.PurchaseChallengeService;
 import edu.ntnu.idi.stud.team10.sparesti.service.SavingChallengeService;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserChallengeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -26,21 +27,21 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 /** Controller class for the Challenge entity. */
 public class ChallengeController {
 
-  private final ChallengeService challengeService;
   private final PurchaseChallengeService purchaseChallengeService;
   private final SavingChallengeService savingChallengeService;
   private final ConsumptionChallengeService consumptionChallengeService;
+  private final UserChallengeService userChallengeService;
 
   @Autowired
   public ChallengeController(
-      ChallengeService challengeService,
-      PurchaseChallengeService purchaseChallengeService,
-      SavingChallengeService savingChallengeService,
-      ConsumptionChallengeService consumptionChallengeService) {
-    this.challengeService = challengeService;
+      UserChallengeService userChallengeService,
+      @Qualifier("purchaseChallengeService") PurchaseChallengeService purchaseChallengeService,
+      @Qualifier("savingChallengeService") SavingChallengeService savingChallengeService,
+      @Qualifier("consumptionChallengeService") ConsumptionChallengeService consumptionChallengeService) {
     this.purchaseChallengeService = purchaseChallengeService;
     this.savingChallengeService = savingChallengeService;
     this.consumptionChallengeService = consumptionChallengeService;
+    this.userChallengeService = userChallengeService;
   }
 
   /**
@@ -53,7 +54,7 @@ public class ChallengeController {
   @Operation(summary = "Create a new purchase challenge")
   public ResponseEntity<PurchaseChallenge> createPurchaseChallenge(
       @RequestBody PurchaseChallengeDTO dto) {
-    PurchaseChallenge challenge = purchaseChallengeService.create(dto);
+    PurchaseChallenge challenge = purchaseChallengeService.createChallenge(dto.toEntity());
     return new ResponseEntity<>(challenge, HttpStatus.CREATED);
   }
 
@@ -68,7 +69,7 @@ public class ChallengeController {
   @Operation(summary = "Update an existing purchase challenge")
   public ResponseEntity<PurchaseChallenge> updatePurchaseChallenge(
       @PathVariable Long id, @RequestBody PurchaseChallengeDTO dto) {
-    PurchaseChallenge challenge = purchaseChallengeService.update(id, dto);
+    PurchaseChallenge challenge = purchaseChallengeService.updatePurchaseChallenge(id, dto);
     return ResponseEntity.ok(challenge);
   }
 
@@ -81,7 +82,7 @@ public class ChallengeController {
   @DeleteMapping("/purchase/{id}")
   @Operation(summary = "Delete an existing purchase challenge")
   public ResponseEntity<Void> deletePurchaseChallenge(@PathVariable Long id) {
-    purchaseChallengeService.delete(id);
+    purchaseChallengeService.deletePurchaseChallenge(id);
     return ResponseEntity.noContent().build();
   }
 
@@ -93,7 +94,7 @@ public class ChallengeController {
   @GetMapping("/purchase")
   @Operation(summary = "Get all purchase challenges")
   public ResponseEntity<List<PurchaseChallenge>> getAllPurchaseChallenges() {
-    List<PurchaseChallenge> challenges = purchaseChallengeService.getAll();
+    List<PurchaseChallenge> challenges = purchaseChallengeService.getAllPurchaseChallenges();
     return ResponseEntity.ok(challenges);
   }
 
@@ -106,7 +107,8 @@ public class ChallengeController {
   @GetMapping("/purchase/{id}")
   @Operation(summary = "Get a purchase challenge by id")
   public ResponseEntity<PurchaseChallenge> getPurchaseChallengeById(@PathVariable Long id) {
-    return ResponseEntity.ok(purchaseChallengeService.getById(id));
+    Optional<PurchaseChallenge> challenge = purchaseChallengeService.getPurchaseChallengeById(id);
+    return challenge.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   /**
@@ -134,7 +136,7 @@ public class ChallengeController {
   @Operation(summary = "Create a new saving challenge")
   public ResponseEntity<SavingChallenge> createSavingChallenge(
       @RequestBody SavingChallengeDTO dto) {
-    SavingChallenge challenge = savingChallengeService.create(dto);
+    SavingChallenge challenge = savingChallengeService.createChallenge(dto.toEntity());
     return new ResponseEntity<>(challenge, HttpStatus.CREATED);
   }
 
@@ -149,7 +151,7 @@ public class ChallengeController {
   @Operation(summary = "Update an existing saving challenge")
   public ResponseEntity<SavingChallenge> updateSavingChallenge(
       @PathVariable Long id, @RequestBody SavingChallengeDTO dto) {
-    SavingChallenge challenge = savingChallengeService.update(id, dto);
+    SavingChallenge challenge = savingChallengeService.updateSavingChallenge(id, dto);
     return ResponseEntity.ok(challenge);
   }
 
@@ -162,7 +164,7 @@ public class ChallengeController {
   @DeleteMapping("/saving/{id}")
   @Operation(summary = "Delete an existing saving challenge")
   public ResponseEntity<Void> deleteSavingChallenge(@PathVariable Long id) {
-    savingChallengeService.delete(id);
+    savingChallengeService.deleteSavingChallenge(id);
     return ResponseEntity.noContent().build();
   }
 
@@ -174,7 +176,7 @@ public class ChallengeController {
   @GetMapping("/saving")
   @Operation(summary = "Get all saving challenges")
   public ResponseEntity<List<SavingChallenge>> getAllSavingChallenges() {
-    List<SavingChallenge> challenges = savingChallengeService.getAll();
+    List<SavingChallenge> challenges = savingChallengeService.getAllSavingChallenges();
     return ResponseEntity.ok(challenges);
   }
 
@@ -187,8 +189,8 @@ public class ChallengeController {
   @GetMapping("/saving/{id}")
   @Operation(summary = "Get a saving challenge by id")
   public ResponseEntity<SavingChallenge> getSavingChallengeById(@PathVariable Long id) {
-    SavingChallenge challenge = savingChallengeService.getById(id);
-    return ResponseEntity.ok(challenge);
+    Optional<SavingChallenge> challenge = savingChallengeService.getSavingChallengeById(id);
+    return challenge.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   /**
@@ -216,7 +218,7 @@ public class ChallengeController {
   @Operation(summary = "Create a new consumption challenge")
   public ResponseEntity<ConsumptionChallenge> createConsumptionChallenge(
       @RequestBody ConsumptionChallengeDTO dto) {
-    ConsumptionChallenge challenge = consumptionChallengeService.create(dto);
+    ConsumptionChallenge challenge = consumptionChallengeService.createChallenge(dto.toEntity());
     return new ResponseEntity<>(challenge, HttpStatus.CREATED);
   }
 
@@ -231,7 +233,8 @@ public class ChallengeController {
   @Operation(summary = "Update an existing consumption challenge")
   public ResponseEntity<ConsumptionChallenge> updateConsumptionChallenge(
       @PathVariable Long id, @RequestBody ConsumptionChallengeDTO dto) {
-    ConsumptionChallenge challenge = consumptionChallengeService.update(id, dto);
+    ConsumptionChallenge challenge =
+        consumptionChallengeService.updateConsumptionChallenge(id, dto);
     return ResponseEntity.ok(challenge);
   }
 
@@ -244,7 +247,7 @@ public class ChallengeController {
   @DeleteMapping("/consumption/{id}")
   @Operation(summary = "Delete an existing consumption challenge")
   public ResponseEntity<Void> deleteConsumptionChallenge(@PathVariable Long id) {
-    consumptionChallengeService.delete(id);
+    consumptionChallengeService.deleteConsumptionChallenge(id);
     return ResponseEntity.noContent().build();
   }
 
@@ -256,7 +259,8 @@ public class ChallengeController {
   @GetMapping("/consumption")
   @Operation(summary = "Get all consumption challenges")
   public ResponseEntity<List<ConsumptionChallenge>> getAllConsumptionChallenges() {
-    List<ConsumptionChallenge> challenges = consumptionChallengeService.getAll();
+    List<ConsumptionChallenge> challenges =
+        consumptionChallengeService.getAllConsumptionChallenges();
     return ResponseEntity.ok(challenges);
   }
 
@@ -269,8 +273,9 @@ public class ChallengeController {
   @GetMapping("/consumption/{id}")
   @Operation(summary = "Get a consumption challenge by id")
   public ResponseEntity<ConsumptionChallenge> getConsumptionChallengeById(@PathVariable Long id) {
-    ConsumptionChallenge challenge = consumptionChallengeService.getById(id);
-    return ResponseEntity.ok(challenge);
+    Optional<ConsumptionChallenge> challenge =
+        consumptionChallengeService.getConsumptionChallengeById(id);
+    return challenge.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   /**
@@ -285,6 +290,96 @@ public class ChallengeController {
   public ResponseEntity<String> addAmountToConsumptionChallenge(
       @PathVariable Long id, @RequestParam Double amount) {
     consumptionChallengeService.addToSavedAmount(id, amount);
-    return ResponseEntity.ok("Amount added successfully");
+    return ResponseEntity.ok(amount + " added successfully");
+  }
+
+  /**
+   * Add a challenge to a user.
+   *
+   * @param userId the id of the user.
+   * @param challengeId the id of the challenge.
+   * @return the updated user DTO.
+   */
+  @PostMapping("/users/{userId}/challenges/{challengeId}")
+  @Operation(summary = "Add a challenge to a user")
+  public ResponseEntity<UserDto> addChallengeToUser(
+      @PathVariable Long userId, @PathVariable Long challengeId) {
+    UserDto userDto = userChallengeService.addChallengeToUser(userId, challengeId);
+    return ResponseEntity.ok(userDto);
+  }
+
+  /**
+   * Remove a challenge from a user.
+   *
+   * @param userId the id of the user.
+   * @param challengeId the id of the challenge.
+   * @return the updated user DTO.
+   */
+  @DeleteMapping("/users/{userId}/challenges/{challengeId}")
+  @Operation(summary = "Remove a challenge from a user")
+  public ResponseEntity<UserDto> removeChallengeFromUser(
+      @PathVariable Long userId, @PathVariable Long challengeId) {
+    UserDto userDto = userChallengeService.removeChallengeFromUser(userId, challengeId);
+    return ResponseEntity.ok(userDto);
+  }
+
+  /**
+   * Fetch all consumption challenges for a user.
+   *
+   * @param userId the id of the user.
+   * @return a list of consumption challenges.
+   */
+  @GetMapping("/users/{userId}/consumption-challenges")
+  @Operation(summary = "Fetch all consumption challenges for a user")
+  public ResponseEntity<List<ConsumptionChallengeDTO>> fetchConsumptionChallengesForUser(
+      @PathVariable Long userId) {
+    List<ConsumptionChallengeDTO> consumptionChallenges =
+        userChallengeService.fetchConsumptionChallengesForUser(userId);
+    return ResponseEntity.ok(consumptionChallenges);
+  }
+
+  /**
+   * Fetch all purchase challenges for a user.
+   *
+   * @param userId the id of the user.
+   * @return a list of purchase challenges.
+   */
+  @GetMapping("/users/{userId}/purchase-challenges")
+  @Operation(summary = "Fetch all purchase challenges for a user")
+  public ResponseEntity<List<PurchaseChallengeDTO>> fetchPurchaseChallengesForUser(
+      @PathVariable Long userId) {
+    List<PurchaseChallengeDTO> purchaseChallenges =
+        userChallengeService.fetchPurchaseChallengesForUser(userId);
+    return ResponseEntity.ok(purchaseChallenges);
+  }
+
+  /**
+   * Fetch all saving challenges for a user.
+   *
+   * @param userId the id of the user.
+   * @return a list of saving challenges.
+   */
+  @GetMapping("/users/{userId}/saving-challenges")
+  @Operation(summary = "Fetch all saving challenges for a user")
+  public ResponseEntity<List<SavingChallengeDTO>> fetchSavingChallengesForUser(
+      @PathVariable Long userId) {
+    List<SavingChallengeDTO> savingChallenges =
+        userChallengeService.fetchSavingChallengesForUser(userId);
+    return ResponseEntity.ok(savingChallenges);
+  }
+
+  /**
+   * Get all challenges for a user.
+   *
+   * @param userId the id of the user.
+   * @return a map of challenges.
+   */
+  @GetMapping("/users/{userId}/challenges")
+  @Operation(summary = "Get all challenges for a user")
+  public ResponseEntity<Map<String, List<? extends ChallengeDTO>>> getChallengesByUser(
+      @PathVariable Long userId) {
+    Map<String, List<? extends ChallengeDTO>> challengesMap =
+        userChallengeService.getChallengesByUser(userId);
+    return ResponseEntity.ok(challengesMap);
   }
 }

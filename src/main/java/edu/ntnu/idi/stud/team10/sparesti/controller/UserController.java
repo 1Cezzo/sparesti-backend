@@ -1,15 +1,15 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.*;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -161,118 +161,5 @@ public class UserController {
     BudgetRowDto updatedBudgetRowDto =
         userService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
     return ResponseEntity.ok(updatedBudgetRowDto);
-  }
-
-  /**
-   * Add a savings goal to a user.
-   *
-   * @param userId The ID of the user.
-   * @param savingsGoalDTO The savings goal to add.
-   * @return The updated user DTO.
-   */
-  @PostMapping("/{userId}/savings-goals/add")
-  @Operation(summary = "Add a savings goal to a user")
-  public ResponseEntity<String> addSavingsGoalToUser(
-      @PathVariable Long userId, @RequestBody SavingsGoalDTO savingsGoalDTO) {
-    UserDto updatedUserDto = userService.addSavingsGoalToUser(userId, savingsGoalDTO);
-    return ResponseEntity.ok("Saving goal created and added to user");
-  }
-
-  /**
-   * Get all savings goals for a user.
-   *
-   * @param userId The ID of the user.
-   * @return A list of savings goal DTOs.
-   */
-  @GetMapping("/{userId}/savings-goals")
-  @Operation(summary = "Get all savings goals for a user")
-  public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(@PathVariable Long userId) {
-    List<SavingsGoalDTO> savingsGoals = userService.getAllSavingsGoalsForUser(userId);
-    return ResponseEntity.ok(savingsGoals);
-  }
-
-  /**
-   * Delete a savings goal from a user.
-   *
-   * @param userId The ID of the user.
-   * @param savingsGoalId The ID of the savings goal.
-   */
-  @DeleteMapping("/{userId}/savings-goals/{savingsGoalId}")
-  @Operation(summary = "Delete a savings goal from a user")
-  public ResponseEntity<Void> deleteSavingsGoalFromUser(
-      @PathVariable Long userId, @PathVariable Long savingsGoalId) {
-    userService.deleteSavingsGoalFromUser(userId, savingsGoalId);
-    return ResponseEntity.noContent().build();
-  }
-
-  /**
-   * Add a challenge to a user.
-   *
-   * @param userId the ID of the user
-   * @param challengeId the ID of the challenge
-   * @return the updated user DTO
-   */
-  @PostMapping("/{userId}/challenges/add")
-  @Operation(summary = "Add a challenge to a user")
-  public ResponseEntity<UserDto> addChallengeToUser(
-      @PathVariable Long userId, @RequestParam Long challengeId) {
-    UserDto updatedUserDto = userService.addChallengeToUser(userId, challengeId);
-    return ResponseEntity.ok(updatedUserDto);
-  }
-
-  /**
-   * Remove a challenge from a user.
-   *
-   * @param userId the ID of the user
-   * @param challengeId the ID of the challenge
-   * @return the updated user DTO
-   */
-  @DeleteMapping("/{userId}/challenges/{challengeId}")
-  @Operation(summary = "Remove a challenge from a user")
-  public ResponseEntity<UserDto> removeChallengeFromUser(
-      @PathVariable Long userId, @PathVariable Long challengeId) {
-    UserDto updatedUserDto = userService.removeChallengeFromUser(userId, challengeId);
-    return ResponseEntity.ok(updatedUserDto);
-  }
-
-  /**
-   * Get all challenges for a user.
-   *
-   * @param userId the ID of the user
-   * @return a map of challenges
-   */
-  @GetMapping("/{userId}/challenges")
-  @Operation(summary = "Get all challenges for a user")
-  public ResponseEntity<Map<String, List<? extends ChallengeDTO>>> getChallengesByUser(
-      @PathVariable Long userId) {
-    Map<String, List<? extends ChallengeDTO>> challengesMap =
-        userService.getChallengesByUser(userId);
-    return ResponseEntity.ok(challengesMap);
-  }
-
-  /**
-   * Get all badges earned by a user id.
-   *
-   * @param userId The ID of the user
-   * @return A set of the user's earned badges
-   */
-  @GetMapping("/{userId}/badges")
-  @Operation(summary = "Get all badges a user earned")
-  public ResponseEntity<Set<BadgeDto>> getUserBadges(@PathVariable Long userId) {
-    return ResponseEntity.ok(userService.getAllBadgesByUserId(userId));
-  }
-
-  /**
-   * Awards a badge to a user
-   *
-   * @param userId The ID of the user
-   * @param badgeId The ID of the badge
-   */
-  @PostMapping("/{userId}/badges/{badgeId}")
-  @Operation(summary = "Award a badge to a user")
-  public ResponseEntity<Void> awardBadgeToUser(
-      @PathVariable Long userId, @PathVariable Long badgeId) {
-    userService.giveUserBadge(userId, badgeId);
-    return ResponseEntity.noContent().build(); // maybe should return something else.
   }
 }

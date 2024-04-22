@@ -9,19 +9,6 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 public class SavingChallengeDTO extends ChallengeDTO {
-
-  /**
-   * The target amount for the challenge.
-   *
-   * @param savedChallenge The SavingChallenge entity to convert.
-   */
-  public SavingChallengeDTO(SavingChallenge savedChallenge) {
-    this.setDescription(savedChallenge.getDescription());
-    this.setTargetAmount(savedChallenge.getTargetAmount());
-    this.setTimeInterval(savedChallenge.getTimeInterval());
-    this.setDifficultyLevel(savedChallenge.getDifficultyLevel());
-  }
-
   /**
    * Constructor for creating a new SavingChallengeDTO.
    *
@@ -41,8 +28,12 @@ public class SavingChallengeDTO extends ChallengeDTO {
     SavingChallenge challenge = new SavingChallenge();
     challenge.setDescription(this.getDescription());
     challenge.setTargetAmount(this.getTargetAmount());
+    challenge.setSavedAmount(this.getSavedAmount());
+    challenge.setMediaUrl(this.getMediaUrl());
     challenge.setTimeInterval(this.getTimeInterval());
+    challenge.setExpiryDate(this.getExpiryDate());
     challenge.setDifficultyLevel(this.getDifficultyLevel());
+    challenge.setCompleted(this.isCompleted());
     return challenge;
   }
 }

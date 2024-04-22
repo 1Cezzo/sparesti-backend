@@ -14,20 +14,6 @@ public class ConsumptionChallengeDTO extends ChallengeDTO {
   private double reductionPercentage;
 
   /**
-   * The target amount for the challenge.
-   *
-   * @param savedChallenge The ConsumptionChallenge entity to convert.
-   */
-  public ConsumptionChallengeDTO(ConsumptionChallenge savedChallenge) {
-    this.setDescription(savedChallenge.getDescription());
-    this.setTargetAmount(savedChallenge.getTargetAmount());
-    this.setTimeInterval(savedChallenge.getTimeInterval());
-    this.setDifficultyLevel(savedChallenge.getDifficultyLevel());
-    this.setProductCategory(savedChallenge.getProductCategory());
-    this.setReductionPercentage(savedChallenge.getReductionPercentage());
-  }
-
-  /**
    * Constructor for creating a new ConsumptionChallengeDTO.
    *
    * @param challenge The ConsumptionChallenge entity to convert.
@@ -50,10 +36,13 @@ public class ConsumptionChallengeDTO extends ChallengeDTO {
     ConsumptionChallenge challenge = new ConsumptionChallenge();
     challenge.setDescription(this.getDescription());
     challenge.setTargetAmount(this.getTargetAmount());
+    challenge.setSavedAmount(this.getSavedAmount());
     challenge.setTimeInterval(this.getTimeInterval());
+    challenge.setMediaUrl(this.getMediaUrl());
     challenge.setDifficultyLevel(this.getDifficultyLevel());
     challenge.setProductCategory(this.getProductCategory());
     challenge.setReductionPercentage(this.getReductionPercentage());
+    challenge.setCompleted(this.isCompleted());
     return challenge;
   }
 }

@@ -1,12 +1,9 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
@@ -15,32 +12,21 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for Saving Challenge entities. */
 @Service
-public class SavingChallengeService {
+public class SavingChallengeService extends ChallengeService<SavingChallenge> {
 
-  private final SavingChallengeRepository savingChallengeRepository;
-  private final ChallengeService challengeService;
-
-  @Autowired
-  public SavingChallengeService(
-      SavingChallengeRepository savingChallengeRepository, ChallengeService challengeService) {
-    this.savingChallengeRepository = savingChallengeRepository;
-    this.challengeService = challengeService;
+  public SavingChallengeService(SavingChallengeRepository savingChallengeRepository) {
+    super(savingChallengeRepository);
   }
 
   /**
    * Create a new saving challenge.
    *
-   * @param dto the DTO representing the saving challenge to create.
+   * @param entity the DTO representing the saving challenge to create.
    * @return the created saving challenge.
    */
-  @Transactional
-  public SavingChallenge create(SavingChallengeDTO dto) {
-    SavingChallenge challenge = dto.toEntity();
-    challenge.setSavedAmount(0.0);
-    LocalDate expiryDate = challengeService.calculateExpiryDate(dto.getTimeInterval());
-    challenge.setExpiryDate(expiryDate);
-    challenge.setCompleted(false);
-    return savingChallengeRepository.save(challenge);
+  @Override
+  public SavingChallenge createChallenge(SavingChallenge entity) {
+    return super.createChallenge(entity);
   }
 
   /**
@@ -50,38 +36,9 @@ public class SavingChallengeService {
    * @param savingChallengeDTO the DTO representing the saving challenge to update.
    * @return the updated saving challenge.
    */
-  @Transactional
-  public SavingChallenge update(Long id, SavingChallengeDTO savingChallengeDTO) {
-    Optional<SavingChallenge> optionalChallenge = savingChallengeRepository.findById(id);
-    if (optionalChallenge.isPresent()) {
-      SavingChallenge existingChallenge = optionalChallenge.get();
-
-      if (savingChallengeDTO.getDescription() != null) {
-        existingChallenge.setDescription(savingChallengeDTO.getDescription());
-      }
-
-      existingChallenge.setTargetAmount(savingChallengeDTO.getTargetAmount());
-      existingChallenge.setSavedAmount(savingChallengeDTO.getSavedAmount());
-
-      if (savingChallengeDTO.getMediaUrl() != null) {
-        existingChallenge.setMediaUrl(savingChallengeDTO.getMediaUrl());
-      }
-
-      if (savingChallengeDTO.getTimeInterval() != null) {
-        existingChallenge.setTimeInterval(savingChallengeDTO.getTimeInterval());
-        LocalDate expiryDate =
-            challengeService.calculateExpiryDate(existingChallenge.getTimeInterval());
-        existingChallenge.setExpiryDate(expiryDate);
-      }
-
-      if (savingChallengeDTO.getDifficultyLevel() != null) {
-        existingChallenge.setDifficultyLevel(savingChallengeDTO.getDifficultyLevel());
-      }
-
-      return savingChallengeRepository.save(existingChallenge);
-    } else {
-      throw new IllegalArgumentException("Saving Challenge not found");
-    }
+  public SavingChallenge updateSavingChallenge(Long id, SavingChallengeDTO savingChallengeDTO) {
+    SavingChallenge updatedEntity = savingChallengeDTO.toEntity();
+    return super.updateChallenge(id, updatedEntity);
   }
 
   /**
@@ -89,14 +46,8 @@ public class SavingChallengeService {
    *
    * @param id the id of the saving challenge.
    */
-  @Transactional
-  public void delete(Long id) {
-    Optional<SavingChallenge> optionalChallenge = savingChallengeRepository.findById(id);
-    if (optionalChallenge.isPresent()) {
-      savingChallengeRepository.delete(optionalChallenge.get());
-    } else {
-      throw new IllegalArgumentException("Saving Challenge not found");
-    }
+  public void deleteSavingChallenge(Long id) {
+    super.deleteChallenge(id);
   }
 
   /**
@@ -104,9 +55,8 @@ public class SavingChallengeService {
    *
    * @return a list of all saving challenges.
    */
-  @Transactional(readOnly = true)
-  public List<SavingChallenge> getAll() {
-    return savingChallengeRepository.findAll();
+  public List<SavingChallenge> getAllSavingChallenges() {
+    return super.getAll();
   }
 
   /**
@@ -115,11 +65,8 @@ public class SavingChallengeService {
    * @param id the id of the saving challenge.
    * @return the saving challenge if it exists, or an empty Optional otherwise.
    */
-  @Transactional(readOnly = true)
-  public SavingChallenge getById(Long id) {
-    return savingChallengeRepository
-        .findById(id)
-        .orElseThrow(() -> new NotFoundException("Saving Challenge not found"));
+  public Optional<SavingChallenge> getSavingChallengeById(Long id) {
+    return super.getById(id);
   }
 
   /**
@@ -130,18 +77,7 @@ public class SavingChallengeService {
    * @throws IllegalArgumentException if the amount is negative.
    * @throws NotFoundException if the saving challenge is not found.
    */
-  @Transactional
-  public void addToSavedAmount(Long id, Double amount) {
-    if (amount < 0) {
-      throw new IllegalArgumentException("Amount must be positive");
-    }
-
-    SavingChallenge challenge =
-        savingChallengeRepository
-            .findById(id)
-            .orElseThrow(() -> new NotFoundException("Saving Challenge not found"));
-    challenge.setSavedAmount(challenge.getSavedAmount() + amount);
-    challenge.setCompleted(challenge.getSavedAmount() >= challenge.getTargetAmount());
-    savingChallengeRepository.save(challenge);
+  public void addToSavedAmount(Long id, double amount) {
+    super.addToSavedAmount(id, amount);
   }
 }
