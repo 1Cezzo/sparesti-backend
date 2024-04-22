@@ -1,8 +1,9 @@
 package edu.ntnu.idi.stud.team10.sparesti.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
 
 /** Repository for SavingChallenge entities. */
-public interface SavingChallengeRepository extends JpaRepository<SavingChallenge, Long> {}
+@Repository
+public interface SavingChallengeRepository extends ChallengeRepository<SavingChallenge> {}
