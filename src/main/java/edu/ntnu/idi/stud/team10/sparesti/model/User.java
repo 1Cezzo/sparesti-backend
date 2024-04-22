@@ -103,10 +103,10 @@ public class User {
       return false;
     }
     User user = (User) o;
-    return Objects.equals(id, user.id) &&
-           Objects.equals(displayName, user.displayName) &&
-           Objects.equals(password, user.password) &&
-           Objects.equals(email, user.email);
+    return Objects.equals(id, user.id)
+        && Objects.equals(displayName, user.displayName)
+        && Objects.equals(password, user.password)
+        && Objects.equals(email, user.email);
   }
 
   @Override
@@ -116,10 +116,15 @@ public class User {
 
   @Override
   public String toString() {
-    return "User{" +
-           "id=" + id +
-           ", displayName='" + displayName + '\'' +
-           ", email='" + email + '\'' +
-           '}';
+    return "User{"
+        + "id="
+        + id
+        + ", displayName='"
+        + displayName
+        + '\''
+        + ", email='"
+        + email
+        + '\''
+        + '}';
   }
 }

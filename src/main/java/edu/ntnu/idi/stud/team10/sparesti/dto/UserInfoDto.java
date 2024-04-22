@@ -1,9 +1,10 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
-import edu.ntnu.idi.stud.team10.sparesti.enums.OccupationStatus;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+
+import edu.ntnu.idi.stud.team10.sparesti.enums.OccupationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

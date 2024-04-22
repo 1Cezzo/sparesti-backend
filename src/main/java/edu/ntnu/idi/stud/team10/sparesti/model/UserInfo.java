@@ -1,5 +1,10 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 import edu.ntnu.idi.stud.team10.sparesti.enums.OccupationStatus;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.CollectionTable;
@@ -15,10 +20,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,21 +34,15 @@ public class UserInfo {
   @Hidden
   private Long id;
 
-  @PrimaryKeyJoinColumn()
-  @OneToOne
-  private User user;
+  @PrimaryKeyJoinColumn() @OneToOne private User user;
 
-  @Column()
-  private String firstName;
+  @Column() private String firstName;
 
-  @Column()
-  private String lastName;
+  @Column() private String lastName;
 
-  @Column()
-  private LocalDate dateOfBirth;
+  @Column() private LocalDate dateOfBirth;
 
-  @Column()
-  private OccupationStatus occupationStatus;
+  @Column() private OccupationStatus occupationStatus;
 
   @Min(0)
   @Max(5)
@@ -62,7 +57,9 @@ public class UserInfo {
   private Set<BudgetingProduct> budgetingProducts;
 
   @ElementCollection(targetClass = String.class)
-  @CollectionTable(name = "budgeting_locations", joinColumns = @JoinColumn(name = "user_details_id"))
+  @CollectionTable(
+      name = "budgeting_locations",
+      joinColumns = @JoinColumn(name = "user_details_id"))
   @Column(name = "location")
   private List<String> budgetingLocations;
 
@@ -75,33 +72,43 @@ public class UserInfo {
       return false;
     }
     UserInfo userInfo = (UserInfo) o;
-    return Objects.equals(id, userInfo.id) &&
-           Objects.equals(user, userInfo.user) &&
-           Objects.equals(firstName, userInfo.firstName) &&
-           Objects.equals(lastName, userInfo.lastName) &&
-           Objects.equals(dateOfBirth, userInfo.dateOfBirth) &&
-           occupationStatus == userInfo.occupationStatus &&
-           Objects.equals(motivation, userInfo.motivation) &&
-           Objects.equals(income, userInfo.income);
+    return Objects.equals(id, userInfo.id)
+        && Objects.equals(user, userInfo.user)
+        && Objects.equals(firstName, userInfo.firstName)
+        && Objects.equals(lastName, userInfo.lastName)
+        && Objects.equals(dateOfBirth, userInfo.dateOfBirth)
+        && occupationStatus == userInfo.occupationStatus
+        && Objects.equals(motivation, userInfo.motivation)
+        && Objects.equals(income, userInfo.income);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, user, firstName, lastName, dateOfBirth, occupationStatus, motivation,
-                        income);
+    return Objects.hash(
+        id, user, firstName, lastName, dateOfBirth, occupationStatus, motivation, income);
   }
 
   @Override
   public String toString() {
-    return "UserInfo{" +
-           "id=" + id +
-           ", user=" + user +
-           ", firstName='" + firstName + '\'' +
-           ", lastName='" + lastName + '\'' +
-           ", dateOfBirth=" + dateOfBirth +
-           ", occupationStatus=" + occupationStatus +
-           ", motivation=" + motivation +
-           ", income=" + income +
-           '}';
+    return "UserInfo{"
+        + "id="
+        + id
+        + ", user="
+        + user
+        + ", firstName='"
+        + firstName
+        + '\''
+        + ", lastName='"
+        + lastName
+        + '\''
+        + ", dateOfBirth="
+        + dateOfBirth
+        + ", occupationStatus="
+        + occupationStatus
+        + ", motivation="
+        + motivation
+        + ", income="
+        + income
+        + '}';
   }
 }

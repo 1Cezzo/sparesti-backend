@@ -31,6 +31,5 @@ public class BudgetingProduct {
   @Column(nullable = false)
   private Integer amount;
 
-  @ManyToOne
-  private UserInfo userInfo;
+  @ManyToOne private UserInfo userInfo;
 }
