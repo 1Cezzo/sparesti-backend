@@ -3,12 +3,14 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import java.util.List;
 import java.util.Optional;
 
+import edu.ntnu.idi.stud.team10.sparesti.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
+import edu.ntnu.idi.stud.team10.sparesti.service.BankService;
 
 /** Service for Budget Row entities. */
 @Service
@@ -58,7 +60,8 @@ public class BudgetRowService {
     if (optionalBudgetRow.isPresent()) {
       BudgetRow budgetRow = optionalBudgetRow.get();
       budgetRow.setName(budgetRowDto.getName());
-      budgetRow.setAmount(budgetRowDto.getAmount());
+      budgetRow.setUsedAmount(budgetRowDto.getUsedAmount());
+      budgetRow.setMaxAmount(budgetRowDto.getMaxAmount());
       budgetRow.setCategory(budgetRowDto.getCategory());
       return budgetRowRepository.save(budgetRow);
     } else {

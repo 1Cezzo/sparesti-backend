@@ -15,7 +15,8 @@ public class BudgetRowDto {
   private Long id;
 
   private String name;
-  private double amount;
+  private double usedAmount;
+  private double maxAmount;
   private CategoryEnum category;
 
   /**
@@ -26,7 +27,8 @@ public class BudgetRowDto {
   public BudgetRowDto(BudgetRow budgetRow) {
     this.id = budgetRow.getId();
     this.name = budgetRow.getName();
-    this.amount = budgetRow.getAmount();
+    this.usedAmount = budgetRow.getUsedAmount();
+    this.maxAmount = budgetRow.getMaxAmount();
     this.category = budgetRow.getCategory();
   }
 
@@ -39,7 +41,8 @@ public class BudgetRowDto {
     BudgetRow budgetRow = new BudgetRow();
     budgetRow.setId(id);
     budgetRow.setName(name);
-    budgetRow.setAmount(amount);
+    budgetRow.setUsedAmount(usedAmount);
+    budgetRow.setMaxAmount(maxAmount);
     budgetRow.setCategory(category);
     return budgetRow;
   }

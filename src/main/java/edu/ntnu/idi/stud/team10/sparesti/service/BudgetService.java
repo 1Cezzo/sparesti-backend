@@ -2,7 +2,10 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
+import edu.ntnu.idi.stud.team10.sparesti.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +18,12 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 @Service
 public class BudgetService {
   private final BudgetRepository budgetRepository;
+  private final BankService bankService;
 
   @Autowired
-  public BudgetService(BudgetRepository budgetRepository) {
+  public BudgetService(BudgetRepository budgetRepository, BankService bankService) {
     this.budgetRepository = budgetRepository;
+    this.bankService = bankService;
   }
 
   /**
@@ -108,6 +113,17 @@ public class BudgetService {
             .orElseThrow(() -> new NotFoundException("Budget with ID " + budgetId + " not found"));
 
     return new ArrayList<>(budget.getRow());
+  }
+
+  /**
+   * Updates a BudgetRow entity.
+   *
+   * @param budgetRow The budget row to update
+   * @param transaction The transaction to update the budget row with
+   */
+
+  public void addUsedAmountFromTransaction(BudgetRow budgetRow, Transaction transaction) {
+    budgetRow.setUsedAmount(budgetRow.getUsedAmount() + transaction.getAmount());
   }
 
   /**
