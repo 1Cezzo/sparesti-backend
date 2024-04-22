@@ -122,7 +122,6 @@ public class BankService {
     transactionRepository.save(transaction);
   }
 
-
   /**
    * Creates and returns a random transaction to an account.
    * Intended for creation of mock data for bank.
@@ -132,8 +131,7 @@ public class BankService {
    */
   private TransactionDto generateRandomTransaction(Long accountNr) {
     // method should be simple enough to be moved anywhere else where it fits better.
-    // krisjm: I moved it into BankService because (I believe) it would be simplest to use addTransaction method to add it afterwards.
-    //    Especially when that already checks whether the accountNr is valid.
+    // TODO: move into TransactionDto as a public static method?
     DecimalFormat df = new DecimalFormat("#.##");
     TransactionDto transactionDto = new TransactionDto();
     Random random = new Random();
@@ -155,5 +153,32 @@ public class BankService {
     return accountRepository
         .findByAccountNr(accountNr)
         .orElseThrow(() -> new NotFoundException("Account not found"));
+  }
+
+  /**
+   * Transfers money between two accounts by creating two transactions.
+   * The transactions are of type "NONE"
+   *
+   * @param fromAccountNr
+   * @param toAccountNr
+   * @param amount
+   */
+  private void transferMoney(Integer fromAccountNr, Integer toAccountNr, double amount) {
+    if (amount < 0 ) {
+      throw new IllegalArgumentException(
+              "Cannot transfer a negative amount. The positive amount is deducted from one account and added to the other");
+    }
+
+    TransactionDto fromTransactionDto = new TransactionDto();
+    fromTransactionDto.setAmount(-amount);
+    fromTransactionDto.setCategory(CategoryEnum.NONE);
+    fromTransactionDto.setAccountNr(fromAccountNr);
+    addTransaction(fromTransactionDto);
+
+    TransactionDto toTransactionDto = new TransactionDto();
+    toTransactionDto.setAmount(amount);
+    toTransactionDto.setCategory(CategoryEnum.NONE);
+    toTransactionDto.setAccountNr(toAccountNr);
+    addTransaction(toTransactionDto);
   }
 }
