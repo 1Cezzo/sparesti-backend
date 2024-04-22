@@ -116,13 +116,13 @@ public class BankService {
    * @param accountNr number of the account (who the transaction is coming from)
    * @return a randomly generated transaction
    */
-  private TransactionDto generateRandomTransaction(Long accountNr) {
+  private TransactionDto generateRandomPurchase(Long accountNr) {
     // method should be simple enough to be moved anywhere else where it fits better.
     // TODO: move into TransactionDto as a public static method?
     DecimalFormat df = new DecimalFormat("#.##");
     TransactionDto transactionDto = new TransactionDto();
     Random random = new Random();
-    transactionDto.setAmount(Double.parseDouble(df.format(random.nextDouble(20,500))));
+    transactionDto.setAmount(Double.parseDouble(df.format(random.nextDouble(-500, -20))));
     //bounds of transaction could be moved to args for this method, which would allow for more dynamic transactions.
     transactionDto.setCategory(CategoryEnum.getRandomCategory());
     transactionDto.setAccountNr(Integer.parseInt(String.valueOf(accountNr)));

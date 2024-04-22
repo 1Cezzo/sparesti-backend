@@ -53,7 +53,8 @@ public class UserService implements UserDetailsService {
       ChallengeRepository challengeRepository,
       BudgetRepository budgetRepository,
       BudgetRowRepository budgetRowRepository,
-      BadgeRepository badgeRepository) {
+      BadgeRepository badgeRepository,
+      BankService bankService) {
     this.userRepository = userRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
@@ -61,6 +62,7 @@ public class UserService implements UserDetailsService {
     this.challengeRepository = challengeRepository;
     this.badgeRepository = badgeRepository;
     this.passwordEncoder = new BCryptPasswordEncoder();
+    this.bankService = bankService;
   }
 
   /**
@@ -439,20 +441,20 @@ public class UserService implements UserDetailsService {
   /**
    * Creates a new mock account and adds it to the user.
    *
-   * @param isSavingsAcc (boolean): Whether the account is going to be the savings account
    * @param displayName (String): The username of the user the account is being added to
    * @param accountNr (Integer): The account number being created
+   * @param isSavingsAcc (boolean): Whether the account is going to be the savings account
+   *                     (if false; will be checking account)
    * @return the AccountDto
    */
   @Transactional
-  protected AccountDto addMockBankAccount(String displayName, Integer accountNr, boolean isSavingsAcc) {
+  public AccountDto addMockBankAccount(String displayName, Integer accountNr, boolean isSavingsAcc) {
     // Bad and can be removed/altered in any way, but should work for mock data.
     // Protected for now
     User mockUser = findUserByDisplayName(displayName);
     AccountDto accountDto = new AccountDto();
     accountDto.setAccountNr(accountNr);
     accountDto.setName(mockUser.getDisplayName());
-    accountDto.setBalance(5000.00);
     accountDto.setOwnerId(mockUser.getId());
 
     if (isSavingsAcc) {
@@ -464,7 +466,6 @@ public class UserService implements UserDetailsService {
     }
 
     userRepository.save(mockUser);
-    bankService.createAccount(accountDto);
-    return accountDto;
+    return bankService.createAccount(accountDto);
   }
 }
