@@ -69,8 +69,10 @@ public class SavingsGoalService {
    * @return the updated savings goal
    */
   public SavingsGoal updateSavingsGoal(Long id, SavingsGoalDTO savingsGoalDTO) {
-    SavingsGoal savingsGoal = savingsGoalRepository.findById(id)
-        .orElseThrow(() -> new NotFoundException("Savings goal with ID " + id + " not found"));
+    SavingsGoal savingsGoal =
+        savingsGoalRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Savings goal with ID " + id + " not found"));
     if (savingsGoalDTO == null) {
       throw new IllegalArgumentException("SavingsGoalDTO cannot be null");
     }

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
-import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -273,7 +272,7 @@ public class UserController {
   @Operation(summary = "Award a badge to a user")
   public ResponseEntity<Void> awardBadgeToUser(
       @PathVariable Long userId, @PathVariable Long badgeId) {
-      userService.giveUserBadge(userId, badgeId);
-      return ResponseEntity.noContent().build(); // maybe should return something else.
+    userService.giveUserBadge(userId, badgeId);
+    return ResponseEntity.noContent().build(); // maybe should return something else.
   }
 }

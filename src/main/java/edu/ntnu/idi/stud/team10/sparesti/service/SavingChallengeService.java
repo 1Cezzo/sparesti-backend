@@ -117,7 +117,9 @@ public class SavingChallengeService {
    */
   @Transactional(readOnly = true)
   public SavingChallenge getById(Long id) {
-    return savingChallengeRepository.findById(id).orElseThrow(() -> new NotFoundException("Saving Challenge not found"));
+    return savingChallengeRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException("Saving Challenge not found"));
   }
 
   /**
