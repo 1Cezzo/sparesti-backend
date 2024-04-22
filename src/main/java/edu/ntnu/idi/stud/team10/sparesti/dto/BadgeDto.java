@@ -12,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 public class BadgeDto {
   private long id;
-  private String title;
+  private String name;
   private String description;
   private String imageUrl;
   private Set<User> users;
@@ -24,7 +24,7 @@ public class BadgeDto {
    */
   public BadgeDto(Badge badge) {
     this.id = badge.getId();
-    this.title = badge.getTitle();
+    this.name = badge.getName();
     this.description = badge.getDescription();
     this.imageUrl = badge.getImageUrl();
   }
@@ -33,10 +33,10 @@ public class BadgeDto {
   public Badge toEntity() {
     Badge badge = new Badge();
     badge.setId(this.id);
-    badge.setTitle(this.title);
+    badge.setName(this.name);
     badge.setDescription(this.description);
     badge.setImageUrl(this.imageUrl);
     badge.setUsers(this.users);
-    return new Badge(id, title, description, imageUrl, users);
+    return new Badge(id, name, description, imageUrl, users);
   }
 }

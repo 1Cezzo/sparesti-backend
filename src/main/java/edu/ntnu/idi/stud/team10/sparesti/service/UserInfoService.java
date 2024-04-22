@@ -1,5 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,14 @@ public class UserInfoService {
     userInfo.setUser(user);
     UserInfo debug = userInfoRepository.save(userInfo);
     return userInfoMapper.toDto(debug);
+  }
+
+  public UserInfoDto getUserInfoByUserId(Long userId) {
+    Optional<UserInfo> userInfo = userInfoRepository.findByUserId(userId);
+    if (userInfo.isEmpty()) {
+      throw new NotFoundException("User info not found");
+    }
+    return userInfoMapper.toDto(userInfo.get());
   }
 
   private User findUserById(Long userId) {

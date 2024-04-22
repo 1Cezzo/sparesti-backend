@@ -29,6 +29,8 @@ public class User {
   @Column(unique = true)
   private String email;
 
+  @Column private double totalSavings;
+
   // TODO: Add "Total amount saved" to the user?
 
   @Column() private String profilePictureUrl;
@@ -66,6 +68,7 @@ public class User {
     this.password = dto.getPassword();
     this.email = dto.getEmail();
     this.profilePictureUrl = dto.getProfilePictureUrl();
+    this.totalSavings = dto.getTotalSavings();
   }
 
   /**
@@ -88,6 +91,14 @@ public class User {
 
   public void addBadge(Badge badge) {
     this.earnedBadges.add(badge);
+  }
+
+  public List<Badge> getEarnedBadges() {
+    if (earnedBadges == null) {
+      return List.of();
+    } else {
+      return List.copyOf(earnedBadges);
+    }
   }
 
   public void removeBadge(Badge badge) {
