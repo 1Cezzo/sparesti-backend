@@ -14,7 +14,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
-import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /**
  * Service for Challenge entities.
@@ -116,7 +116,7 @@ public abstract class ChallengeService<T extends Challenge> {
       // Save the updated challenge
       return (E) challengeRepository.save(existingChallenge);
     } else {
-      throw new InvalidIdException("Challenge not found");
+      throw new NotFoundException("Challenge not found");
     }
   }
 
@@ -131,7 +131,7 @@ public abstract class ChallengeService<T extends Challenge> {
     if (optionalChallenge.isPresent()) {
       challengeRepository.delete(optionalChallenge.get());
     } else {
-      throw new InvalidIdException("Challenge not found");
+      throw new NotFoundException("Challenge not found");
     }
   }
 
@@ -174,7 +174,7 @@ public abstract class ChallengeService<T extends Challenge> {
       challenge.setCompleted(challenge.getSavedAmount() > challenge.getTargetAmount());
       challengeRepository.save(challenge);
     } else {
-      throw new InvalidIdException("Challenge not found");
+      throw new NotFoundException("Challenge not found");
     }
   }
 

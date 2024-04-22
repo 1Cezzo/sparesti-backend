@@ -14,7 +14,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
-import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for Savings Goal entities. */
 @Service
@@ -137,14 +137,14 @@ public class SavingsGoalService {
    * @param userId The ID of the user.
    * @param savingsGoalDto The DTO representing the savings goal.
    * @return
-   * @throws InvalidIdException If the user does not exist or target amount is less than or equal to
+   * @throws NotFoundException If the user does not exist or target amount is less than or equal to
    *     0.
    */
   public UserDto addSavingsGoalToUser(Long userId, SavingsGoalDTO savingsGoalDto) {
     User user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
     SavingsGoal savingsGoal = savingsGoalDto.toEntity();
     if (savingsGoal.getTargetAmount() <= 0) {
@@ -162,13 +162,13 @@ public class SavingsGoalService {
    *
    * @param userId The ID of the user.
    * @return A list of savings goal DTOs.
-   * @throws InvalidIdException If the user does not exist.
+   * @throws NotFoundException If the user does not exist.
    */
   public List<SavingsGoalDTO> getAllSavingsGoalsForUser(Long userId) {
     User user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
     return savingsGoalRepository.findByUser(user).stream()
         .map(SavingsGoalDTO::new)
@@ -180,19 +180,19 @@ public class SavingsGoalService {
    *
    * @param userId The ID of the user.
    * @param savingsGoalId The ID of the savings goal.
-   * @throws InvalidIdException If the user or savings goal does not exist.
+   * @throws NotFoundException If the user or savings goal does not exist.
    */
   public void deleteSavingsGoalFromUser(Long userId, Long savingsGoalId) {
     User user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
     SavingsGoal savingsGoal =
         savingsGoalRepository
             .findById(savingsGoalId)
             .orElseThrow(
                 () ->
-                    new InvalidIdException("Savings goal with ID " + savingsGoalId + " not found"));
+                    new NotFoundException("Savings goal with ID " + savingsGoalId + " not found"));
   }
 }
