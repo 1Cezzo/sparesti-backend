@@ -23,6 +23,7 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 @Service
 public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
+  private final UserInfoRepository userInfoRepository;
   private final PasswordEncoder passwordEncoder;
   private final BudgetRepository budgetRepository;
   private final BudgetRowRepository budgetRowRepository;
@@ -40,6 +41,7 @@ public class UserService implements UserDetailsService {
       BudgetRowRepository budgetRowRepository,
       BadgeRepository badgeRepository) {
     this.userRepository = userRepository;
+    this.userInfoRepository = userInfoRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
     this.badgeRepository = badgeRepository;
@@ -60,6 +62,7 @@ public class UserService implements UserDetailsService {
     }
     userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
     User newUser = new User(userDto);
+    newUser.setTotalSavings(0);
     return new UserDto(userRepository.save(newUser));
   }
 

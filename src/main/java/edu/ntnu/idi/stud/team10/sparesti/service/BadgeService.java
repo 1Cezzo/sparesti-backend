@@ -102,7 +102,7 @@ public class BadgeService {
     Optional<Badge> badgeOptional = badgeRepository.findById(id);
     if (badgeOptional.isPresent()) {
       Badge badge = badgeOptional.get();
-      badge.setTitle(badgeDto.getTitle());
+      badge.setName(badgeDto.getName());
       badge.setDescription(badgeDto.getDescription());
       badge.setImageUrl(badgeDto.getImageUrl());
       badgeRepository.save(badge);
