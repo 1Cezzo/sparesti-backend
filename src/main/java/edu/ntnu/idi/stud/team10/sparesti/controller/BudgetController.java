@@ -2,6 +2,7 @@ package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
 
+import edu.ntnu.idi.stud.team10.sparesti.service.UserBudgetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
-import edu.ntnu.idi.stud.team10.sparesti.service.BudgetService;
-import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -20,14 +19,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Budgets", description = "Operations related to budgetting")
 public class BudgetController {
 
-  private final UserService userService;
-
-  private final BudgetService budgetService;
+  private final UserBudgetService userBudgetService;
+  
 
   @Autowired
-  public BudgetController(UserService userService, BudgetService budgetService) {
-    this.userService = userService;
-    this.budgetService = budgetService;
+  public BudgetController(UserBudgetService userBudgetService) {
+    this.userBudgetService = userBudgetService;
   }
 
   /**
@@ -41,7 +38,7 @@ public class BudgetController {
   @Operation(summary = "Add a budget to a user")
   public ResponseEntity<UserDto> addBudgetToUser(
       @PathVariable Long userId, @RequestBody BudgetDto budgetDTO) {
-    UserDto updatedUserDto = userService.addBudgetToUser(userId, budgetDTO);
+    UserDto updatedUserDto = userBudgetService.addBudgetToUser(userId, budgetDTO);
     return ResponseEntity.ok(updatedUserDto);
   }
 
@@ -54,7 +51,7 @@ public class BudgetController {
   @GetMapping("/{userId}/budgets")
   @Operation(summary = "Get all budgets for a user")
   public ResponseEntity<List<BudgetDto>> getAllBudgetsForUser(@PathVariable Long userId) {
-    List<BudgetDto> budgets = userService.getAllBudgetsForUser(userId);
+    List<BudgetDto> budgets = userBudgetService.getAllBudgetsForUser(userId);
     return ResponseEntity.ok(budgets);
   }
 
@@ -68,7 +65,7 @@ public class BudgetController {
   @Operation(summary = "Delete a budget from a user")
   public ResponseEntity<Void> deleteBudgetFromUser(
       @PathVariable Long userId, @PathVariable Long budgetId) {
-    userService.deleteBudgetFromUser(userId, budgetId);
+    userBudgetService.deleteBudgetFromUser(userId, budgetId);
     return ResponseEntity.noContent().build();
   }
 
@@ -87,7 +84,7 @@ public class BudgetController {
       @PathVariable Long budgetId,
       @RequestBody BudgetRowDto budgetRowDTO) {
     BudgetDto updatedBudgetDto =
-        userService.addBudgetRowToUserBudget(userId, budgetId, budgetRowDTO);
+        userBudgetService.addBudgetRowToUserBudget(userId, budgetId, budgetRowDTO);
     return ResponseEntity.ok(updatedBudgetDto);
   }
 
@@ -103,7 +100,7 @@ public class BudgetController {
   @Operation(summary = "Delete a budget row from a user's budget")
   public ResponseEntity<Void> deleteBudgetRowFromUserBudget(
       @PathVariable Long userId, @PathVariable Long budgetId, @PathVariable Long budgetRowId) {
-    userService.deleteBudgetRowFromUserBudget(userId, budgetId, budgetRowId);
+    userBudgetService.deleteBudgetRowFromUserBudget(userId, budgetId, budgetRowId);
     return ResponseEntity.noContent().build();
   }
 
@@ -124,7 +121,7 @@ public class BudgetController {
       @PathVariable Long budgetRowId,
       @RequestBody BudgetRowDto budgetRowDto) {
     BudgetRowDto updatedBudgetRowDto =
-        userService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
+        userBudgetService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
     return ResponseEntity.ok(updatedBudgetRowDto);
   }
 }

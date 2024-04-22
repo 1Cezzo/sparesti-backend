@@ -17,7 +17,7 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
-/** Service for User Budget entities. */
+/** Service for Budget entities that are connected to a user. */
 @Service
 public class UserBudgetService {
   private final UserRepository userRepository;
