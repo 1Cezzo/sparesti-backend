@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class RestExceptionHandler {
-  @ExceptionHandler(InvalidIdException.class)
-  public ResponseEntity<ErrorResponse> handleInvalidIdException(InvalidIdException e) {
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidIdException(NotFoundException e) {
     ErrorResponse res = new ErrorResponse();
     res.setTitle(e.getMessage());
     res.setStatus(HttpStatus.NOT_FOUND.value());
@@ -25,5 +25,15 @@ public class RestExceptionHandler {
     res.setTimestamp(java.time.LocalDate.now().toString());
 
     return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+    ErrorResponse res = new ErrorResponse();
+    res.setTitle(e.getMessage());
+    res.setStatus(HttpStatus.BAD_REQUEST.value());
+    res.setTimestamp(java.time.LocalDate.now().toString());
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
   }
 }

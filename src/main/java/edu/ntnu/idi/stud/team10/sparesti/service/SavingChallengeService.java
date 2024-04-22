@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingChallengeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for Saving Challenge entities. */
 @Service
@@ -73,6 +74,8 @@ public class SavingChallengeService extends ChallengeService<SavingChallenge> {
    *
    * @param id the id of the saving challenge.
    * @param amount the amount to add to the saved amount.
+   * @throws IllegalArgumentException if the amount is negative.
+   * @throws NotFoundException if the saving challenge is not found.
    */
   public void addToSavedAmount(Long id, double amount) {
     super.addToSavedAmount(id, amount);

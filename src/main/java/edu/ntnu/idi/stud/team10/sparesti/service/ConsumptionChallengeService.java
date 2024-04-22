@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import edu.ntnu.idi.stud.team10.sparesti.dto.ConsumptionChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ConsumptionChallengeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for Consumption Challenge entities. */
 @Service
@@ -65,6 +66,7 @@ public class ConsumptionChallengeService extends ChallengeService<ConsumptionCha
    *
    * @param id the id of the consumption challenge.
    * @return the consumption challenge if it exists, or an empty Optional otherwise.
+   * @throws NotFoundException if the consumption challenge does not exist.
    */
   public Optional<ConsumptionChallenge> getConsumptionChallengeById(Long id) {
     return super.getById(id);
@@ -75,6 +77,8 @@ public class ConsumptionChallengeService extends ChallengeService<ConsumptionCha
    *
    * @param id the id of the consumption challenge.
    * @param amount the amount to add to the saved amount.
+   * @throws IllegalArgumentException if the amount is negative.
+   * @throws NotFoundException if the consumption challenge does not exist.
    */
   public void addToSavedAmount(Long id, double amount) {
     super.addToSavedAmount(id, amount);

@@ -57,10 +57,13 @@ public class SavingsGoalService {
    * Retrieves a SavingsGoal entity by its ID.
    *
    * @param id the ID of the savings goal
-   * @return the savings goal if it exists, or an empty Optional otherwise
+   * @return the savings goal if it exists.
+   * @throws NotFoundException if the savings goal is not found
    */
-  public Optional<SavingsGoal> getSavingsGoalById(Long id) {
-    return savingsGoalRepository.findById(id);
+  public SavingsGoal getSavingsGoalById(Long id) {
+    return savingsGoalRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException("Savings goal with ID " + id + " not found"));
   }
 
   /**
@@ -73,28 +76,26 @@ public class SavingsGoalService {
    * @return the updated savings goal
    */
   public SavingsGoal updateSavingsGoal(Long id, SavingsGoalDTO savingsGoalDTO) {
-    Optional<SavingsGoal> optionalSavingsGoal = savingsGoalRepository.findById(id);
+    SavingsGoal savingsGoal =
+        savingsGoalRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Savings goal with ID " + id + " not found"));
     if (savingsGoalDTO == null) {
       throw new IllegalArgumentException("SavingsGoalDTO cannot be null");
     }
     if (savingsGoalDTO.getTargetAmount() <= 0) {
       throw new IllegalArgumentException("Target amount must be greater than 0");
     }
-    if (optionalSavingsGoal.isPresent()) {
-      SavingsGoal savingsGoal = optionalSavingsGoal.get();
-      savingsGoal.setName(savingsGoalDTO.getName());
-      savingsGoal.setTargetAmount(savingsGoalDTO.getTargetAmount());
-      savingsGoal.setSavedAmount(savingsGoalDTO.getSavedAmount());
-      savingsGoal.setMediaUrl(savingsGoalDTO.getMediaUrl());
-      savingsGoal.setDeadline(savingsGoalDTO.getDeadline());
-      LocalDateTime currentDate = LocalDateTime.now();
-      savingsGoal.setCompleted(
-          savingsGoalDTO.getSavedAmount() > savingsGoalDTO.getTargetAmount()
-              || currentDate.isAfter(savingsGoalDTO.getDeadline().atStartOfDay()));
-      return savingsGoalRepository.save(savingsGoal);
-    } else {
-      throw new IllegalArgumentException("Savings goal with ID " + id + " not found");
-    }
+    savingsGoal.setName(savingsGoalDTO.getName());
+    savingsGoal.setTargetAmount(savingsGoalDTO.getTargetAmount());
+    savingsGoal.setSavedAmount(savingsGoalDTO.getSavedAmount());
+    savingsGoal.setMediaUrl(savingsGoalDTO.getMediaUrl());
+    savingsGoal.setDeadline(savingsGoalDTO.getDeadline());
+    LocalDateTime currentDate = LocalDateTime.now();
+    savingsGoal.setCompleted(
+        savingsGoalDTO.getSavedAmount() > savingsGoalDTO.getTargetAmount()
+            || currentDate.isAfter(savingsGoalDTO.getDeadline().atStartOfDay()));
+    return savingsGoalRepository.save(savingsGoal);
   }
 
   /**

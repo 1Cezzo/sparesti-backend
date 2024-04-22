@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
@@ -24,7 +25,7 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
-import edu.ntnu.idi.stud.team10.sparesti.util.InvalidIdException;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for User entities. */
 @Service
@@ -51,8 +52,7 @@ public class UserService implements UserDetailsService {
       ChallengeRepository challengeRepository,
       BudgetRepository budgetRepository,
       BudgetRowRepository budgetRowRepository,
-      BadgeRepository badgeRepository,
-      PasswordEncoder passwordEncoder) {
+      BadgeRepository badgeRepository) {
     this.userRepository = userRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
@@ -74,12 +74,22 @@ public class UserService implements UserDetailsService {
     if (userDto == null) {
       throw new IllegalArgumentException("UserDto cannot be null");
     }
-    if (userRepository.existsByUsername(userDto.getUsername())) {
-      throw new ExistingUserException("Username already exists.");
-    }
     userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
     User newUser = new User(userDto);
     return new UserDto(userRepository.save(newUser));
+  }
+
+  /**
+   * Sets the display name of a user.
+   *
+   * @param dto (UserDto) The user to update.
+   * @return A Dto representing the updated user.
+   * @throws NotFoundException If the user is not found.
+   */
+  public UserDto setDisplayName(UserDto dto) {
+    User user = findUserById(dto.getId());
+    user.setDisplayName(dto.getDisplayName());
+    return new UserDto(userRepository.save(user));
   }
 
   /**
@@ -87,7 +97,7 @@ public class UserService implements UserDetailsService {
    *
    * @param id (Long) The unique id of the user.
    * @return A Dto representing the user.
-   * @throws InvalidIdException If the user is not found.
+   * @throws NotFoundException If the user is not found.
    */
   public UserDto getUserById(Long id) {
     User foundUser = findUserById(id);
@@ -99,7 +109,7 @@ public class UserService implements UserDetailsService {
    *
    * @param userDto (UserDto) The user to update.
    * @return A Dto representing the updated user.
-   * @throws InvalidIdException If the user is not found.
+   * @throws NotFoundException If the user is not found.
    * @throws IllegalArgumentException If the userDto is null.
    */
   public UserDto updateUser(UserDto userDto) {
@@ -121,11 +131,11 @@ public class UserService implements UserDetailsService {
    * Deletes a User by id.
    *
    * @param id (Long) The unique id of the user.
-   * @throws InvalidIdException If the user does not exist.
+   * @throws NotFoundException If the user does not exist.
    */
   public void deleteUser(Long id) {
     if (!userRepository.existsById(id)) {
-      throw new InvalidIdException("User with id " + id + " not found");
+      throw new NotFoundException("User with id " + id + " not found");
     }
     userRepository.deleteById(id);
   }
@@ -135,10 +145,10 @@ public class UserService implements UserDetailsService {
    *
    * @param username (String) The unique username of the user.
    * @return A Dto representing the user.
-   * @throws InvalidIdException If the user is not found.
+   * @throws NotFoundException If the user is not found.
    */
   public UserDto getUserByUsername(String username) {
-    User foundUser = findUserByUsername(username);
+    User foundUser = findUserByDisplayName(username);
 
     return new UserDto(foundUser);
   }
@@ -148,39 +158,44 @@ public class UserService implements UserDetailsService {
    *
    * @param id (Long) The unique id of the user.
    * @return The User, if found.
-   * @throws InvalidIdException If the user is not found.
+   * @throws NotFoundException If the user is not found.
    */
   private User findUserById(Long id) {
     return userRepository
         .findById(id)
-        .orElseThrow(() -> new InvalidIdException("User with id " + id + " not found"));
+        .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
   }
 
   /**
-   * Finds a User by username, if it exists.
+   * Finds a User by display name, if it exists.
    *
-   * @param username (String) The username of the user.
+   * @param displayName (String) The display name of the user.
    * @return The User, if found.
-   * @throws InvalidIdException If the user is not found.
+   * @throws NotFoundException If the user is not found.
    */
-  private User findUserByUsername(String username) {
+  private User findUserByDisplayName(String displayName) {
     return userRepository
-        .findByUsername(username)
-        .orElseThrow(() -> new InvalidIdException("User with username " + username + " not found"));
+        .findByDisplayName(displayName)
+        .orElseThrow(
+            () -> new NotFoundException("User with display name " + displayName + " not found"));
   }
 
   /**
-   * Loads a user by username.
+   * Overridden method from Spring Security. Loads a user by a username, which in this application
+   * is the email of the user.
    *
-   * @param username the username of the user to load.
-   * @return the user details.
-   * @throws UsernameNotFoundException if the user is not found.
+   * @param username (String) The email of the user.
+   * @return The UserDetails of the user.
+   * @throws UsernameNotFoundException If the user is not found.
    */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User foundUser = findUserByUsername(username);
+    User foundUser =
+        userRepository
+            .findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     return org.springframework.security.core.userdetails.User.builder()
-        .username(foundUser.getUsername())
+        .username(foundUser.getEmail())
         .password(foundUser.getPassword())
         .roles("USER") // Can be changed to take roles from database
         .build();
@@ -197,7 +212,7 @@ public class UserService implements UserDetailsService {
     User user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
     Budget budget = budgetDto.toEntity();
     budget.setUser(user);
@@ -215,7 +230,7 @@ public class UserService implements UserDetailsService {
     User user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
     return budgetRepository.findByUser(user).stream()
         .map(BudgetDto::new)
@@ -232,12 +247,12 @@ public class UserService implements UserDetailsService {
     User user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
     Budget budget =
         budgetRepository
             .findById(budgetId)
-            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+            .orElseThrow(() -> new NotFoundException("Budget with ID " + budgetId + " not found"));
 
     budgetRepository.delete(budget);
   }
@@ -254,12 +269,12 @@ public class UserService implements UserDetailsService {
     User user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
     Budget budget =
         budgetRepository
             .findById(budgetId)
-            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+            .orElseThrow(() -> new NotFoundException("Budget with ID " + budgetId + " not found"));
 
     if (!budget.getUser().equals(user)) {
       throw new IllegalArgumentException("The budget does not belong to the user");
@@ -284,12 +299,12 @@ public class UserService implements UserDetailsService {
     User user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
     Budget budget =
         budgetRepository
             .findById(budgetId)
-            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+            .orElseThrow(() -> new NotFoundException("Budget with ID " + budgetId + " not found"));
 
     if (!budget.getUser().equals(user)) {
       throw new IllegalArgumentException("The budget does not belong to the user");
@@ -299,7 +314,7 @@ public class UserService implements UserDetailsService {
         budgetRowRepository
             .findById(budgetRowId)
             .orElseThrow(
-                () -> new InvalidIdException("BudgetRow with ID " + budgetRowId + " not found"));
+                () -> new NotFoundException("BudgetRow with ID " + budgetRowId + " not found"));
 
     budget.getRow().remove(budgetRow);
     budgetRepository.save(budget);
@@ -319,12 +334,12 @@ public class UserService implements UserDetailsService {
     User user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
     Budget budget =
         budgetRepository
             .findById(budgetId)
-            .orElseThrow(() -> new InvalidIdException("Budget with ID " + budgetId + " not found"));
+            .orElseThrow(() -> new NotFoundException("Budget with ID " + budgetId + " not found"));
 
     if (!budget.getUser().equals(user)) {
       throw new IllegalArgumentException("The budget does not belong to the user");
@@ -334,7 +349,7 @@ public class UserService implements UserDetailsService {
         budgetRowRepository
             .findById(budgetRowId)
             .orElseThrow(
-                () -> new InvalidIdException("BudgetRow with ID " + budgetRowId + " not found"));
+                () -> new NotFoundException("BudgetRow with ID " + budgetRowId + " not found"));
 
     // Update the budget row with the new data
     budgetRow.updateFromDto(budgetRowDto);
@@ -344,38 +359,47 @@ public class UserService implements UserDetailsService {
   }
 
   /**
-   * Returns a Set of all the badges earned by a user.
+   * Returns a Set of all the badges earned by a user, as DTOs.
    *
    * @param userId (Long): The User's unique ID.
-   * @return A Set of all Badges that a User has earned.
+   * @return A Set of all Badges that a User has earned, in DTO form.
    */
-  public Set<Badge> getAllBadgesByUserId(
-      Long userId) { // @Transactional readonly attribute may be needed?
-    return userRepository
-        .findById(userId)
-        .map(User::getEarnedBadges)
-        .orElse(Collections.emptySet());
+  public Set<BadgeDto> getAllBadgesByUserId(Long userId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+    Set<BadgeDto> badges =
+        user.getEarnedBadges().stream().map(BadgeDto::new).collect(Collectors.toSet());
+    return badges;
   }
+
+  // Possibly need a method that retrieves the 3 most recent badges of a user,
+  // which will display on the front of their profile-page
+  // Which could use a dateEarned field in the badge-user connection.
 
   /**
    * Awards a Badge of badgeId to a User of userId
    *
    * @param userId (Long): The User's id (who is earning the Badge)
    * @param badgeId (Long): The Badge's id (the Badge being awarded)
-   * @throws InvalidIdException If either the User or Badge id is not found.
+   * @throws NotFoundException If either the User or Badge id is not found.
    */
   @Transactional
   public void giveUserBadge(Long userId, Long badgeId) {
     User user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+
     Badge badge =
         badgeRepository
             .findById(badgeId)
-            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
-    user.getEarnedBadges().add(badge);
+            .orElseThrow(() -> new NotFoundException("Badge with ID " + badgeId + " not found."));
+    user.addBadge(badge);
+    badge.addUser(user);
     userRepository.save(user);
+    badgeRepository.save(badge);
   }
 
   /**
@@ -383,21 +407,21 @@ public class UserService implements UserDetailsService {
    *
    * @param userId (Long): The User's id (who is losing the Badge)
    * @param badgeId (Long): The Badge's id (the Badge being removed)
-   * @throws InvalidIdException If either the User or Badge id is not found.
+   * @throws NotFoundException If either the User or Badge id is not found.
    */
   @Transactional
   public void removeUserBadge(Long userId, Long badgeId) {
     User user =
         userRepository
             .findById(userId)
-            .orElseThrow(() -> new InvalidIdException("User with ID " + userId + " not found"));
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
     Badge badge =
         badgeRepository
             .findById(badgeId)
-            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
-    if (user.getEarnedBadges().remove(badge)) {
-      userRepository.save(user);
-    }
+            .orElseThrow(() -> new NotFoundException("Badge with ID " + badgeId + " not found."));
+    user.removeBadge(badge);
+    badge.removeUser(user);
+    userRepository.save(user);
   }
 
   /**
@@ -405,13 +429,13 @@ public class UserService implements UserDetailsService {
    *
    * @param badgeId (Long): The badge id being researched.
    * @return an ArrayList of Users that have earned the badge.
-   * @throws InvalidIdException When the badge id is not found in the database.
+   * @throws NotFoundException When the badge id is not found in the database.
    */
   public List<User> getUsersByBadge(Long badgeId) {
     Badge badge =
         badgeRepository
             .findById(badgeId)
-            .orElseThrow(() -> new InvalidIdException("Badge with ID " + badgeId + " not found."));
+            .orElseThrow(() -> new NotFoundException("Badge with ID " + badgeId + " not found."));
     return new ArrayList<>(badge.getUsers()); // possible null exception
   }
 }

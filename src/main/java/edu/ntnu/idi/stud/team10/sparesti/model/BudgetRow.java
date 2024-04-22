@@ -14,7 +14,8 @@ public class BudgetRow {
   private Long id;
 
   private String name;
-  private double amount;
+  private double usedAmount;
+  private double maxAmount;
 
   @Enumerated(EnumType.STRING)
   private CategoryEnum category;
@@ -27,12 +28,14 @@ public class BudgetRow {
    * Constructor for creating a budget row.
    *
    * @param name The name of the budget row.
-   * @param amount The amount of the budget row.
+   * @param usedAmount The amount of the budget row.
+   * @param maxAmount The maximum amount of the budget row.
    * @param category The category of the budget row.
    */
-  public BudgetRow(String name, double amount, CategoryEnum category) {
+  public BudgetRow(String name, double usedAmount, double maxAmount, CategoryEnum category) {
     this.name = name;
-    this.amount = amount;
+    this.usedAmount = usedAmount;
+    this.maxAmount = maxAmount;
     this.category = category;
   }
 
@@ -48,12 +51,21 @@ public class BudgetRow {
   }
 
   /**
-   * Get the amount of the budget row.
+   * Get the used amount of the budget row.
    *
    * @return (double) The amount of the budget row.
    */
-  public double getAmount() {
-    return amount;
+  public double getUsedAmount() {
+    return usedAmount;
+  }
+
+  /**
+   * Get the maximum amount of the budget row.
+   *
+   * @return (double) The maximum amount of the budget row.
+   */
+  public double getMaxAmount() {
+    return maxAmount;
   }
 
   /**
@@ -71,7 +83,8 @@ public class BudgetRow {
 
   public void updateFromDto(BudgetRowDto budgetRowDto) {
     this.name = budgetRowDto.getName();
-    this.amount = budgetRowDto.getAmount();
+    this.usedAmount = budgetRowDto.getUsedAmount();
+    this.maxAmount = budgetRowDto.getMaxAmount();
     this.category = budgetRowDto.getCategory();
   }
 }

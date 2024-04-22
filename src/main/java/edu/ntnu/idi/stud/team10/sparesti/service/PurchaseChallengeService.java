@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import edu.ntnu.idi.stud.team10.sparesti.dto.PurchaseChallengeDTO;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.PurchaseChallengeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for Purchase Challenge entities. */
 @Service

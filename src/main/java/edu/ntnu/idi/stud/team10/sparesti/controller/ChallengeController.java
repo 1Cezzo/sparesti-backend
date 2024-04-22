@@ -122,16 +122,8 @@ public class ChallengeController {
   @Operation(summary = "Add an amount to the saved amount")
   public ResponseEntity<String> addAmountToPurchaseChallenge(
       @PathVariable Long id, @RequestParam Double amount) {
-    try {
-      if (amount > 0) {
-        purchaseChallengeService.addToSavedAmount(id, amount);
-        return ResponseEntity.ok("Amount added successfully");
-      } else {
-        return ResponseEntity.badRequest().body("Amount must be greater than 0");
-      }
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.notFound().build();
-    }
+    purchaseChallengeService.addToSavedAmount(id, amount);
+    return ResponseEntity.ok("Amount added successfully");
   }
 
   /**

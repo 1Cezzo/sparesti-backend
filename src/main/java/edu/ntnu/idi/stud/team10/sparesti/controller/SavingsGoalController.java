@@ -1,7 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,8 +64,8 @@ public class SavingsGoalController {
   @GetMapping("/{id}")
   @Operation(summary = "Get a savings goal by its ID")
   public ResponseEntity<SavingsGoal> getSavingsGoalById(@PathVariable Long id) {
-    Optional<SavingsGoal> savingsGoal = savingsGoalService.getSavingsGoalById(id);
-    return savingsGoal.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    SavingsGoal savingsGoal = savingsGoalService.getSavingsGoalById(id);
+    return ResponseEntity.ok(savingsGoal);
   }
 
   /**

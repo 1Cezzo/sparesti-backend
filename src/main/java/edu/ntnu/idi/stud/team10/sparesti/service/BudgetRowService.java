@@ -58,7 +58,8 @@ public class BudgetRowService {
     if (optionalBudgetRow.isPresent()) {
       BudgetRow budgetRow = optionalBudgetRow.get();
       budgetRow.setName(budgetRowDto.getName());
-      budgetRow.setAmount(budgetRowDto.getAmount());
+      budgetRow.setUsedAmount(budgetRowDto.getUsedAmount());
+      budgetRow.setMaxAmount(budgetRowDto.getMaxAmount());
       budgetRow.setCategory(budgetRowDto.getCategory());
       return budgetRowRepository.save(budgetRow);
     } else {
