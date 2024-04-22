@@ -16,8 +16,6 @@ import lombok.*;
 public class UserDto {
   private Long id;
   private String displayName;
-  private String firstName;
-  private String lastName;
   private String password;
   private String email;
   private String profilePictureUrl;
