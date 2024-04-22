@@ -170,7 +170,7 @@ public class UserController {
    * @param displayName The username of the user.
    * @return The user's details.
    */
-  @GetMapping("/info/{display_name}")
+  @GetMapping("/info/{displayName}")
   @Operation(summary = "Get a user's details")
   public ResponseEntity<UserResponseDto> getUserDetails(@PathVariable String displayName) {
     UserResponseDto userResponse = userService.getUserDetails(displayName);
