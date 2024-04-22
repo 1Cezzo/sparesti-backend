@@ -2,15 +2,13 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
-import edu.ntnu.idi.stud.team10.sparesti.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
+import edu.ntnu.idi.stud.team10.sparesti.model.Transaction;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
@@ -121,7 +119,6 @@ public class BudgetService {
    * @param budgetRow The budget row to update
    * @param transaction The transaction to update the budget row with
    */
-
   public void addUsedAmountFromTransaction(BudgetRow budgetRow, Transaction transaction) {
     budgetRow.setUsedAmount(budgetRow.getUsedAmount() + transaction.getAmount());
   }

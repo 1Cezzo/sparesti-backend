@@ -61,6 +61,7 @@ public class BudgetRow {
 
   /**
    * Get the maximum amount of the budget row.
+   *
    * @return (double) The maximum amount of the budget row.
    */
   public double getMaxAmount() {
