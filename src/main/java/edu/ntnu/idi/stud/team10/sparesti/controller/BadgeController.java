@@ -1,11 +1,14 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
+import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.service.BadgeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +23,17 @@ public class BadgeController {
   @Autowired
   public BadgeController(final BadgeService badgeService) {
     this.badgeService = badgeService;
+  }
+
+  /**
+   * Fetch all badges.
+   *
+   * @return a list of all badges.
+   */
+  @GetMapping
+  @Operation(summary = "Get all badges")
+  public ResponseEntity<List<Badge>> getAllBadges() {
+    return ResponseEntity.ok(badgeService.getAllBadges());
   }
 
   /**
