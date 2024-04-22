@@ -2,13 +2,8 @@ package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import java.util.Objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +21,8 @@ public class Transaction {
   @Column(nullable = false)
   private double amount;
 
-  // Type enum from budget goes here, need to merge first
+  @Enumerated(EnumType.STRING)
+  CategoryEnum category;
 
   @ManyToOne
   @JoinColumn(nullable = false, name = "account_id", referencedColumnName = "id")
@@ -48,8 +44,9 @@ public class Transaction {
     }
     Transaction that = (Transaction) o;
     return Double.compare(amount, that.amount) == 0
-        && Objects.equals(id, that.id)
-        && Objects.equals(account, that.account);
+            && Objects.equals(id, that.id)
+            && Objects.equals(account, that.account)
+            && Objects.equals(category, that.category);
   }
 
   /**
@@ -59,7 +56,7 @@ public class Transaction {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(id, amount, account);
+    return Objects.hash(id, amount, category, account);
   }
 
   /**
@@ -70,6 +67,6 @@ public class Transaction {
   @Override
   public String toString() {
     Long accountId = account == null ? null : account.getId();
-    return "Transaction{" + "id=" + id + ", amount=" + amount + ", account=" + accountId + '}';
+    return "Transaction{" + "id=" + id + ", amount=" + amount + "category=" + category + ", account=" + accountId + '}';
   }
 }
