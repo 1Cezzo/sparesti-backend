@@ -3,13 +3,17 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
+import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for Savings Goal entities. */
@@ -17,10 +21,13 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 public class SavingsGoalService {
 
   private final SavingsGoalRepository savingsGoalRepository;
+  private final UserRepository userRepository;
 
   @Autowired
-  public SavingsGoalService(SavingsGoalRepository savingsGoalRepository) {
+  public SavingsGoalService(
+      SavingsGoalRepository savingsGoalRepository, UserRepository userRepository) {
     this.savingsGoalRepository = savingsGoalRepository;
+    this.userRepository = userRepository;
   }
 
   /**
@@ -122,5 +129,70 @@ public class SavingsGoalService {
     } else {
       throw new IllegalArgumentException("Savings goal with ID " + id + " not found");
     }
+  }
+
+  /**
+   * Adds a savings goal to a user.
+   *
+   * @param userId The ID of the user.
+   * @param savingsGoalDto The DTO representing the savings goal.
+   * @return
+   * @throws NotFoundException If the user does not exist or target amount is less than or equal to
+   *     0.
+   */
+  public UserDto addSavingsGoalToUser(Long userId, SavingsGoalDTO savingsGoalDto) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+
+    SavingsGoal savingsGoal = savingsGoalDto.toEntity();
+    if (savingsGoal.getTargetAmount() <= 0) {
+      throw new IllegalArgumentException("Target amount must be greater than 0");
+    }
+    savingsGoal.setSavedAmount(0);
+    savingsGoal.setCompleted(false);
+    savingsGoal.setUser(user);
+    savingsGoalRepository.save(savingsGoal);
+    return new UserDto(user);
+  }
+
+  /**
+   * Gets all savings goals for a user.
+   *
+   * @param userId The ID of the user.
+   * @return A list of savings goal DTOs.
+   * @throws NotFoundException If the user does not exist.
+   */
+  public List<SavingsGoalDTO> getAllSavingsGoalsForUser(Long userId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+
+    return savingsGoalRepository.findByUser(user).stream()
+        .map(SavingsGoalDTO::new)
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Deletes a savings goal from a user.
+   *
+   * @param userId The ID of the user.
+   * @param savingsGoalId The ID of the savings goal.
+   * @throws NotFoundException If the user or savings goal does not exist.
+   */
+  public void deleteSavingsGoalFromUser(Long userId, Long savingsGoalId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+
+    SavingsGoal savingsGoal =
+        savingsGoalRepository
+            .findById(savingsGoalId)
+            .orElseThrow(
+                () ->
+                    new NotFoundException("Savings goal with ID " + savingsGoalId + " not found"));
   }
 }
