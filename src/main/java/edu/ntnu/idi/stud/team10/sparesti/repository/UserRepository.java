@@ -9,9 +9,11 @@ import edu.ntnu.idi.stud.team10.sparesti.model.User;
 
 /** Repository for User entities. */
 public interface UserRepository extends JpaRepository<User, Long> {
-  Optional<User> findByUsername(String username);
+  Optional<User> findByDisplayName(String username);
 
-  boolean existsByUsername(String username);
+  Optional<User> findByEmail(String email);
+
+  boolean existsByDisplayName(String username);
 
   long count();
 

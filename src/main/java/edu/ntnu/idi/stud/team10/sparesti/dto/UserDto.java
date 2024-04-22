@@ -15,7 +15,9 @@ import lombok.*;
 @Setter
 public class UserDto {
   private Long id;
-  private String username;
+  private String displayName;
+  private String firstName;
+  private String lastName;
   private String password;
   private String email;
   private String profilePictureUrl;
@@ -30,12 +32,11 @@ public class UserDto {
    */
   public UserDto(User user) {
     this.id = user.getId();
-    this.username = user.getUsername();
+    this.displayName = user.getDisplayName();
     this.email = user.getEmail();
     this.profilePictureUrl = user.getProfilePictureUrl();
     if (user.getSavingsGoals() != null) {
-      this.savingsGoals =
-          user.getSavingsGoals().stream().map(SavingsGoalDTO::new).collect(Collectors.toList());
+      this.savingsGoals = user.getSavingsGoals().stream().map(SavingsGoalDTO::new).toList();
     } else {
       this.savingsGoals = null;
     }
@@ -58,7 +59,7 @@ public class UserDto {
   public User toEntity() {
     User user = new User();
     user.setId(this.id);
-    user.setUsername(this.username);
+    user.setDisplayName(this.displayName);
     user.setPassword(this.password);
     user.setEmail(this.email);
     user.setProfilePictureUrl(this.profilePictureUrl);
