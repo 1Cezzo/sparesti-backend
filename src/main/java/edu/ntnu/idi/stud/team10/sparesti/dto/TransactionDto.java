@@ -1,6 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
-import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class TransactionDto {
   @Hidden private Long id;
   private double amount;
+  private String description;
+  private String category;
   private int accountNr;
-  private CategoryEnum category;
 }

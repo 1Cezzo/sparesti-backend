@@ -3,22 +3,19 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
-import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
-import edu.ntnu.idi.stud.team10.sparesti.mapper.AccountMapper;
-import edu.ntnu.idi.stud.team10.sparesti.mapper.TransactionMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
-import edu.ntnu.idi.stud.team10.sparesti.model.UserInfo;
-import edu.ntnu.idi.stud.team10.sparesti.repository.UserInfoRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.bank.AccountRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.bank.TransactionRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /** Service for mock data creation */
 @Service
@@ -46,16 +43,34 @@ public class MockDataService {
      * @param accountNr number of the account (who the transaction is coming from)
      * @return a randomly generated transaction
      */
-    private TransactionDto generateRandomPurchase(Integer accountNr) {
-        DecimalFormat df = new DecimalFormat("#.##");
+    public TransactionDto generateRandomPurchase(Integer accountNr) {
+        double amount = ThreadLocalRandom.current().nextDouble(-500, -20);
+        String category = CATEGORIES.get(RANDOM.nextInt(CATEGORIES.size()));
+        List<String> descriptions = CATEGORY_DESCRIPTIONS.get(category);
+        String description = descriptions.get(RANDOM.nextInt(descriptions.size()));
+
         TransactionDto transactionDto = new TransactionDto();
-        Random random = new Random();
-        transactionDto.setAmount(Double.parseDouble(df.format(random.nextDouble(-500, -20))));
-        //bounds of transaction could be moved to args for this method, which would allow for more dynamic transactions.
-        transactionDto.setCategory(CategoryEnum.getRandomCategory());
+        transactionDto.setAmount(Math.round(amount * 100.0) / 100.0); // rounding to 2 decimal places
+        transactionDto.setCategory(category);
+        transactionDto.setDescription(description);
         transactionDto.setAccountNr(accountNr);
         return transactionDto;
     }
+
+
+    private static final Map<String, List<String>> CATEGORY_DESCRIPTIONS = Map.of(
+            "Groceries", List.of("Supermarket purchase", "Grocery store", "Bakery shop", "Butcher shop"),
+            "Entertainment", List.of("Movie tickets", "Concert tickets", "Streaming service subscription"),
+            "Utilities", List.of("Electric bill payment", "Water bill payment", "Internet bill payment"),
+            "Dining", List.of("Restaurant", "Coffee shop", "Fast food"),
+            "Transportation", List.of("Gas station", "Public transport ticket", "Taxi fare"),
+            "Clothing", List.of("Clothing retail", "Online apparel shop", "Shoe store purchase")
+            // ... more categories and descriptions
+    );
+
+    private static final List<String> CATEGORIES = List.copyOf(CATEGORY_DESCRIPTIONS.keySet());
+    private static final Random RANDOM = new Random();
+
 
     /**
      * Creates and saves a random amount of transactions.
