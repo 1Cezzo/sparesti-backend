@@ -1,12 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.enums;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-
-
 /** Enum representing the different categories that a budget row or transaction can have. */
 public enum CategoryEnum {
   GROCERIES,
@@ -15,7 +8,7 @@ public enum CategoryEnum {
   CLOTHING,
   UTILITIES,
   OTHER,
-  NONE; //for when a user is transferring between their checkings- and savings accounts
+  NONE; // for when a user is transferring between their checkings- and savings accounts
 
   // Filter out the NONE category
   /*

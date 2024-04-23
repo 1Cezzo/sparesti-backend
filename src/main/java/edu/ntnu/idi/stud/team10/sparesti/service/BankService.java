@@ -1,7 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
-import java.text.DecimalFormat;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -130,9 +128,8 @@ public class BankService {
    * @throws IllegalArgumentException if an attempt is made to transfer a negative amount.
    */
   public void transferMoney(Integer fromAccountNr, Integer toAccountNr, double amount) {
-    if (amount < 0 ) {
-      throw new IllegalArgumentException(
-              "Cannot transfer a negative amount.");
+    if (amount < 0) {
+      throw new IllegalArgumentException("Cannot transfer a negative amount.");
     }
 
     TransactionDto fromTransactionDto = new TransactionDto();

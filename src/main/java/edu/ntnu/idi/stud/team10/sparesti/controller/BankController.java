@@ -87,7 +87,10 @@ public class BankController {
    */
   @PutMapping("/account/transfer")
   @Operation(summary = "Transfer money from one account to another")
-  public ResponseEntity<?> transferMoney(@RequestParam Integer fromAccountNr, @RequestParam Integer toAccountNr, @RequestParam double amount) {
+  public ResponseEntity<?> transferMoney(
+      @RequestParam Integer fromAccountNr,
+      @RequestParam Integer toAccountNr,
+      @RequestParam double amount) {
     bankService.transferMoney(fromAccountNr, toAccountNr, amount);
     return ResponseEntity.ok().body("Transfer successful");
   }
