@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountDto {
-  @Hidden
-  private Long id;
+  @Hidden private Long id;
   private Long ownerId;
   private int accountNr;
   private String name;

@@ -26,11 +26,9 @@ public class Transaction {
   @Column(nullable = false)
   private double amount;
 
-  @Column()
-  private String description;
+  @Column() private String description;
 
-  @Column()
-  private String category;
+  @Column() private String category;
 
   @ManyToOne
   @JoinColumn(nullable = false, name = "account_id", referencedColumnName = "id")
