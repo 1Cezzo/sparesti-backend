@@ -105,6 +105,12 @@
 			<artifactId>mapstruct-processor</artifactId>
 			<version>1.5.5.Final</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.12.687</version>
+		</dependency>
 	</dependencies>
 
 	<build>

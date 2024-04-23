@@ -25,7 +25,6 @@ public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final UserInfoRepository userInfoRepository;
   private final PasswordEncoder passwordEncoder;
-  private final SavingsGoalRepository savingsGoalRepository;
   private final BudgetRepository budgetRepository;
   private final BudgetRowRepository budgetRowRepository;
   private final BadgeRepository badgeRepository;
@@ -34,7 +33,6 @@ public class UserService implements UserDetailsService {
   public UserService(
       UserRepository userRepository,
       UserInfoRepository userInfoRepository,
-      SavingsGoalRepository savingsGoalRepository,
       BudgetRepository budgetRepository,
       BudgetRowRepository budgetRowRepository,
       BadgeRepository badgeRepository) {
@@ -42,7 +40,6 @@ public class UserService implements UserDetailsService {
     this.userInfoRepository = userInfoRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
-    this.savingsGoalRepository = savingsGoalRepository;
     this.badgeRepository = badgeRepository;
     this.passwordEncoder = new BCryptPasswordEncoder();
   }
