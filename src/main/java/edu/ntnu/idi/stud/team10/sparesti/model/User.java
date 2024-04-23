@@ -1,6 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,15 +23,13 @@ public class User {
   @Column(unique = true)
   private String displayName;
 
-  @Column() private String firstName;
-
-  @Column() private String lastName;
-
   @Column(nullable = false)
   private String password;
 
   @Column(unique = true)
   private String email;
+
+  @Column private double totalSavings;
 
   // TODO: Add "Total amount saved" to the user?
 
@@ -69,6 +68,7 @@ public class User {
     this.password = dto.getPassword();
     this.email = dto.getEmail();
     this.profilePictureUrl = dto.getProfilePictureUrl();
+    this.totalSavings = dto.getTotalSavings();
   }
 
   /**
@@ -93,7 +93,49 @@ public class User {
     this.earnedBadges.add(badge);
   }
 
+  public List<Badge> getEarnedBadges() {
+    if (earnedBadges == null) {
+      return List.of();
+    } else {
+      return List.copyOf(earnedBadges);
+    }
+  }
+
   public void removeBadge(Badge badge) {
     this.earnedBadges.remove(badge);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    User user = (User) o;
+    return Objects.equals(id, user.id)
+        && Objects.equals(displayName, user.displayName)
+        && Objects.equals(password, user.password)
+        && Objects.equals(email, user.email);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, displayName, password, email);
+  }
+
+  @Override
+  public String toString() {
+    return "User{"
+        + "id="
+        + id
+        + ", displayName='"
+        + displayName
+        + '\''
+        + ", email='"
+        + email
+        + '\''
+        + '}';
   }
 }

@@ -11,16 +11,13 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class UserDto {
   private Long id;
   private String displayName;
-  private String firstName;
-  private String lastName;
   private String password;
   private String email;
   private String profilePictureUrl;
+  private double totalSavings;
   private List<SavingsGoalDTO> savingsGoals;
   private List<ChallengeDTO> challenges;
   private Set<BadgeDto> badges;
@@ -35,6 +32,7 @@ public class UserDto {
     this.displayName = user.getDisplayName();
     this.email = user.getEmail();
     this.profilePictureUrl = user.getProfilePictureUrl();
+    this.totalSavings = user.getTotalSavings();
     if (user.getSavingsGoals() != null) {
       this.savingsGoals = user.getSavingsGoals().stream().map(SavingsGoalDTO::new).toList();
     } else {
@@ -63,6 +61,7 @@ public class UserDto {
     user.setPassword(this.password);
     user.setEmail(this.email);
     user.setProfilePictureUrl(this.profilePictureUrl);
+    user.setTotalSavings(this.totalSavings);
     if (this.savingsGoals != null) {
       user.setSavingsGoals(
           this.savingsGoals.stream().map(SavingsGoalDTO::toEntity).collect(Collectors.toList()));

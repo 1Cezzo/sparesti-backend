@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
@@ -102,7 +103,7 @@ public class BadgeService {
     Optional<Badge> badgeOptional = badgeRepository.findById(id);
     if (badgeOptional.isPresent()) {
       Badge badge = badgeOptional.get();
-      badge.setTitle(badgeDto.getTitle());
+      badge.setName(badgeDto.getName());
       badge.setDescription(badgeDto.getDescription());
       badge.setImageUrl(badgeDto.getImageUrl());
       badgeRepository.save(badge);
@@ -120,6 +121,9 @@ public class BadgeService {
    * @throws NotFoundException If the badge id is not found.
    */
   public double findBadgeRarity(Long badgeId) { // unsure if this should be in UserService
+    if (userRepository.count() == 0) {
+      return 100.0;
+    }
     if (badgeRepository.findById(badgeId).isPresent()) {
       double ratio =
           (double) countUsersWithBadge(badgeId)
@@ -130,5 +134,11 @@ public class BadgeService {
     } else {
       throw new NotFoundException("Badge with id " + badgeId + " not found...");
     }
+  }
+
+  /** Deletes all badges. */
+  @Transactional
+  public void deleteAllBadges() {
+    badgeRepository.deleteAll();
   }
 }

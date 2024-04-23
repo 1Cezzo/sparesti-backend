@@ -20,7 +20,7 @@ public class Badge {
   private long id;
 
   @Column(name = "name", nullable = false)
-  private String title; // this and/or imageurl could theoretically be unique?
+  private String name; // this and/or imageurl could theoretically be unique?
 
   @Column(name = "description", nullable = false)
   private String description;
