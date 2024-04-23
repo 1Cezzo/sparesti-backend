@@ -11,6 +11,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.UserInfo;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserInfoRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.bank.AccountRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.bank.TransactionRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,29 +23,19 @@ import java.util.Random;
 /** Service for mock data creation */
 @Service
 public class MockDataService {
-    private final AccountRepository accountRepository;
     private final UserRepository userRepository;
-    private final AccountMapper accountMapper;
-    private final TransactionMapper transactionMapper;
     private final BankService bankService;
     private final UserService userService;
-    private final UserInfoRepository userInfoRepository;
     private final UserInfoService userInfoService;
 
     @Autowired
-    public MockDataService(AccountRepository accountRepository,
-                           UserRepository userRepository,
-                           AccountMapper accountMapper,
-                           TransactionMapper transactionMapper,
+    public MockDataService(UserRepository userRepository,
                            BankService bankService,
-                           UserService userService, UserInfoRepository userInfoRepository, UserInfoService userInfoService) {
-        this.accountRepository = accountRepository;
+                           UserService userService,
+                           UserInfoService userInfoService) {
         this.userRepository = userRepository;
-        this.accountMapper = accountMapper;
-        this.transactionMapper = transactionMapper;
         this.bankService = bankService;
         this.userService = userService;
-        this.userInfoRepository = userInfoRepository;
         this.userInfoService = userInfoService;
     }
 
@@ -55,17 +46,26 @@ public class MockDataService {
      * @param accountNr number of the account (who the transaction is coming from)
      * @return a randomly generated transaction
      */
-    private TransactionDto generateRandomPurchase(Long accountNr) {
-        // method should be simple enough to be moved anywhere else where it fits better.
-        // TODO: move into TransactionDto as a public static method?
+    private TransactionDto generateRandomPurchase(Integer accountNr) {
         DecimalFormat df = new DecimalFormat("#.##");
         TransactionDto transactionDto = new TransactionDto();
         Random random = new Random();
         transactionDto.setAmount(Double.parseDouble(df.format(random.nextDouble(-500, -20))));
         //bounds of transaction could be moved to args for this method, which would allow for more dynamic transactions.
         transactionDto.setCategory(CategoryEnum.getRandomCategory());
-        transactionDto.setAccountNr(Integer.parseInt(String.valueOf(accountNr)));
+        transactionDto.setAccountNr(accountNr);
         return transactionDto;
+    }
+
+    /**
+     * Creates and saves a random amount of transactions.
+     *
+     * @param accountNr (Integer) the account number making the fake transaction(s).
+     */
+    public void storeRandomMockTransactions(Integer accountNr, int amount) {
+        for (int i = 0; i < amount; i++) {
+            bankService.addTransaction(generateRandomPurchase(accountNr));
+        }
     }
 
     /**
@@ -75,11 +75,11 @@ public class MockDataService {
      * @param accountNr (Integer): The account number being created
      * @param isSavingsAcc (boolean): Whether the account is going to be the savings account
      *                     (if false; will be checking account)
-     * @return the AccountDto
+     * @return the AccountDto that was created.
      */
     @Transactional
     public AccountDto addMockBankAccount(String email, Integer accountNr, boolean isSavingsAcc) {
-        // Can change to use a different arg than displayName. ATM I don#t know what is stored on the front-end.
+        // Can change to use a different arg than displayName. ATM I don't know what is stored on the front-end.
         // account nr can also be randomized. to a number like 1 - 1000000.
         User mockUser = findUserByEmail(email);
         UserInfoDto mockUserInfo = userInfoService.getUserInfoByEmail(email);
