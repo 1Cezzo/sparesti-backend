@@ -1,6 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
+import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.service.BadgeService;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserBadgeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -19,10 +22,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Badges", description = "Operations related to badges")
 public class BadgeController {
   private final BadgeService badgeService;
+  private final UserBadgeService userBadgeService;
 
   @Autowired
-  public BadgeController(final BadgeService badgeService) {
+  public BadgeController(final BadgeService badgeService, final UserBadgeService userBadgeService) {
     this.badgeService = badgeService;
+    this.userBadgeService = userBadgeService;
   }
 
   /**
@@ -70,5 +75,59 @@ public class BadgeController {
   @Operation(summary = "Get a singular badge's info")
   public ResponseEntity<BadgeDto> getBadgeInfo(@PathVariable final Long badgeId) {
     return ResponseEntity.ok(badgeService.getBadgeById(badgeId));
+  }
+
+  /**
+   * Get all badges earned by a user.
+   *
+   * @param userId the user's ID.
+   * @return a set of all badges earned by the user.
+   */
+  @GetMapping("/user/{userId}")
+  @Operation(summary = "Get all badges for a user")
+  public ResponseEntity<Set<BadgeDto>> getAllBadgesByUserId(@PathVariable Long userId) {
+    Set<BadgeDto> badges = userBadgeService.getAllBadgesByUserId(userId);
+    return ResponseEntity.ok(badges);
+  }
+
+  /**
+   * Awards a badge to a user.
+   *
+   * @param userId the user's ID.
+   * @param badgeId the badge's ID.
+   * @return 200 OK if successful.
+   */
+  @PostMapping("/{userId}/give/{badgeId}")
+  @Operation(summary = "Give a user a badge")
+  public ResponseEntity<Void> giveUserBadge(@PathVariable Long userId, @PathVariable Long badgeId) {
+    userBadgeService.giveUserBadge(userId, badgeId);
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * Removes a badge from a user.
+   *
+   * @param userId the user's ID.
+   * @param badgeId the badge's ID.
+   * @return 200 OK if successful.
+   */
+  @DeleteMapping("/{userId}/remove/{badgeId}")
+  @Operation(summary = "Remove a badge from a user")
+  public ResponseEntity<?> removeUserBadge(@PathVariable Long userId, @PathVariable Long badgeId) {
+    userBadgeService.removeUserBadge(userId, badgeId);
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * Deletes a badge by its ID.
+   *
+   * @param badgeId the badge's ID.
+   * @return A list of users who have the badge.
+   */
+  @GetMapping("/badge/{badgeId}/users")
+  @Operation(summary = "Get all users with a badge")
+  public ResponseEntity<List<User>> getUsersByBadge(@PathVariable Long badgeId) {
+    List<User> users = userBadgeService.getUsersByBadge(badgeId);
+    return ResponseEntity.ok(users);
   }
 }
