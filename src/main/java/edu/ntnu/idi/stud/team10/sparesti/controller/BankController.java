@@ -95,10 +95,10 @@ public class BankController {
     return ResponseEntity.ok().body("Transfer successful");
   }
 
-
-@GetMapping("/transactions/{accountNr}")
-@Operation(summary = "Get all transactions by an account number")
-public ResponseEntity<Set<TransactionDto>> getAllTransactionsByAccountNr(@PathVariable Integer accountNr) {
+  @GetMapping("/transactions/{accountNr}")
+  @Operation(summary = "Get all transactions by an account number")
+  public ResponseEntity<Set<TransactionDto>> getAllTransactionsByAccountNr(
+      @PathVariable Integer accountNr) {
     return ResponseEntity.ok().body(bankService.getTransactionsByAccountNr(accountNr));
   }
 }

@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -56,9 +57,20 @@ public class MockDataService {
     TransactionDto transactionDto = new TransactionDto();
     transactionDto.setAmount(Math.round(amount * 100.0) / 100.0); // rounding to 2 decimal places
     transactionDto.setCategory(category);
+    transactionDto.setDate(randomRecentDate()); // any random time in the last 30 days
     transactionDto.setDescription(description);
     transactionDto.setAccountNr(accountNr);
     return transactionDto;
+  }
+
+  /**
+   * Generates and returns a random date in the last 30 days.
+   *
+   * @return a random LocalDate that is maximum 30 days ago from current time.
+   */
+  private static final LocalDate randomRecentDate() {
+    int daysAgo = ThreadLocalRandom.current().nextInt(30); // Random number of days up to 30
+    return LocalDate.now().minusDays(daysAgo);
   }
 
   private static final Map<String, List<String>> CATEGORY_DESCRIPTIONS =
