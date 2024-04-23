@@ -1,7 +1,9 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -9,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
+import edu.ntnu.idi.stud.team10.sparesti.model.UserBadge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.UserBadgeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
@@ -22,11 +25,16 @@ public class UserBadgeService {
 
   private final BadgeRepository badgeRepository;
   private final UserRepository userRepository;
+  private final UserBadgeRepository userBadgeRepository;
 
   @Autowired
-  public UserBadgeService(BadgeRepository badgeRepository, UserRepository userRepository) {
+  public UserBadgeService(
+      BadgeRepository badgeRepository,
+      UserRepository userRepository,
+      UserBadgeRepository userBadgeRepository) {
     this.badgeRepository = badgeRepository;
     this.userRepository = userRepository;
+    this.userBadgeRepository = userBadgeRepository;
   }
 
   /**
@@ -35,14 +43,19 @@ public class UserBadgeService {
    * @param userId (Long): The User's unique ID.
    * @return A Set of all Badges that a User has earned, in DTO form.
    */
-  public Set<BadgeDto> getAllBadgesByUserId(Long userId) {
-    User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
-    Set<BadgeDto> badges =
-        user.getEarnedBadges().stream().map(BadgeDto::new).collect(Collectors.toSet());
-    return badges;
+  @Transactional
+  public Set<Map<String, Object>> getAllBadgesByUserId(Long userId) {
+    Set<UserBadge> userBadges = userBadgeRepository.findByUserId(userId);
+    return userBadges.stream()
+        .map(
+            userBadge -> {
+              Map<String, Object> badgeData = new HashMap<>();
+              badgeData.put("user", userBadge.getUser());
+              badgeData.put("badge", userBadge.getBadge());
+              badgeData.put("dateEarned", userBadge.getDateEarned());
+              return badgeData;
+            })
+        .collect(Collectors.toSet());
   }
 
   // Possibly need a method that retrieves the 3 most recent badges of a user,
@@ -67,10 +80,15 @@ public class UserBadgeService {
         badgeRepository
             .findById(badgeId)
             .orElseThrow(() -> new NotFoundException("Badge with ID " + badgeId + " not found."));
-    user.addBadge(badge);
-    badge.addUser(user);
-    userRepository.save(user);
-    badgeRepository.save(badge);
+
+    // Create a new UserBadge instance and set dateTimeEarned to the current date and time
+    UserBadge userBadge = new UserBadge();
+    userBadge.setUser(user);
+    userBadge.setBadge(badge);
+    userBadge.setDateEarned(LocalDateTime.now());
+
+    // Save the userBadge entity
+    userBadgeRepository.save(userBadge);
   }
 
   /**
@@ -82,17 +100,12 @@ public class UserBadgeService {
    */
   @Transactional
   public void removeUserBadge(Long userId, Long badgeId) {
-    User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
-    Badge badge =
-        badgeRepository
-            .findById(badgeId)
-            .orElseThrow(() -> new NotFoundException("Badge with ID " + badgeId + " not found."));
-    user.removeBadge(badge);
-    badge.removeUser(user);
-    userRepository.save(user);
+    UserBadge userBadge =
+        userBadgeRepository
+            .findByUserIdAndBadgeId(userId, badgeId)
+            .orElseThrow(() -> new NotFoundException("UserBadge not found"));
+
+    userBadgeRepository.delete(userBadge);
   }
 
   /**
@@ -102,11 +115,38 @@ public class UserBadgeService {
    * @return an ArrayList of Users that have earned the badge.
    * @throws NotFoundException When the badge id is not found in the database.
    */
-  public List<User> getUsersByBadge(Long badgeId) {
+  @Transactional
+  public List<Map<String, Object>> getUsersByBadge(Long badgeId) {
+    List<UserBadge> userBadges = userBadgeRepository.findByBadgeId(badgeId);
+    return userBadges.stream()
+        .map(
+            userBadge -> {
+              Map<String, Object> userData = new HashMap<>();
+              userData.put("user", userBadge.getUser());
+              userData.put("badge", userBadge.getBadge());
+              userData.put("dateEarned", userBadge.getDateEarned());
+              return userData;
+            })
+        .collect(Collectors.toList());
+  }
+
+  @Transactional
+  public void deleteBadgeWithAssociatedUserBadges(Long badgeId) {
+    // Retrieve the badge
     Badge badge =
         badgeRepository
             .findById(badgeId)
             .orElseThrow(() -> new NotFoundException("Badge with ID " + badgeId + " not found."));
-    return new ArrayList<>(badge.getUsers()); // possible null exception
+
+    // Retrieve all user_badges associated with the badge
+    List<UserBadge> associatedUserBadges = userBadgeRepository.findByBadgeId(badgeId);
+
+    // Delete each associated user_badges record
+    for (UserBadge userBadge : associatedUserBadges) {
+      userBadgeRepository.delete(userBadge);
+    }
+
+    // Once all associated user_badges records are deleted, delete the badge
+    badgeRepository.delete(badge);
   }
 }

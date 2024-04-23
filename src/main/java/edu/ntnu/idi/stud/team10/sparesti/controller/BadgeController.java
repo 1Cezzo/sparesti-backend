@@ -1,6 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
-import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.service.BadgeService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserBadgeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -85,8 +85,8 @@ public class BadgeController {
    */
   @GetMapping("/user/{userId}")
   @Operation(summary = "Get all badges for a user")
-  public ResponseEntity<Set<BadgeDto>> getAllBadgesByUserId(@PathVariable Long userId) {
-    Set<BadgeDto> badges = userBadgeService.getAllBadgesByUserId(userId);
+  public ResponseEntity<Set<Map<String, Object>>> getAllBadgesByUserId(@PathVariable Long userId) {
+    Set<Map<String, Object>> badges = userBadgeService.getAllBadgesByUserId(userId);
     return ResponseEntity.ok(badges);
   }
 
@@ -109,13 +109,13 @@ public class BadgeController {
    *
    * @param userId the user's ID.
    * @param badgeId the badge's ID.
-   * @return 200 OK if successful.
+   * @return 204 OK if successful.
    */
   @DeleteMapping("/{userId}/remove/{badgeId}")
   @Operation(summary = "Remove a badge from a user")
   public ResponseEntity<?> removeUserBadge(@PathVariable Long userId, @PathVariable Long badgeId) {
     userBadgeService.removeUserBadge(userId, badgeId);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
   /**
@@ -125,9 +125,9 @@ public class BadgeController {
    * @return A list of users who have the badge.
    */
   @GetMapping("/badge/{badgeId}/users")
-  @Operation(summary = "Get all users with a badge")
-  public ResponseEntity<List<User>> getUsersByBadge(@PathVariable Long badgeId) {
-    List<User> users = userBadgeService.getUsersByBadge(badgeId);
+  @Operation(summary = "Get all users with the given badge")
+  public ResponseEntity<List<Map<String, Object>>> getUsersByBadge(@PathVariable Long badgeId) {
+    List<Map<String, Object>> users = userBadgeService.getUsersByBadge(badgeId);
     return ResponseEntity.ok(users);
   }
 }
