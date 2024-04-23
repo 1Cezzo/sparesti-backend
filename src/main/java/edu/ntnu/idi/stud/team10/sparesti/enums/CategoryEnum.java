@@ -18,6 +18,7 @@ public enum CategoryEnum {
   NONE; //for when a user is transferring between their checkings- and savings accounts
 
   // Filter out the NONE category
+  /*
   private static final List<CategoryEnum> VALUES =
           Collections.unmodifiableList(
                   Arrays.stream(values())
@@ -33,8 +34,10 @@ public enum CategoryEnum {
    *
    * @return a random category enum that isn't "NONE"
    */
+  /*
   public static CategoryEnum getRandomCategory() {
     //return VALUES.get(ThreadLocalRandom.current().nextInt(SIZE)); //could also work?
     return VALUES.get(RANDOM.nextInt(SIZE));
-  }
+  }*/
+
 }

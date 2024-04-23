@@ -3,6 +3,7 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.TransactionMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
@@ -10,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -24,16 +23,19 @@ public class MockDataService {
     private final BankService bankService;
     private final UserService userService;
     private final UserInfoService userInfoService;
+    private final TransactionMapper transactionMapper;
 
     @Autowired
     public MockDataService(UserRepository userRepository,
                            BankService bankService,
                            UserService userService,
-                           UserInfoService userInfoService) {
+                           UserInfoService userInfoService,
+                           TransactionMapper transactionMapper) {
         this.userRepository = userRepository;
         this.bankService = bankService;
         this.userService = userService;
         this.userInfoService = userInfoService;
+        this.transactionMapper = transactionMapper;
     }
 
     /**

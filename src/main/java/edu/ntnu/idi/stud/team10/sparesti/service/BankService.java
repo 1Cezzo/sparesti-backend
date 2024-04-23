@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -124,11 +123,11 @@ public class BankService {
 
   /**
    * Transfers money between two accounts by creating two transactions.
-   * The transactions are of type "NONE"
    *
-   * @param fromAccountNr
-   * @param toAccountNr
-   * @param amount
+   * @param fromAccountNr the accountNr that is sending money.
+   * @param toAccountNr the accountNr that is receiving money.
+   * @param amount the amount of money being transferred.
+   * @throws IllegalArgumentException if an attempt is made to transfer a negative amount.
    */
   public void transferMoney(Integer fromAccountNr, Integer toAccountNr, double amount) {
     if (amount < 0 ) {
@@ -138,13 +137,15 @@ public class BankService {
 
     TransactionDto fromTransactionDto = new TransactionDto();
     fromTransactionDto.setAmount(-amount);
-    fromTransactionDto.setCategory(CategoryEnum.NONE);
+    fromTransactionDto.setCategory("Transfer");
+    fromTransactionDto.setDescription("Transferred to account: " + toAccountNr);
     fromTransactionDto.setAccountNr(fromAccountNr);
     addTransaction(fromTransactionDto);
 
     TransactionDto toTransactionDto = new TransactionDto();
     toTransactionDto.setAmount(amount);
-    toTransactionDto.setCategory(CategoryEnum.NONE);
+    fromTransactionDto.setCategory("Transfer");
+    fromTransactionDto.setDescription("Transferred from account: " + fromAccountNr);
     toTransactionDto.setAccountNr(toAccountNr);
     addTransaction(toTransactionDto);
   }
