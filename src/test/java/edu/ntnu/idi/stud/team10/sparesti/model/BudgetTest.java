@@ -60,7 +60,7 @@ public class BudgetTest {
   @Test
   public void testToString() {
     String expectedString =
-        "Budget(id=1, row=[], expiryDate=2024-12-31, user=User(id=1, displayName=testUser, firstName=null, lastName=null, password=testPassword, email=test@example.com, profilePictureUrl=https://example.com/profile.jpg, checkingAccountNr=null, savingsAccountNr=null, savingsGoals=null, challenges=null, earnedBadges=null))";
+        "Budget(id=1, row=[], expiryDate=2024-12-31, user=User{id=1, displayName='testUser', email='test@example.com'})";
     assertEquals(expectedString, budget.toString());
   }
 }

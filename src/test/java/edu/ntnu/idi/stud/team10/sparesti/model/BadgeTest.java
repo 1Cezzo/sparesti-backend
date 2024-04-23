@@ -15,7 +15,7 @@ public class BadgeTest {
   public void setUp() {
     badge = new Badge();
     badge.setId(1L);
-    badge.setTitle("Test Badge");
+    badge.setName("Test Badge");
     badge.setDescription("Test Description");
     badge.setImageUrl("https://example.com/badge.jpg");
     badge.setUsers(new HashSet<>());
@@ -24,7 +24,7 @@ public class BadgeTest {
   @Test
   public void testBadgeFields() {
     assertEquals(1L, badge.getId());
-    assertEquals("Test Badge", badge.getTitle());
+    assertEquals("Test Badge", badge.getName());
     assertEquals("Test Description", badge.getDescription());
     assertEquals("https://example.com/badge.jpg", badge.getImageUrl());
     assertNotNull(badge.getUsers());
@@ -34,7 +34,7 @@ public class BadgeTest {
   public void testEqualsAndHashCode() {
     Badge sameBadge = new Badge();
     sameBadge.setId(1L);
-    sameBadge.setTitle("Test Badge");
+    sameBadge.setName("Test Badge");
     sameBadge.setDescription("Test Description");
     sameBadge.setImageUrl("https://example.com/badge.jpg");
     sameBadge.setUsers(new HashSet<>());
@@ -44,7 +44,7 @@ public class BadgeTest {
 
     Badge differentBadge = new Badge();
     differentBadge.setId(2L);
-    differentBadge.setTitle("Test Badge");
+    differentBadge.setName("Test Badge");
     differentBadge.setDescription("Test Description");
     differentBadge.setImageUrl("https://example.com/badge.jpg");
     differentBadge.setUsers(new HashSet<>());
@@ -56,7 +56,7 @@ public class BadgeTest {
   @Test
   public void testToString() {
     String expectedString =
-        "Badge(id=1, title=Test Badge, description=Test Description, imageUrl=https://example.com/badge.jpg, users=[])";
+        "Badge(id=1, name=Test Badge, description=Test Description, imageUrl=https://example.com/badge.jpg, users=[])";
     assertEquals(expectedString, badge.toString());
   }
 }

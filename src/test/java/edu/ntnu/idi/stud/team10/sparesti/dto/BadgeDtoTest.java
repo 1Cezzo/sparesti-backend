@@ -32,7 +32,7 @@ public class BadgeDtoTest {
   public void testConstructor() {
     assertNotNull(badgeDto);
     assertEquals(1, badgeDto.getId());
-    assertEquals("Test Badge", badgeDto.getTitle());
+    assertEquals("Test Badge", badgeDto.getName());
     assertEquals("This is a test badge", badgeDto.getDescription());
     assertEquals("https://example.com/test-badge.png", badgeDto.getImageUrl());
     assertEquals(1, badgeDto.getUsers().size()); // Ensure users are copied correctly
@@ -43,7 +43,7 @@ public class BadgeDtoTest {
     Badge convertedBadge = badgeDto.toEntity();
     assertNotNull(convertedBadge);
     assertEquals(1, convertedBadge.getId());
-    assertEquals("Test Badge", convertedBadge.getTitle());
+    assertEquals("Test Badge", convertedBadge.getName());
     assertEquals("This is a test badge", convertedBadge.getDescription());
     assertEquals("https://example.com/test-badge.png", convertedBadge.getImageUrl());
     assertEquals(1, convertedBadge.getUsers().size()); // Ensure users are copied correctly
