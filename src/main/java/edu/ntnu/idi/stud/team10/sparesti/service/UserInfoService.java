@@ -89,6 +89,17 @@ public class UserInfoService {
   }
 
   /**
+   * Checks if a given email is associated with a user.
+   *
+   * @param email (String) The email to check.
+   * @return {@code true} if the email is associated with a user, {@code false} otherwise.
+   */
+  public boolean userInfoExistsByEmail(String email) {
+    User user = findUserByEmail(email);
+    return userInfoRepository.existsByUserId(user.getId());
+  }
+
+  /**
    * Finds a User by their id.
    *
    * @param userId (Long) The id of the user.
@@ -98,6 +109,19 @@ public class UserInfoService {
   private User findUserById(Long userId) {
     return userRepository
         .findById(userId)
+        .orElseThrow(() -> new NotFoundException("User not found"));
+  }
+
+  /**
+   * Finds a User by their email.
+   *
+   * @param email (String) The email of the user.
+   * @return The User, if it exists.
+   * @throws NotFoundException if the user is not found.
+   */
+  private User findUserByEmail(String email) {
+    return userRepository
+        .findByEmail(email)
         .orElseThrow(() -> new NotFoundException("User not found"));
   }
 }
