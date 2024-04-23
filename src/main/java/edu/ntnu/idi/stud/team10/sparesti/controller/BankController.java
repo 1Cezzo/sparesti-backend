@@ -2,6 +2,7 @@ package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.Set;
 
+import edu.ntnu.idi.stud.team10.sparesti.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Bank", description = "Operations related to the bank mock")
 public class BankController {
   private final BankService bankService;
+  private final UserAccountService userAccountService;
 
   @Autowired
-  public BankController(BankService bankService) {
+  public BankController(BankService bankService, UserAccountService userAccountService) {
     this.bankService = bankService;
+    this.userAccountService = userAccountService;
   }
 
   /**
@@ -35,6 +38,7 @@ public class BankController {
   @Operation(summary = "Create a new account")
   public ResponseEntity<AccountDto> createAccount(@RequestBody AccountDto accountDto) {
     AccountDto createdAccount = bankService.createAccount(accountDto);
+    // TODO: add service method that sets owner's checking or savingsaccount to accountNr
     return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
   }
 
@@ -48,6 +52,7 @@ public class BankController {
   @Operation(summary = "Add a transaction to an account.")
   public ResponseEntity<Void> addTransaction(@RequestBody TransactionDto transaction) {
     bankService.addTransaction(transaction);
+
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
