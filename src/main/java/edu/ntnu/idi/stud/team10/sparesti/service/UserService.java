@@ -162,7 +162,7 @@ public class UserService implements UserDetailsService {
    * @return The User, if found.
    * @throws NotFoundException If the user is not found.
    */
-  private User findUserByDisplayName(String displayName) {
+  protected User findUserByDisplayName(String displayName) {
     return userRepository
         .findByDisplayName(displayName)
         .orElseThrow(
