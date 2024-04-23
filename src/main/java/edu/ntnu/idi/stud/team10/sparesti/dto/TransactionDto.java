@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 /** Dto to represent a transaction entity. */
 @Data
 @NoArgsConstructor
@@ -15,4 +17,5 @@ public class TransactionDto {
   private String description;
   private String category;
   private int accountNr;
+  private LocalDate date;
 }
