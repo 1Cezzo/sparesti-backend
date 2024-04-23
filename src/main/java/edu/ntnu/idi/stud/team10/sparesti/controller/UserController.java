@@ -33,7 +33,7 @@ public class UserController {
   @GetMapping("/{username}")
   @Operation(summary = "Access the user data")
   public UserDto getUserByUsername(@PathVariable String username) {
-    return userService.getUserByUsername(username);
+    return userService.getUserByEmail(username);
   }
 
   /**
