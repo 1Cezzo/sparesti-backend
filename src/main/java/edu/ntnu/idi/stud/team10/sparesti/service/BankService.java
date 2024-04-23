@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -145,5 +146,12 @@ public class BankService {
     fromTransactionDto.setDescription("Transferred from account: " + fromAccountNr);
     toTransactionDto.setAccountNr(toAccountNr);
     addTransaction(toTransactionDto);
+  }
+
+  public Set<TransactionDto> getTransactionsByAccountNr(Integer accountNr) {
+    Account account = findAccountByAccountNr(accountNr);
+    return account.getTransactions().stream()
+            .map(transaction -> transactionMapper.toDto(transaction))
+            .collect(Collectors.toSet());
   }
 }
