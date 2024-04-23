@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class TransactionDto {
   @Hidden private Long id;
   private double amount;
+  private String description;
+  private String category;
   private int accountNr;
-  // Type enum from budget goes here, need to merge first
 }
