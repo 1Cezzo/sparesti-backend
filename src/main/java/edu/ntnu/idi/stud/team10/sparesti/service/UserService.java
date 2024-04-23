@@ -14,16 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
-import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
-import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
-import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
-import edu.ntnu.idi.stud.team10.sparesti.model.User;
-import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
+import edu.ntnu.idi.stud.team10.sparesti.model.*;
+import edu.ntnu.idi.stud.team10.sparesti.repository.*;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
@@ -31,35 +23,28 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 @Service
 public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
+  private final UserInfoRepository userInfoRepository;
   private final PasswordEncoder passwordEncoder;
   private final SavingsGoalRepository savingsGoalRepository;
   private final BudgetRepository budgetRepository;
   private final BudgetRowRepository budgetRowRepository;
   private final BadgeRepository badgeRepository;
-  private final ChallengeRepository challengeRepository;
-  private BankService bankService;
+  private final BankService bankService;
 
-  /**
-   * Constructor for UserService, with automatic injection of dependencies.
-   *
-   * @param userRepository (UserRepository) The repository for User entities.
-   * @param savingsGoalRepository (SavingsGoalRepository) The repository for SavingsGoal entities.
-   * @param challengeRepository (ChallengeRepository) The repository for Challenge entities.
-   */
   @Autowired
   public UserService(
       UserRepository userRepository,
+      UserInfoRepository userInfoRepository,
       SavingsGoalRepository savingsGoalRepository,
-      ChallengeRepository challengeRepository,
       BudgetRepository budgetRepository,
       BudgetRowRepository budgetRowRepository,
       BadgeRepository badgeRepository,
       BankService bankService) {
     this.userRepository = userRepository;
+    this.userInfoRepository = userInfoRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
     this.savingsGoalRepository = savingsGoalRepository;
-    this.challengeRepository = challengeRepository;
     this.badgeRepository = badgeRepository;
     this.passwordEncoder = new BCryptPasswordEncoder();
     this.bankService = bankService;
@@ -79,6 +64,7 @@ public class UserService implements UserDetailsService {
     }
     userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
     User newUser = new User(userDto);
+    newUser.setTotalSavings(0);
     return new UserDto(userRepository.save(newUser));
   }
 
@@ -466,5 +452,37 @@ public class UserService implements UserDetailsService {
 
     userRepository.save(mockUser);
     return bankService.createAccount(accountDto);
+  }
+
+  public UserResponseDto getUserDetails(String username) {
+    Long userId =
+        userRepository
+            .findByDisplayName(username)
+            .orElseThrow(() -> new NotFoundException("User not found"))
+            .getId();
+    // Fetch user details from UserRepository
+    User user =
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+
+    UserInfo userInfo =
+        userInfoRepository
+            .findByUserId(userId)
+            .orElseThrow(() -> new NotFoundException("User info not found"));
+
+    // Fetch badges for the user (assuming you have a method to fetch badges)
+    List<String> badges =
+        user.getEarnedBadges().stream().map(Badge::getName).collect(Collectors.toList());
+
+    // Create and populate the UserResponse object
+    UserResponseDto userResponse = new UserResponseDto();
+    userResponse.setDisplayName(user.getDisplayName());
+    userResponse.setFirstName(userInfo.getFirstName());
+    userResponse.setLastName(userInfo.getLastName());
+    userResponse.setEmail(user.getEmail());
+    userResponse.setPictureUrl(user.getProfilePictureUrl());
+    userResponse.setBadges(badges);
+    userResponse.setTotalSavings(user.getTotalSavings());
+
+    return userResponse;
   }
 }
