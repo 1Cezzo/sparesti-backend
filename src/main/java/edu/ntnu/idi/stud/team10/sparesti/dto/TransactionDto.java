@@ -1,5 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
+import java.time.LocalDate;
+
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,4 +17,5 @@ public class TransactionDto {
   private String description;
   private String category;
   private int accountNr;
+  private LocalDate date;
 }

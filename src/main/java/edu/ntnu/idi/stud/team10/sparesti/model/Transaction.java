@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -29,6 +30,9 @@ public class Transaction {
   @Column() private String description;
 
   @Column() private String category;
+
+  @Column(name = "date", nullable = false)
+  private LocalDate date;
 
   @ManyToOne
   @JoinColumn(nullable = false, name = "account_id", referencedColumnName = "id")
