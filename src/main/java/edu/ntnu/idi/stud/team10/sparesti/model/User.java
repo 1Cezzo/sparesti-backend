@@ -20,9 +20,6 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(unique = true)
-  private String displayName;
-
   @Column(nullable = false)
   private String password;
 
@@ -64,7 +61,6 @@ public class User {
    */
   public User(UserDto dto) {
     this.id = dto.getId();
-    this.displayName = dto.getDisplayName();
     this.password = dto.getPassword();
     this.email = dto.getEmail();
     this.profilePictureUrl = dto.getProfilePictureUrl();
@@ -115,27 +111,20 @@ public class User {
     }
     User user = (User) o;
     return Objects.equals(id, user.id)
-        && Objects.equals(displayName, user.displayName)
         && Objects.equals(password, user.password)
         && Objects.equals(email, user.email);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, displayName, password, email);
+    return Objects.hash(id, password, email);
   }
 
   @Override
   public String toString() {
     return "User{"
-        + "id="
-        + id
-        + ", displayName='"
-        + displayName
-        + '\''
-        + ", email='"
-        + email
-        + '\''
+        + "id=" + id
+        + ", email='" + email + '\''
         + '}';
   }
 }

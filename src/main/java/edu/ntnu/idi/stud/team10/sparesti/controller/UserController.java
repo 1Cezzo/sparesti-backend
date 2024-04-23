@@ -38,7 +38,7 @@ public class UserController {
   @GetMapping("/{username}")
   @Operation(summary = "Access the user data")
   public UserDto getUserByUsername(@PathVariable String username) {
-    return userService.getUserByUsername(username);
+    return userService.getUserByEmail(username);
   }
 
   /**
@@ -162,18 +162,5 @@ public class UserController {
     BudgetRowDto updatedBudgetRowDto =
         userService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
     return ResponseEntity.ok(updatedBudgetRowDto);
-  }
-
-  /**
-   * Get a user's details.
-   *
-   * @param displayName The username of the user.
-   * @return The user's details.
-   */
-  @GetMapping("/info/{display_name}")
-  @Operation(summary = "Get a user's details")
-  public ResponseEntity<UserResponseDto> getUserDetails(@PathVariable String displayName) {
-    UserResponseDto userResponse = userService.getUserDetails(displayName);
-    return ResponseEntity.ok(userResponse);
   }
 }

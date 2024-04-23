@@ -13,8 +13,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/user-details")
-@Tag(name = "User Details", description = "Operations related to user details from questionnaire.")
+@RequestMapping("/api/user-info")
+@Tag(name = "User Details", description = "Operations related to user info from questionnaire.")
 public class UserInfoController {
   private UserInfoService userInfoService;
 
@@ -24,7 +24,7 @@ public class UserInfoController {
   }
 
   @PostMapping("/create")
-  @Operation(summary = "Create user details")
+  @Operation(summary = "Create user info")
   public ResponseEntity<UserInfoDto> createUserInfo(@RequestBody UserInfoDto userInfoDto) {
     return ResponseEntity.ok(userInfoService.createUserInfo(userInfoDto));
   }

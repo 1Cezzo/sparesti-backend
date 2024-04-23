@@ -24,6 +24,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity representing user info in the database.
+ */
 @Entity
 @Data
 @NoArgsConstructor
@@ -34,7 +37,9 @@ public class UserInfo {
   @Hidden
   private Long id;
 
-  @PrimaryKeyJoinColumn() @OneToOne private User user;
+  @JoinColumn(name = "user_id") @OneToOne private User user;
+
+  @Column(unique = true) private String displayName;
 
   @Column() private String firstName;
 
@@ -74,6 +79,7 @@ public class UserInfo {
     UserInfo userInfo = (UserInfo) o;
     return Objects.equals(id, userInfo.id)
         && Objects.equals(user, userInfo.user)
+        && Objects.equals(displayName, userInfo.displayName)
         && Objects.equals(firstName, userInfo.firstName)
         && Objects.equals(lastName, userInfo.lastName)
         && Objects.equals(dateOfBirth, userInfo.dateOfBirth)
@@ -85,7 +91,7 @@ public class UserInfo {
   @Override
   public int hashCode() {
     return Objects.hash(
-        id, user, firstName, lastName, dateOfBirth, occupationStatus, motivation, income);
+        id, user, displayName, firstName, lastName, dateOfBirth, occupationStatus, motivation, income);
   }
 
   @Override
@@ -95,6 +101,9 @@ public class UserInfo {
         + id
         + ", user="
         + user
+        + ", displayName='"
+        + displayName
+        + '\''
         + ", firstName='"
         + firstName
         + '\''

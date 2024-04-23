@@ -29,7 +29,6 @@ public class UserDto {
    */
   public UserDto(User user) {
     this.id = user.getId();
-    this.displayName = user.getDisplayName();
     this.email = user.getEmail();
     this.profilePictureUrl = user.getProfilePictureUrl();
     this.totalSavings = user.getTotalSavings();
@@ -57,7 +56,6 @@ public class UserDto {
   public User toEntity() {
     User user = new User();
     user.setId(this.id);
-    user.setDisplayName(this.displayName);
     user.setPassword(this.password);
     user.setEmail(this.email);
     user.setProfilePictureUrl(this.profilePictureUrl);

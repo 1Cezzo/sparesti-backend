@@ -66,19 +66,6 @@ public class UserService implements UserDetailsService {
   }
 
   /**
-   * Sets the display name of a user.
-   *
-   * @param dto (UserDto) The user to update.
-   * @return A Dto representing the updated user.
-   * @throws NotFoundException If the user is not found.
-   */
-  public UserDto setDisplayName(UserDto dto) {
-    User user = findUserById(dto.getId());
-    user.setDisplayName(dto.getDisplayName());
-    return new UserDto(userRepository.save(user));
-  }
-
-  /**
    * Gets a User by id.
    *
    * @param id (Long) The unique id of the user.
@@ -127,15 +114,14 @@ public class UserService implements UserDetailsService {
   }
 
   /**
-   * Gets a User by username.
+   * Gets a User by email.
    *
-   * @param username (String) The unique username of the user.
+   * @param email (String) The email of the user.
    * @return A Dto representing the user.
    * @throws NotFoundException If the user is not found.
    */
-  public UserDto getUserByUsername(String username) {
-    User foundUser = findUserByDisplayName(username);
-
+  public UserDto getUserByEmail(String email) {
+    User foundUser = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found"));
     return new UserDto(foundUser);
   }
 
@@ -150,20 +136,6 @@ public class UserService implements UserDetailsService {
     return userRepository
         .findById(id)
         .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
-  }
-
-  /**
-   * Finds a User by display name, if it exists.
-   *
-   * @param displayName (String) The display name of the user.
-   * @return The User, if found.
-   * @throws NotFoundException If the user is not found.
-   */
-  private User findUserByDisplayName(String displayName) {
-    return userRepository
-        .findByDisplayName(displayName)
-        .orElseThrow(
-            () -> new NotFoundException("User with display name " + displayName + " not found"));
   }
 
   /**
@@ -423,37 +395,5 @@ public class UserService implements UserDetailsService {
             .findById(badgeId)
             .orElseThrow(() -> new NotFoundException("Badge with ID " + badgeId + " not found."));
     return new ArrayList<>(badge.getUsers()); // possible null exception
-  }
-
-  public UserResponseDto getUserDetails(String username) {
-    Long userId =
-        userRepository
-            .findByDisplayName(username)
-            .orElseThrow(() -> new NotFoundException("User not found"))
-            .getId();
-    // Fetch user details from UserRepository
-    User user =
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
-
-    UserInfo userInfo =
-        userInfoRepository
-            .findByUserId(userId)
-            .orElseThrow(() -> new NotFoundException("User info not found"));
-
-    // Fetch badges for the user (assuming you have a method to fetch badges)
-    List<String> badges =
-        user.getEarnedBadges().stream().map(Badge::getName).collect(Collectors.toList());
-
-    // Create and populate the UserResponse object
-    UserResponseDto userResponse = new UserResponseDto();
-    userResponse.setDisplayName(user.getDisplayName());
-    userResponse.setFirstName(userInfo.getFirstName());
-    userResponse.setLastName(userInfo.getLastName());
-    userResponse.setEmail(user.getEmail());
-    userResponse.setPictureUrl(user.getProfilePictureUrl());
-    userResponse.setBadges(badges);
-    userResponse.setTotalSavings(user.getTotalSavings());
-
-    return userResponse;
   }
 }
