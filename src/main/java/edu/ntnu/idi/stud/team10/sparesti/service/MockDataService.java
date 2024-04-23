@@ -2,12 +2,16 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
 import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.AccountMapper;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.TransactionMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
+import edu.ntnu.idi.stud.team10.sparesti.model.UserInfo;
+import edu.ntnu.idi.stud.team10.sparesti.repository.UserInfoRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.bank.AccountRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +28,8 @@ public class MockDataService {
     private final TransactionMapper transactionMapper;
     private final BankService bankService;
     private final UserService userService;
+    private final UserInfoRepository userInfoRepository;
+    private final UserInfoService userInfoService;
 
     @Autowired
     public MockDataService(AccountRepository accountRepository,
@@ -31,13 +37,15 @@ public class MockDataService {
                            AccountMapper accountMapper,
                            TransactionMapper transactionMapper,
                            BankService bankService,
-                           UserService userService) {
+                           UserService userService, UserInfoRepository userInfoRepository, UserInfoService userInfoService) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
         this.accountMapper = accountMapper;
         this.transactionMapper = transactionMapper;
         this.bankService = bankService;
         this.userService = userService;
+        this.userInfoRepository = userInfoRepository;
+        this.userInfoService = userInfoService;
     }
 
     /**
@@ -63,23 +71,25 @@ public class MockDataService {
     /**
      * Creates a new mock account and adds it to the user.
      *
-     * @param displayName (String): The username of the user the account is being added to
+     * @param email (String): The email of the user the account is being added to
      * @param accountNr (Integer): The account number being created
      * @param isSavingsAcc (boolean): Whether the account is going to be the savings account
      *                     (if false; will be checking account)
      * @return the AccountDto
      */
     @Transactional
-    public AccountDto addMockBankAccount(String displayName, Integer accountNr, boolean isSavingsAcc) {
-        // Bad and can be removed/altered in any way, but should work for mock data.
-        User mockUser = userService.findUserByDisplayName(displayName);
+    public AccountDto addMockBankAccount(String email, Integer accountNr, boolean isSavingsAcc) {
+        // Can change to use a different arg than displayName. ATM I don#t know what is stored on the front-end.
+        // account nr can also be randomized. to a number like 1 - 1000000.
+        User mockUser = findUserByEmail(email);
+        UserInfoDto mockUserInfo = userInfoService.getUserInfoByEmail(email);
         AccountDto accountDto = new AccountDto();
         accountDto.setAccountNr(accountNr);
-        accountDto.setName(mockUser.getDisplayName());
         accountDto.setOwnerId(mockUser.getId());
+        String name = mockUserInfo.getFirstName() + " " + mockUserInfo.getLastName();
 
         if (isSavingsAcc) {
-            accountDto.setName(accountDto.getName() + "'s savings account");
+            accountDto.setName(name + "'s savings account");
             mockUser.setSavingsAccountNr(accountNr);
         } else {
             accountDto.setName(accountDto.getName() + "'s checking account");
@@ -88,5 +98,10 @@ public class MockDataService {
 
         userRepository.save(mockUser);
         return bankService.createAccount(accountDto);
+    }
+
+    private User findUserByEmail(String email) {
+        return userRepository.findById(userService.getUserByEmail(email).getId())
+                .orElseThrow(() -> new NotFoundException("user with email" + email + " not found"));
     }
 }

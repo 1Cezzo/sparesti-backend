@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/mock")
 @Tag(name = "Mock Data", description = "Operations relating to all mock data creation")
 public class MockDataController {
-
+//Todo: add end-points
 }

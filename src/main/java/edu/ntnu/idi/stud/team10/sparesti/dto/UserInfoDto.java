@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class UserInfoDto {
   private Long id;
   private Long userId;
+  private String displayName;
   private String firstName;
   private String lastName;
   private LocalDate dateOfBirth;

@@ -8,11 +8,18 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserInfoService;
 
 /** Configuration class for the resource server. */
 @Configuration
@@ -33,20 +40,21 @@ public class ResourceServerConfig {
   public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
-        // All endpoints are open for now, change this later when login is implemented.
-        .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-        //        .authorizeHttpRequests(authorize -> authorize
-        //            .requestMatchers("/api/users/create")
-        //            .permitAll()
-        //            .requestMatchers("/login.html")
-        //            .permitAll()
-        //            .requestMatchers("/stylesheet.css")
-        //            .permitAll()
-        //            .requestMatchers("/script.js")
-        //            .permitAll()
-        //            .requestMatchers("/images/**")
-        //            .permitAll()
-        //            .anyRequest().authenticated())
+        .authorizeHttpRequests(
+            authorize ->
+                authorize
+                    .requestMatchers("/api/users/create")
+                    .permitAll()
+                    .requestMatchers("/login.html")
+                    .permitAll()
+                    .requestMatchers("/stylesheet.css")
+                    .permitAll()
+                    .requestMatchers("/script.js")
+                    .permitAll()
+                    .requestMatchers("/images/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .formLogin(
             custom ->
                 custom
@@ -93,5 +101,24 @@ public class ResourceServerConfig {
     jwtConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
 
     return jwtConverter;
+  }
+
+  @Bean
+  public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(
+      UserInfoService userInfoService) {
+    return context -> {
+      if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) {
+        UserInfoDto info = userInfoService.getUserInfoByEmail(context.getPrincipal().getName());
+        OidcUserInfo userInfo =
+            OidcUserInfo.builder()
+                .email(context.getPrincipal().getName())
+                .birthdate(info.getDateOfBirth().toString())
+                .preferredUsername(info.getDisplayName())
+                .givenName(info.getFirstName())
+                .familyName(info.getLastName())
+                .build();
+        context.getClaims().claims(claims -> claims.putAll(userInfo.getClaims()));
+      }
+    };
   }
 }
