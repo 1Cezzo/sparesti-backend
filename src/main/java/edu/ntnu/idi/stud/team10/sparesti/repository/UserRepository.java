@@ -10,6 +10,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.User;
 /** Repository for User entities. */
 public interface UserRepository extends JpaRepository<User, Long> {
   Optional<User> findByEmail(String email);
+
   long count();
 
   @Query("SELECT COUNT(DISTINCT u) FROM User u JOIN u.earnedBadges b WHERE b.id = :badgeId")

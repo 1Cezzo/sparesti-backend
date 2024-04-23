@@ -1,10 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.config;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
-import edu.ntnu.idi.stud.team10.sparesti.model.User;
-import edu.ntnu.idi.stud.team10.sparesti.service.UserInfoService;
-import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +17,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserInfoService;
 
 /** Configuration class for the resource server. */
 @Configuration
@@ -42,18 +40,21 @@ public class ResourceServerConfig {
   public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
-        .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/api/users/create")
-            .permitAll()
-            .requestMatchers("/login.html")
-            .permitAll()
-            .requestMatchers("/stylesheet.css")
-            .permitAll()
-            .requestMatchers("/script.js")
-            .permitAll()
-            .requestMatchers("/images/**")
-            .permitAll()
-            .anyRequest().authenticated())
+        .authorizeHttpRequests(
+            authorize ->
+                authorize
+                    .requestMatchers("/api/users/create")
+                    .permitAll()
+                    .requestMatchers("/login.html")
+                    .permitAll()
+                    .requestMatchers("/stylesheet.css")
+                    .permitAll()
+                    .requestMatchers("/script.js")
+                    .permitAll()
+                    .requestMatchers("/images/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .formLogin(
             custom ->
                 custom
@@ -108,13 +109,13 @@ public class ResourceServerConfig {
     return (context) -> {
       if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) {
         UserInfoDto info = userInfoService.getUserInfoByEmail(context.getPrincipal().getName());
-        OidcUserInfo userInfo = OidcUserInfo
-            .builder()
-            .email(context.getPrincipal().getName())
-            .birthdate(info.getDateOfBirth().toString()).preferredUsername(info.getDisplayName())
-            .build();
-        context.getClaims().claims(claims ->
-                                       claims.putAll(userInfo.getClaims()));
+        OidcUserInfo userInfo =
+            OidcUserInfo.builder()
+                .email(context.getPrincipal().getName())
+                .birthdate(info.getDateOfBirth().toString())
+                .preferredUsername(info.getDisplayName())
+                .build();
+        context.getClaims().claims(claims -> claims.putAll(userInfo.getClaims()));
       }
     };
   }

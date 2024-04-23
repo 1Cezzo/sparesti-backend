@@ -17,16 +17,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Entity representing user info in the database.
- */
+/** Entity representing user info in the database. */
 @Entity
 @Data
 @NoArgsConstructor
@@ -37,9 +34,12 @@ public class UserInfo {
   @Hidden
   private Long id;
 
-  @JoinColumn(name = "user_id") @OneToOne private User user;
+  @JoinColumn(name = "user_id")
+  @OneToOne
+  private User user;
 
-  @Column(unique = true) private String displayName;
+  @Column(unique = true)
+  private String displayName;
 
   @Column() private String firstName;
 
@@ -91,7 +91,15 @@ public class UserInfo {
   @Override
   public int hashCode() {
     return Objects.hash(
-        id, user, displayName, firstName, lastName, dateOfBirth, occupationStatus, motivation, income);
+        id,
+        user,
+        displayName,
+        firstName,
+        lastName,
+        dateOfBirth,
+        occupationStatus,
+        motivation,
+        income);
   }
 
   @Override

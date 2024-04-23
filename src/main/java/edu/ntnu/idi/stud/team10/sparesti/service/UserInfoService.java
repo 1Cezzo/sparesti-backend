@@ -1,6 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
-import jakarta.transaction.Transactional;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +12,9 @@ import edu.ntnu.idi.stud.team10.sparesti.model.UserInfo;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserInfoRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
+import jakarta.transaction.Transactional;
 
-/**
- * Service class for UserInfo.
- */
+/** Service class for UserInfo. */
 @Service
 public class UserInfoService {
   private final UserRepository userRepository;
@@ -80,7 +78,10 @@ public class UserInfoService {
    */
   @Transactional
   public UserInfoDto getUserInfoByEmail(String email) {
-    User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found"));
+    User user =
+        userRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new NotFoundException("User not found"));
     return userInfoRepository
         .findByUserId(user.getId())
         .map(userInfoMapper::toDto)
