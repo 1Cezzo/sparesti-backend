@@ -106,7 +106,7 @@ public class ResourceServerConfig {
   @Bean
   public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(
       UserInfoService userInfoService) {
-    return (context) -> {
+    return context -> {
       if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) {
         UserInfoDto info = userInfoService.getUserInfoByEmail(context.getPrincipal().getName());
         OidcUserInfo userInfo =
@@ -114,6 +114,8 @@ public class ResourceServerConfig {
                 .email(context.getPrincipal().getName())
                 .birthdate(info.getDateOfBirth().toString())
                 .preferredUsername(info.getDisplayName())
+                .givenName(info.getFirstName())
+                .familyName(info.getLastName())
                 .build();
         context.getClaims().claims(claims -> claims.putAll(userInfo.getClaims()));
       }
