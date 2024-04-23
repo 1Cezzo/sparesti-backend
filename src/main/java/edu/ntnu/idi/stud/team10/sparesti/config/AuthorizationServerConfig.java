@@ -87,8 +87,7 @@ public class AuthorizationServerConfig {
                                     .email(context.getAuthorization().getPrincipalName())
                                     .build();
                               }
-                            }))
-        ); // Enable OpenID Connect 1.0
+                            }))); // Enable OpenID Connect 1.0
     http
         // Redirect to the login page.
         // Stores the original request URL in the session.
