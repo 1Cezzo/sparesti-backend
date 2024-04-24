@@ -111,7 +111,7 @@ public class ChallengeTest {
   @Test
   public void testToString() {
     String expectedToString =
-        "Challenge(id=1, description=Test Description, targetAmount=500.0, savedAmount=100.0, mediaUrl=http://example.com, timeInterval=WEEKLY, difficultyLevel=EASY, expiryDate="
+        "Challenge(id=1, title=Test Challenge, description=Test Description, targetAmount=500.0, savedAmount=100.0, mediaUrl=http://example.com, timeInterval=WEEKLY, difficultyLevel=EASY, expiryDate="
             + testExpiryDate
             + ", completed=false, users=null)";
     assertEquals(expectedToString, challenge.toString());
