@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /** Entity representing a user in the database. */
-@Entity
+@Entity(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
