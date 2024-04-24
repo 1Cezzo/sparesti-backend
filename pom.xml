@@ -182,6 +182,8 @@
 						<exclude>/ImageController.</exclude>
 						<exclude>/EmailController.</exclude>
 						<exclude>/AmazonClient.</exclude>
+						<exclude>/MockDataService</exclude>
+						<exclude>/MockDataController</exclude>
 						<exclude>/Idatt2105BackendApplication.</exclude>
 					</excludes>
 				</configuration>

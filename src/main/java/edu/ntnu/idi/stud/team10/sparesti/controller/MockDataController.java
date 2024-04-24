@@ -27,10 +27,8 @@ public class MockDataController {
   @PutMapping("/accounts/generate")
   @Operation(summary = "create and connect an account to a user")
   public ResponseEntity<?> addMockAccountToUser(
-      @RequestParam String email,
-      @RequestParam boolean isSavingsAccount,
-      @RequestParam Integer accountNr) {
-    mockDataService.addMockBankAccount(email, accountNr, isSavingsAccount);
+      @RequestParam String email, @RequestParam boolean isSavingsAccount) {
+    mockDataService.addMockBankAccount(email, isSavingsAccount);
     return ResponseEntity.ok().body("Account added successfully");
   }
 

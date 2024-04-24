@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -127,6 +128,7 @@ public class BankService {
    * @param amount the amount of money being transferred.
    * @throws IllegalArgumentException if an attempt is made to transfer a negative amount.
    */
+  @Transactional
   public void transferMoney(Integer fromAccountNr, Integer toAccountNr, double amount) {
     if (amount < 0) {
       throw new IllegalArgumentException("Cannot transfer a negative amount.");
@@ -137,13 +139,15 @@ public class BankService {
     fromTransactionDto.setCategory("Transfer");
     fromTransactionDto.setDescription("Transferred to account: " + toAccountNr);
     fromTransactionDto.setAccountNr(fromAccountNr);
+    fromTransactionDto.setDate(LocalDate.now());
     addTransaction(fromTransactionDto);
 
     TransactionDto toTransactionDto = new TransactionDto();
     toTransactionDto.setAmount(amount);
-    fromTransactionDto.setCategory("Transfer");
-    fromTransactionDto.setDescription("Transferred from account: " + fromAccountNr);
+    toTransactionDto.setCategory("Transfer");
+    toTransactionDto.setDescription("Transferred from account: " + fromAccountNr);
     toTransactionDto.setAccountNr(toAccountNr);
+    toTransactionDto.setDate(LocalDate.now());
     addTransaction(toTransactionDto);
   }
 

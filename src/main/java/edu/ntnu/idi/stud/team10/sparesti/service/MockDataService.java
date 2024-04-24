@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import edu.ntnu.idi.stud.team10.sparesti.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
-import edu.ntnu.idi.stud.team10.sparesti.mapper.TransactionMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;

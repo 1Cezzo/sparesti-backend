@@ -2,7 +2,6 @@ package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.Set;
 
-import edu.ntnu.idi.stud.team10.sparesti.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.BankService;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -32,14 +32,28 @@ public class BankController {
    * Create a new account.
    *
    * @param accountDto (AccountDto) The account to create
-   * @return (ResponseEntity<AccountDto>) The created account
+   * @return (ResponseEntity&lt;AccountDto&gt;) The created account
    */
   @PutMapping("/account/create")
   @Operation(summary = "Create a new account")
   public ResponseEntity<AccountDto> createAccount(@RequestBody AccountDto accountDto) {
     AccountDto createdAccount = bankService.createAccount(accountDto);
-    // TODO: add service method that sets owner's checking or savingsaccount to accountNr
     return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
+  }
+
+  /**
+   * Connects a created account to either user's savings or checking account.
+   *
+   * @param accountDto (AccountDto) The account being connected
+   * @param isSavings (boolean) Whether it is a savings (true) or checking (false) account
+   * @return
+   */
+  @PostMapping("/account/assign")
+  @Operation(summary = "Assign an existing account as user's savings or checkings account")
+  public ResponseEntity<?> assignAccountToOwner(
+      @RequestBody AccountDto accountDto, @RequestParam boolean isSavings) {
+    userAccountService.setUserAccount(accountDto, isSavings);
+    return ResponseEntity.status(HttpStatus.ACCEPTED).build();
   }
 
   /**
@@ -52,7 +66,6 @@ public class BankController {
   @Operation(summary = "Add a transaction to an account.")
   public ResponseEntity<Void> addTransaction(@RequestBody TransactionDto transaction) {
     bankService.addTransaction(transaction);
-
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
