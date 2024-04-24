@@ -39,7 +39,7 @@ public class UserController {
     userService.setUserAccount(accountDto, isSavings);
     return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     // Can be moved anywhere else easily (just change the mapping)
-    // needs user repository though
+    // needs user repository though.
   }
 
   /**

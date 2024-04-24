@@ -109,7 +109,7 @@ public class UserService implements UserDetailsService {
       user.setCheckingAccountNr(accountDto.getAccountNr());
     }
     userRepository.save(user);
-    // can be moved anywhere else easily, but needs the UserRepository to update the user.
+    // can be moved anywhere else easily, but will need the UserRepository.
   }
 
   /**
