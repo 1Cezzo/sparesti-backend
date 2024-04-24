@@ -26,20 +26,17 @@ public class MockDataService {
   private final BankService bankService;
   private final UserService userService;
   private final UserInfoService userInfoService;
-  private final TransactionMapper transactionMapper;
 
   @Autowired
   public MockDataService(
       UserRepository userRepository,
       BankService bankService,
       UserService userService,
-      UserInfoService userInfoService,
-      TransactionMapper transactionMapper) {
+      UserInfoService userInfoService) {
     this.userRepository = userRepository;
     this.bankService = bankService;
     this.userService = userService;
     this.userInfoService = userInfoService;
-    this.transactionMapper = transactionMapper;
   }
 
   /**
@@ -106,18 +103,16 @@ public class MockDataService {
    * Creates a new mock account and adds it to the user.
    *
    * @param email (String): The email of the user the account is being added to
-   * @param accountNr (Integer): The account number being created
    * @param isSavingsAcc (boolean): Whether the account is going to be the savings account (if
    *     false; will be checking account)
    * @return the AccountDto that was created.
    */
   @Transactional
-  public AccountDto addMockBankAccount(String email, Integer accountNr, boolean isSavingsAcc) {
+  public AccountDto addMockBankAccount(String email, boolean isSavingsAcc) {
     // Can change to use a different arg than displayName. ATM I don't know what is stored on the
-    // front-end.
-    // account nr can also be randomized. to a number like 1 - 1000000.
     User mockUser = findUserByEmail(email);
     UserInfoDto mockUserInfo = userInfoService.getUserInfoByEmail(email);
+    int accountNr = generateUniqueAccountNumber();
     AccountDto accountDto = new AccountDto();
     accountDto.setAccountNr(accountNr);
     accountDto.setOwnerId(mockUser.getId());
@@ -135,6 +130,22 @@ public class MockDataService {
     return bankService.createAccount(accountDto);
   }
 
+  /**
+   * Generates a random bank account number.
+   *
+   * @return (int) a random number between 100000 and 999999
+   */
+  private int generateUniqueAccountNumber() {
+    return ThreadLocalRandom.current().nextInt(100000, 999999);
+  }
+
+  /**
+   * Finds and returns a user of email.
+   *
+   * @param email (String) the email/displayname of the user.
+   * @return (User) the User, if found.
+   * @throws NotFoundException if the user is not found
+   */
   private User findUserByEmail(String email) {
     return userRepository
         .findById(userService.getUserByEmail(email).getId())
