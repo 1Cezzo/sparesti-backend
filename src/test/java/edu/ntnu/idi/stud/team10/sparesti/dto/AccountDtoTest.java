@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,8 +25,10 @@ public class AccountDtoTest {
 
     // Adding transactions for testing
     Set<TransactionDto> transactions = new HashSet<>();
-    transactions.add(new TransactionDto(1L, 100.0, 1));
-    transactions.add(new TransactionDto(2L, -50.0, 1));
+    transactions.add(
+        new TransactionDto(1L, 100.0, "Description1", "Category1", 1, LocalDate.now()));
+    transactions.add(
+        new TransactionDto(2L, -50.0, "Description2", "Category2", 1, LocalDate.now()));
     accountDto1.setTransactions(transactions);
 
     accountDto2 = new AccountDto();

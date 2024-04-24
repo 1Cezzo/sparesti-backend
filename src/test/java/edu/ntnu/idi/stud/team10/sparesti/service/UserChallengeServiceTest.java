@@ -1,8 +1,8 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +17,7 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class UserChallengeServiceTest {
@@ -65,18 +66,37 @@ public class UserChallengeServiceTest {
   }
 
   @Test
-  public void testGetChallengesByUser() {
+  public void testGetSortedChallengesByUser() {
     User user = new User();
-    user.setChallenges(new ArrayList<>()); // Add this line
-    Challenge challenge = new Challenge();
-    user.addChallenge(challenge);
-    when(userRepository.findById(any())).thenReturn(Optional.of(user));
+    user.setChallenges(new ArrayList<>());
 
-    Map<String, List<? extends ChallengeDTO>> result = userChallengeService.getChallengesByUser(1L);
+    // Create challenges with different completion status, expiry dates, and IDs
+    ConsumptionChallenge completedChallenge = new ConsumptionChallenge();
+    completedChallenge.setCompleted(true);
+    completedChallenge.setExpiryDate(LocalDate.now().plusDays(1));
+    completedChallenge.setId(1L);
+    user.addChallenge(completedChallenge);
+
+    PurchaseChallenge notCompletedChallenge = new PurchaseChallenge();
+    notCompletedChallenge.setCompleted(false);
+    notCompletedChallenge.setExpiryDate(LocalDate.now());
+    notCompletedChallenge.setId(2L);
+    user.addChallenge(notCompletedChallenge);
+
+    SavingChallenge sameExpiryDateChallenge = new SavingChallenge();
+    sameExpiryDateChallenge.setCompleted(false);
+    sameExpiryDateChallenge.setExpiryDate(LocalDate.now());
+    sameExpiryDateChallenge.setId(3L);
+    user.addChallenge(sameExpiryDateChallenge);
+
+    when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+
+    List<ChallengeDTO> result = userChallengeService.getSortedChallengesByUser(1L);
 
     assertNotNull(result);
-    assertTrue(result.get("consumptionChallenges").isEmpty());
-    assertTrue(result.get("purchaseChallenges").isEmpty());
-    assertTrue(result.get("savingChallenges").isEmpty());
+    assertEquals(3, result.size());
+    assertTrue(result.get(0) instanceof ConsumptionChallengeDTO);
+    assertTrue(result.get(1) instanceof PurchaseChallengeDTO);
+    assertTrue(result.get(2) instanceof SavingChallengeDTO);
   }
 }
