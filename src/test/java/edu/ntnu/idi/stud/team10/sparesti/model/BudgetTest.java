@@ -26,7 +26,6 @@ public class BudgetTest {
     budget.setExpiryDate(LocalDate.of(2024, 12, 31));
     user = new User();
     user.setId(1L);
-    user.setDisplayName("testUser");
     user.setPassword("testPassword");
     user.setEmail("test@example.com");
     user.setProfilePictureUrl("https://example.com/profile.jpg");
@@ -59,8 +58,17 @@ public class BudgetTest {
 
   @Test
   public void testToString() {
+    User user = new User();
+    user.setId(1L);
+    user.setEmail("test@example.com");
+
+    Budget budget = new Budget();
+    budget.setId(1L);
+    budget.setExpiryDate(LocalDate.of(2024, 12, 31));
+    budget.setUser(user);
+
     String expectedString =
-        "Budget(id=1, row=[], expiryDate=2024-12-31, user=User{id=1, displayName='testUser', email='test@example.com'})";
+        "Budget(id=1, row=[], expiryDate=2024-12-31, user=User{id=1, email='test@example.com'})";
     assertEquals(expectedString, budget.toString());
   }
 }
