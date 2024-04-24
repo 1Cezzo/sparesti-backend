@@ -18,6 +18,7 @@ public class ChallengeTest {
 
   private Challenge challenge;
   private final Long testId = 1L;
+  private final String testName = "Test Challenge";
   private final String testDescription = "Test Description";
   private final double testTargetAmount = 500.0;
   private final double testSavedAmount = 100.0;
@@ -33,6 +34,7 @@ public class ChallengeTest {
     challenge =
         new Challenge(
             testId,
+            testName,
             testDescription,
             testTargetAmount,
             testSavedAmount,
@@ -63,6 +65,7 @@ public class ChallengeTest {
     Challenge challenge1 =
         new Challenge(
             testId,
+            testName,
             testDescription,
             testTargetAmount,
             testSavedAmount,
@@ -75,6 +78,7 @@ public class ChallengeTest {
     Challenge challenge2 =
         new Challenge(
             testId,
+            testName,
             testDescription,
             testTargetAmount,
             testSavedAmount,
@@ -87,6 +91,7 @@ public class ChallengeTest {
     Challenge challenge3 =
         new Challenge(
             2L,
+            "Another Challenge",
             "Another Challenge",
             1000.0,
             200.0,
