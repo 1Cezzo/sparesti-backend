@@ -118,6 +118,7 @@ public class UserService implements UserDetailsService {
         userRepository
             .findByEmail(email)
             .orElseThrow(() -> new NotFoundException("User not found"));
+
     return new UserDto(foundUser);
   }
 

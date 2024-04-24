@@ -25,6 +25,9 @@ public class Challenge {
   @GeneratedValue(strategy = GenerationType.TABLE)
   private Long id;
 
+  @Column(name = "title", nullable = false)
+  private String title;
+
   @Column(name = "description", nullable = false)
   private String description;
 

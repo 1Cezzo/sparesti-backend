@@ -32,6 +32,8 @@ public class PurchaseChallengeDTO extends ChallengeDTO {
   @Override
   public PurchaseChallenge toEntity() {
     PurchaseChallenge challenge = new PurchaseChallenge();
+    challenge.setId(this.getId());
+    challenge.setTitle(this.getTitle());
     challenge.setDescription(this.getDescription());
     challenge.setTargetAmount(this.getTargetAmount());
     challenge.setSavedAmount(this.getSavedAmount());
