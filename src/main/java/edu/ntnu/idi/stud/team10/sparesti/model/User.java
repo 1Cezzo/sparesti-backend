@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /** Entity representing a user in the database. */
-@Entity
+@Entity(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,10 +37,10 @@ public class User {
   @Column() private Integer savingsAccountNr;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
   private List<SavingsGoal> savingsGoals;
 
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "user_challenge",
       joinColumns = @JoinColumn(name = "user_id"),

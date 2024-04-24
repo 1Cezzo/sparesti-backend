@@ -73,6 +73,10 @@ public abstract class ChallengeService<T extends Challenge> {
     if (optionalChallenge.isPresent()) {
       T existingChallenge = optionalChallenge.get();
       // Update the existing challenge with the data from the updated entity
+      if (updatedEntity.getTitle() != null) {
+        existingChallenge.setTitle(updatedEntity.getTitle());
+      }
+
       if (updatedEntity.getDescription() != null) {
         existingChallenge.setDescription(updatedEntity.getDescription());
       }
