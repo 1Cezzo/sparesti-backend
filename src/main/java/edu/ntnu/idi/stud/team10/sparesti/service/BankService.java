@@ -151,6 +151,13 @@ public class BankService {
     addTransaction(toTransactionDto);
   }
 
+  /**
+   * Gets a list of all transactions by a singular account number
+   *
+   * @param accountNr (Integer) The accountNr being checked
+   * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt; &gt;) Set of all transactions by the
+   *     account.
+   */
   public Set<TransactionDto> getTransactionsByAccountNr(Integer accountNr) {
     Account account = findAccountByAccountNr(accountNr);
     return account.getTransactions().stream()

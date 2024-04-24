@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.BankService;
-import edu.ntnu.idi.stud.team10.sparesti.service.UserAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -20,12 +19,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Bank", description = "Operations related to the bank mock")
 public class BankController {
   private final BankService bankService;
-  private final UserAccountService userAccountService;
 
   @Autowired
-  public BankController(BankService bankService, UserAccountService userAccountService) {
+  public BankController(BankService bankService) {
     this.bankService = bankService;
-    this.userAccountService = userAccountService;
   }
 
   /**
@@ -39,21 +36,6 @@ public class BankController {
   public ResponseEntity<AccountDto> createAccount(@RequestBody AccountDto accountDto) {
     AccountDto createdAccount = bankService.createAccount(accountDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
-  }
-
-  /**
-   * Connects a created account to either user's savings or checking account.
-   *
-   * @param accountDto (AccountDto) The account being connected
-   * @param isSavings (boolean) Whether it is a savings (true) or checking (false) account
-   * @return
-   */
-  @PostMapping("/account/assign")
-  @Operation(summary = "Assign an existing account as user's savings or checkings account")
-  public ResponseEntity<?> assignAccountToOwner(
-      @RequestBody AccountDto accountDto, @RequestParam boolean isSavings) {
-    userAccountService.setUserAccount(accountDto, isSavings);
-    return ResponseEntity.status(HttpStatus.ACCEPTED).build();
   }
 
   /**
@@ -101,7 +83,7 @@ public class BankController {
    * @param fromAccountNr the account number where money is coming from
    * @param toAccountNr the account number receiving money
    * @param amount the amount of money being transferred, in NOK.
-   * @return An ("ok") ResponseEntity stating that the transfer was successful.
+   * @return ResponseEntity&lt;?&gt; stating that the transfer was successful.
    */
   @PutMapping("/account/transfer")
   @Operation(summary = "Transfer money from one account to another")
@@ -113,6 +95,13 @@ public class BankController {
     return ResponseEntity.ok().body("Transfer successful");
   }
 
+  /**
+   * Gets a list of all transactions by a singular account number
+   *
+   * @param accountNr (Integer) The accountNr
+   * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt; &gt;) Set of all transactions by the
+   *     account.
+   */
   @GetMapping("/transactions/{accountNr}")
   @Operation(summary = "Get all transactions by an account number")
   public ResponseEntity<Set<TransactionDto>> getAllTransactionsByAccountNr(
