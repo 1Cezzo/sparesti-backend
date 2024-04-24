@@ -152,7 +152,6 @@ public class BankService {
     addTransaction(toTransactionDto);
   }
 
-
   /**
    * Get all transactions for an account.
    *
@@ -172,7 +171,6 @@ public class BankService {
     }
     return transactions;
   }
-
 
   /**
    * Gets a list of all transactions by a singular account number
