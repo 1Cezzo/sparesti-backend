@@ -100,6 +100,21 @@ public class UserInfoService {
   }
 
   /**
+   * Updates the UserInfo for a user with the fields in the given Dto.
+   *
+   * @param userId (Long) The id of the user.
+   * @param userInfoDto (UserInfoDto) A Dto with all the fields to update.
+   * @return The updated UserInfo, as a Dto.
+   * @throws NotFoundException if the user info is not found.
+   */
+  public UserInfoDto updateUserInfo(Long userId, UserInfoDto userInfoDto) {
+    UserInfo info = userInfoRepository.findByUserId(userId)
+        .orElseThrow(() -> new NotFoundException("User info not found"));
+    userInfoMapper.updateFromDto(userInfoDto, info);
+    return userInfoMapper.toDto(userInfoRepository.save(info));
+  }
+
+  /**
    * Finds a User by their id.
    *
    * @param userId (Long) The id of the user.

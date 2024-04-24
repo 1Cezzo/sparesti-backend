@@ -85,7 +85,6 @@ public class UserService implements UserDetailsService {
     User userToUpdate = findUserById(userDto.getId());
 
     // Update all non-null fields included in the request.
-    Optional.ofNullable(userDto.getPassword()).ifPresent(userToUpdate::setPassword);
     Optional.ofNullable(userDto.getEmail()).ifPresent(userToUpdate::setEmail);
     Optional.ofNullable(userDto.getProfilePictureUrl())
         .ifPresent(userToUpdate::setProfilePictureUrl);

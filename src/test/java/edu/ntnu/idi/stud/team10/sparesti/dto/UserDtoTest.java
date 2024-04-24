@@ -101,14 +101,6 @@ public class UserDtoTest {
   }
 
   @Test
-  public void testToEntity() {
-    User convertedUser = userDto.toEntity();
-    assertNotNull(convertedUser);
-    assertEquals(user.getId(), convertedUser.getId());
-    assertEquals(user.getEmail(), convertedUser.getEmail());
-  }
-
-  @Test
   public void testUserDtoConstructor() {
     UserDto mappedUserDto = new UserDto(user);
     assertNotNull(mappedUserDto);

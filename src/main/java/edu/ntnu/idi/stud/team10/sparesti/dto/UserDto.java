@@ -16,7 +16,9 @@ public class UserDto {
   private String password;
   private String email;
   private String profilePictureUrl;
-  private double totalSavings;
+  private Integer checkingAccountNr;
+  private Integer savingsAccountNr;
+  private Double totalSavings;
   private List<SavingsGoalDTO> savingsGoals;
   private List<ChallengeDTO> challenges;
 
@@ -41,32 +43,5 @@ public class UserDto {
     } else {
       this.challenges = null;
     }
-  }
-
-  /**
-   * Convert UserDto to User entity.
-   *
-   * @return (User) The User entity.
-   */
-  public User toEntity() {
-    User user = new User();
-    user.setId(this.id);
-    user.setPassword(this.password);
-    user.setEmail(this.email);
-    user.setProfilePictureUrl(this.profilePictureUrl);
-    user.setTotalSavings(this.totalSavings);
-    if (this.savingsGoals != null) {
-      user.setSavingsGoals(
-          this.savingsGoals.stream().map(SavingsGoalDTO::toEntity).collect(Collectors.toList()));
-    } else {
-      user.setSavingsGoals(null);
-    }
-    if (this.challenges != null) {
-      user.setChallenges(
-          this.challenges.stream().map(ChallengeDTO::toEntity).collect(Collectors.toList()));
-    } else {
-      user.setChallenges(null);
-    }
-    return user;
   }
 }
