@@ -1,6 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -150,6 +151,28 @@ public class BankService {
     toTransactionDto.setDate(LocalDate.now());
     addTransaction(toTransactionDto);
   }
+
+
+  /**
+   * Get all transactions for an account.
+   *
+   * @param userId (Long) The user id to get transactions for.
+   * @return The transactions for all the accounts owned by the user.
+   */
+  public Set<Transaction> getTransactionsByUserId(Long userId) {
+    if (userId == null) {
+      throw new IllegalArgumentException("User id parameter cannot be null");
+    }
+    Set<Account> accounts = accountRepository.findAllByOwnerId(userId);
+
+    Set<Transaction> transactions = new HashSet<>();
+
+    for (Account account : accounts) {
+      transactions.addAll(transactionRepository.findByAccount(account));
+    }
+    return transactions;
+  }
+
 
   /**
    * Gets a list of all transactions by a singular account number

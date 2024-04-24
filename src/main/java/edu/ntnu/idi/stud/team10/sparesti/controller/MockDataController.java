@@ -24,6 +24,13 @@ public class MockDataController {
     this.mockDataService = mockDataService;
   }
 
+  /**
+   * Generates a mock bank account and sets it to be a user's checking or savings account.
+   *
+   * @param email (String) email of the user
+   * @param isSavingsAccount (boolean) true for savings account, false for checking account
+   * @return ResponseEntity&lt;?&gt; with ok message.
+   */
   @PutMapping("/accounts/generate")
   @Operation(summary = "create and connect an account to a user")
   public ResponseEntity<?> addMockAccountToUser(
