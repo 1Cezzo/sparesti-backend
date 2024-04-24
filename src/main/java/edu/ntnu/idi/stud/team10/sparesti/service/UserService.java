@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
@@ -91,6 +92,24 @@ public class UserService implements UserDetailsService {
         .ifPresent(userToUpdate::setProfilePictureUrl);
 
     return new UserDto(userRepository.save(userToUpdate));
+  }
+
+  /**
+   * Sets a user's savings- or checking account to a created bank account that has an ownerId.
+   *
+   * @param accountDto DTO representing the account.
+   * @param isSavings (boolean) whether it is a savings account (true) or checking account (false)
+   */
+  @Transactional
+  public void setUserAccount(AccountDto accountDto, boolean isSavings) {
+    User user = findUserById(accountDto.getOwnerId());
+    if (isSavings) {
+      user.setSavingsAccountNr(accountDto.getAccountNr());
+    } else {
+      user.setCheckingAccountNr(accountDto.getAccountNr());
+    }
+    userRepository.save(user);
+    // can be moved anywhere else easily, but will need the UserRepository.
   }
 
   /**

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +23,23 @@ public class UserController {
   @Autowired
   public UserController(UserService userService) {
     this.userService = userService;
+  }
+
+  /**
+   * Connects a created bank account to either user's savings or checking account.
+   *
+   * @param accountDto (AccountDto) The account being connected
+   * @param isSavings (boolean) Whether it is a savings (true) or checking (false) account
+   * @return (ResponseEntity &lt;Void&gt;) ACCEPTED HTTP status message on success.
+   */
+  @PostMapping("/account/assign")
+  @Operation(summary = "Assign an existing bank account as user's savings or checking account")
+  public ResponseEntity<Void> assignAccountToUser(
+      @RequestBody AccountDto accountDto, @RequestParam boolean isSavings) {
+    userService.setUserAccount(accountDto, isSavings);
+    return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    // Can be moved anywhere else easily (just change the mapping)
+    // needs user repository though.
   }
 
   /**

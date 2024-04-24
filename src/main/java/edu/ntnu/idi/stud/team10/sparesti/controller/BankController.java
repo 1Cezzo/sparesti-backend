@@ -5,13 +5,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
@@ -35,7 +29,7 @@ public class BankController {
    * Create a new account.
    *
    * @param accountDto (AccountDto) The account to create
-   * @return (ResponseEntity<AccountDto>) The created account
+   * @return (ResponseEntity&lt;AccountDto&gt;) The created account
    */
   @PutMapping("/account/create")
   @Operation(summary = "Create a new account")
@@ -81,5 +75,37 @@ public class BankController {
   public ResponseEntity<Set<AccountDto>> getAllAccounts(@PathVariable Long userId) {
     Set<AccountDto> accountDetails = bankService.getUserAccounts(userId);
     return ResponseEntity.ok(accountDetails);
+  }
+
+  /**
+   * Endpoint for transferring money between two accounts.
+   *
+   * @param fromAccountNr the account number where money is coming from
+   * @param toAccountNr the account number receiving money
+   * @param amount the amount of money being transferred, in NOK.
+   * @return ResponseEntity&lt;?&gt; stating that the transfer was successful.
+   */
+  @PutMapping("/account/transfer")
+  @Operation(summary = "Transfer money from one account to another")
+  public ResponseEntity<?> transferMoney(
+      @RequestParam Integer fromAccountNr,
+      @RequestParam Integer toAccountNr,
+      @RequestParam double amount) {
+    bankService.transferMoney(fromAccountNr, toAccountNr, amount);
+    return ResponseEntity.ok().body("Transfer successful");
+  }
+
+  /**
+   * Gets a list of all transactions by a singular account number
+   *
+   * @param accountNr (Integer) The accountNr
+   * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt; &gt;) Set of all transactions by the
+   *     account.
+   */
+  @GetMapping("/transactions/{accountNr}")
+  @Operation(summary = "Get all transactions by an account number")
+  public ResponseEntity<Set<TransactionDto>> getAllTransactionsByAccountNr(
+      @PathVariable Integer accountNr) {
+    return ResponseEntity.ok().body(bankService.getTransactionsByAccountNr(accountNr));
   }
 }
