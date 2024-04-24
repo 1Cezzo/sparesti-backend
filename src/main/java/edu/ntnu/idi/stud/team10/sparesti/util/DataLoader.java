@@ -1,19 +1,25 @@
 package edu.ntnu.idi.stud.team10.sparesti.util;
 
+import java.util.List;
+
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
+import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.service.BadgeService;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserBadgeService;
 
 @Component
 public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
   private final BadgeService badgeService;
+  private final UserBadgeService userBadgeService;
 
-  public DataLoader(BadgeService badgeService) {
+  public DataLoader(BadgeService badgeService, UserBadgeService userBadgeService) {
     this.badgeService = badgeService;
+    this.userBadgeService = userBadgeService;
   }
 
   @Override
@@ -22,6 +28,10 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
   }
 
   private void resetBadges() {
+    List<Badge> allBadges = badgeService.getAllBadges();
+    for (Badge badge : allBadges) {
+      userBadgeService.deleteBadgeWithAssociatedUserBadges(badge.getId());
+    }
     badgeService.deleteAllBadges(); // Implement this method in BadgeService to delete all badges
   }
 

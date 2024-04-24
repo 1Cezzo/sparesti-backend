@@ -1,8 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -55,24 +53,51 @@ public class UserChallengeService<T extends Challenge> {
   }
 
   /**
-   * Get all challenges for a user.
+   * Get a sorted list of challenges for the user.
    *
    * @param userId the id of the user.
-   * @return a map of challenges for the user.
+   * @return a list of sorted challenges.
    */
   @Transactional(readOnly = true)
-  public Map<String, List<? extends ChallengeDTO>> getChallengesByUser(Long userId) {
-    Map<String, List<? extends ChallengeDTO>> challengesMap = new HashMap<>();
+  public List<ChallengeDTO> getSortedChallengesByUser(Long userId) {
+    List<ChallengeDTO> allChallenges = new ArrayList<>();
 
+    // Fetch challenges for the user
     List<ConsumptionChallengeDTO> consumptionChallenges = fetchConsumptionChallengesForUser(userId);
     List<PurchaseChallengeDTO> purchaseChallenges = fetchPurchaseChallengesForUser(userId);
     List<SavingChallengeDTO> savingChallenges = fetchSavingChallengesForUser(userId);
 
-    challengesMap.put("consumptionChallenges", consumptionChallenges);
-    challengesMap.put("purchaseChallenges", purchaseChallenges);
-    challengesMap.put("savingChallenges", savingChallenges);
+    // Add all challenges to the list
+    allChallenges.addAll(consumptionChallenges);
+    allChallenges.addAll(purchaseChallenges);
+    allChallenges.addAll(savingChallenges);
 
-    return challengesMap;
+    // Sort the challenges
+    Collections.sort(
+        allChallenges,
+        new Comparator<ChallengeDTO>() {
+          @Override
+          public int compare(ChallengeDTO a, ChallengeDTO b) {
+            // First, sort by completion status
+            if (a.isCompleted() && !b.isCompleted()) {
+              return -1; // a comes before b if a is completed and b is not
+            }
+            if (!a.isCompleted() && b.isCompleted()) {
+              return 1; // b comes before a if b is completed and a is not
+            }
+
+            // If completion status is the same, sort by expiry date
+            int dateComparison = b.getExpiryDate().compareTo(a.getExpiryDate());
+            if (dateComparison != 0) {
+              return dateComparison; // If expiry dates are different, return the comparison result
+            }
+
+            // If expiry dates are the same, sort by challenge ID
+            return Long.compare(a.getId(), b.getId());
+          }
+        });
+
+    return allChallenges;
   }
 
   /**

@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
@@ -34,10 +36,20 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserInfoService;
+
 /** Configuration for the Authorization Server. */
 @Configuration
 @EnableWebSecurity
 public class AuthorizationServerConfig {
+  private final UserInfoService userInfoService;
+
+  @Autowired
+  public AuthorizationServerConfig(UserInfoService userInfoService) {
+    this.userInfoService = userInfoService;
+  }
+
   /**
    * Configures the security filter chain for the Authorization Server.
    *
@@ -51,7 +63,31 @@ public class AuthorizationServerConfig {
       throws Exception {
     OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
     http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-        .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
+        .oidc(
+            oidc ->
+                oidc.userInfoEndpoint(
+                    infoEndpoint ->
+                        infoEndpoint.userInfoMapper(
+                            context -> {
+                              boolean userInfoRegistered =
+                                  userInfoService.userInfoExistsByEmail(
+                                      context.getAuthorization().getPrincipalName());
+                              if (userInfoRegistered) {
+                                UserInfoDto info =
+                                    userInfoService.getUserInfoByEmail(
+                                        context.getAuthorization().getPrincipalName());
+                                return OidcUserInfo.builder()
+                                    .email(context.getAuthorization().getPrincipalName())
+                                    .givenName(info.getFirstName())
+                                    .familyName(info.getLastName())
+                                    .preferredUsername(info.getDisplayName())
+                                    .build();
+                              } else {
+                                return OidcUserInfo.builder()
+                                    .email(context.getAuthorization().getPrincipalName())
+                                    .build();
+                              }
+                            }))); // Enable OpenID Connect 1.0
     http
         // Redirect to the login page.
         // Stores the original request URL in the session.
@@ -161,6 +197,7 @@ public class AuthorizationServerConfig {
         .oidcLogoutEndpoint("/connect/logout")
         .authorizationEndpoint("/oauth2/authorize")
         .tokenEndpoint("/oauth2/token")
+        .oidcUserInfoEndpoint("/userinfo")
         .build();
   }
 }
