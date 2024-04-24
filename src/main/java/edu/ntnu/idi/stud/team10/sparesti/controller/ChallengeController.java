@@ -1,7 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -369,17 +368,16 @@ public class ChallengeController {
   }
 
   /**
-   * Get all challenges for a user.
+   * Get sorted challenges for a user.
    *
    * @param userId the id of the user.
-   * @return a map of challenges.
+   * @return a list of the challenges.
    */
   @GetMapping("/users/{userId}/challenges")
   @Operation(summary = "Get all challenges for a user")
-  public ResponseEntity<Map<String, List<? extends ChallengeDTO>>> getChallengesByUser(
-      @PathVariable Long userId) {
-    Map<String, List<? extends ChallengeDTO>> challengesMap =
-        userChallengeService.getChallengesByUser(userId);
-    return ResponseEntity.ok(challengesMap);
+  public ResponseEntity getChallengesByUser(@PathVariable Long userId) {
+    List challenges = userChallengeService.getSortedChallengesByUser(userId);
+
+    return ResponseEntity.ok(challenges);
   }
 }
