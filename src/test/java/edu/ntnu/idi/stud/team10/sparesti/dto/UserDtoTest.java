@@ -49,7 +49,6 @@ public class UserDtoTest {
 
     user = new User();
     user.setId(1L);
-    user.setDisplayName("testuser");
     user.setEmail("test@example.com");
   }
 
@@ -106,7 +105,6 @@ public class UserDtoTest {
     User convertedUser = userDto.toEntity();
     assertNotNull(convertedUser);
     assertEquals(user.getId(), convertedUser.getId());
-    assertEquals(user.getDisplayName(), convertedUser.getDisplayName());
     assertEquals(user.getEmail(), convertedUser.getEmail());
   }
 
@@ -115,7 +113,6 @@ public class UserDtoTest {
     UserDto mappedUserDto = new UserDto(user);
     assertNotNull(mappedUserDto);
     assertEquals(user.getId(), mappedUserDto.getId());
-    assertEquals(user.getDisplayName(), mappedUserDto.getDisplayName());
     assertEquals(user.getEmail(), mappedUserDto.getEmail());
   }
 

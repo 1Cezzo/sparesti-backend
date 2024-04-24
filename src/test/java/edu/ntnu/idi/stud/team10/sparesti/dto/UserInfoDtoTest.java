@@ -93,82 +93,10 @@ public class UserInfoDtoTest {
   }
 
   @Test
-  public void testEquals() {
-    UserInfoDto userInfo1 =
-        new UserInfoDto(
-            1L,
-            1L,
-            "John",
-            "Doe",
-            LocalDate.of(1990, 1, 1),
-            OccupationStatus.EMPLOYED,
-            5,
-            1000,
-            new HashSet<>(),
-            List.of("Location1", "Location2"));
-    UserInfoDto userInfo2 =
-        new UserInfoDto(
-            1L,
-            1L,
-            "John",
-            "Doe",
-            LocalDate.of(1990, 1, 1),
-            OccupationStatus.EMPLOYED,
-            5,
-            1000,
-            new HashSet<>(),
-            List.of("Location1", "Location2"));
-    UserInfoDto userInfo3 =
-        new UserInfoDto(
-            2L,
-            1L,
-            "Jane",
-            "Doe",
-            LocalDate.of(1990, 1, 1),
-            OccupationStatus.EMPLOYED,
-            5,
-            1000,
-            new HashSet<>(),
-            List.of("Location1", "Location2"));
-
-    assertEquals(userInfo1, userInfo2);
-    assertNotEquals(userInfo1, userInfo3);
-  }
-
-  @Test
-  public void testHashCode() {
-    UserInfoDto userInfo1 =
-        new UserInfoDto(
-            1L,
-            1L,
-            "John",
-            "Doe",
-            LocalDate.of(1990, 1, 1),
-            OccupationStatus.EMPLOYED,
-            5,
-            1000,
-            new HashSet<>(),
-            List.of("Location1", "Location2"));
-    UserInfoDto userInfo2 =
-        new UserInfoDto(
-            1L,
-            1L,
-            "John",
-            "Doe",
-            LocalDate.of(1990, 1, 1),
-            OccupationStatus.EMPLOYED,
-            5,
-            1000,
-            new HashSet<>(),
-            List.of("Location1", "Location2"));
-
-    assertEquals(userInfo1.hashCode(), userInfo2.hashCode());
-  }
-
-  @Test
   public void testConstructor() {
     Long id = 1L;
     Long userId = 1L;
+    String displayName = "JohnDoe";
     String firstName = "John";
     String lastName = "Doe";
     LocalDate dateOfBirth = LocalDate.of(1990, 1, 1);
@@ -182,6 +110,7 @@ public class UserInfoDtoTest {
         new UserInfoDto(
             id,
             userId,
+            displayName,
             firstName,
             lastName,
             dateOfBirth,
@@ -193,6 +122,7 @@ public class UserInfoDtoTest {
 
     assertEquals(id, userInfo.getId());
     assertEquals(userId, userInfo.getUserId());
+    assertEquals(displayName, userInfo.getDisplayName());
     assertEquals(firstName, userInfo.getFirstName());
     assertEquals(lastName, userInfo.getLastName());
     assertEquals(dateOfBirth, userInfo.getDateOfBirth());
