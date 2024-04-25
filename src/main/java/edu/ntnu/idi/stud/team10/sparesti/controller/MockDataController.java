@@ -57,8 +57,7 @@ public class MockDataController {
   }
 
   /**
-   * Sets up and generates a mock savings
-   * and checking account for a user during the questionnaire.
+   * Sets up and generates a mock savings and checking account for a user during the questionnaire.
    * Will add transactions to the checking account.
    *
    * @param name (String): some kind of name signifying the particular user.
@@ -69,11 +68,13 @@ public class MockDataController {
    */
   @PutMapping("/accounts/questionnaire/generate")
   @Operation(summary = "setup mock savings and checking accounts")
-  public ResponseEntity<?> setupAccount(@RequestParam String name,
-                                        @RequestParam Integer savingsAccountNr,
-                                        @RequestParam Integer checkingAccountNr,
-                                        @RequestParam Long userId) {
-    mockDataService.assignQuestionnaireMockAccounts(name, savingsAccountNr, checkingAccountNr, userId);
+  public ResponseEntity<?> setupAccount(
+      @RequestParam String name,
+      @RequestParam Integer savingsAccountNr,
+      @RequestParam Integer checkingAccountNr,
+      @RequestParam Long userId) {
+    mockDataService.assignQuestionnaireMockAccounts(
+        name, savingsAccountNr, checkingAccountNr, userId);
     return ResponseEntity.ok().body("Successfully generated & initialized accounts");
   }
 }

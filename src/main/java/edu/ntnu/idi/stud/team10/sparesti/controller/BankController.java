@@ -111,7 +111,8 @@ public class BankController {
 
   @GetMapping("/transactions/recent/{accountNr}")
   @Operation(summary = "Get last 30 days of transactions from an account number")
-  public ResponseEntity<Set<TransactionDto>> getRecentTransactions(@PathVariable Integer accountNr) {
+  public ResponseEntity<Set<TransactionDto>> getRecentTransactions(
+      @PathVariable Integer accountNr) {
     return ResponseEntity.ok().body(bankService.getRecentTransactionsByAccountNr(accountNr));
   }
 }

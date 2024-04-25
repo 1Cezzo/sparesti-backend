@@ -39,8 +39,8 @@ public class MockDataService {
 
   /**
    * Creates and returns a random transaction to an account. Intended for creation of mock data for
-   * bank.
-   * The date will always be a random day in the last 30 days.
+   * bank. The date will always be a random day in the last 30 days.
+   *
    * @param accountNr number of the account (who the transaction is coming from)
    * @return a randomly generated transaction
    */
@@ -70,20 +70,23 @@ public class MockDataService {
   }
 
   private static final Map<String, List<String>> CATEGORY_DESCRIPTIONS =
-          Map.of(
-                  "Dagligvarer",
-                  List.of("Supermarkedkjøp", "Dagligvarebutikk", "Bakeri", "Slakter"),
-                  "Underholdning",
-                  List.of("Kinobilletter", "Konsertbilletter", "Abonnement på strømmetjeneste"),
-                  "Nyttetjenester",
-                  List.of("Betaling av strømregning", "Betaling av vannregning", "Betaling av internettregning"),
-                  "Spisesteder",
-                  List.of("Restaurant", "Kafé", "Hurtigmat"),
-                  "Transport",
-                  List.of("Bensinstasjon", "Offentlig transportbillett", "Taxi"),
-                  "Klær",
-                  List.of("Klærforretning", "Nettbutikk for klær", "Skobutikk")
-                  // ... flere kategorier og beskrivelser
+      Map.of(
+          "Dagligvarer",
+          List.of("Supermarkedkjøp", "Dagligvarebutikk", "Bakeri", "Slakter"),
+          "Underholdning",
+          List.of("Kinobilletter", "Konsertbilletter", "Abonnement på strømmetjeneste"),
+          "Nyttetjenester",
+          List.of(
+              "Betaling av strømregning",
+              "Betaling av vannregning",
+              "Betaling av internettregning"),
+          "Spisesteder",
+          List.of("Restaurant", "Kafé", "Hurtigmat"),
+          "Transport",
+          List.of("Bensinstasjon", "Offentlig transportbillett", "Taxi"),
+          "Klær",
+          List.of("Klærforretning", "Nettbutikk for klær", "Skobutikk")
+          // ... flere kategorier og beskrivelser
           );
 
   private static final List<String> CATEGORIES = List.copyOf(CATEGORY_DESCRIPTIONS.keySet());
@@ -162,7 +165,8 @@ public class MockDataService {
    * @param userId (Long) id of the user.
    */
   @Transactional
-  public void assignQuestionnaireMockAccounts(String name, Integer checkingAccountNr, Integer savingsAccountNr, Long userId) {
+  public void assignQuestionnaireMockAccounts(
+      String name, Integer checkingAccountNr, Integer savingsAccountNr, Long userId) {
     AccountDto checkingAccountDto = new AccountDto();
     checkingAccountDto.setAccountNr(checkingAccountNr);
     checkingAccountDto.setOwnerId(userId);
@@ -178,7 +182,7 @@ public class MockDataService {
     userService.setUserAccount(checkingAccountDto, false);
     userService.setUserAccount(savingsAccountDto, true);
 
-    //Add a bunch of money and transactions.
+    // Add a bunch of money and transactions.
     initFakeAccount(checkingAccountDto);
   }
 

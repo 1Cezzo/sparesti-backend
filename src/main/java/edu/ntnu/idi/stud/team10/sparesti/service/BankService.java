@@ -173,8 +173,7 @@ public class BankService {
   }
 
   /**
-   * Gets transactions from an account
-   * that happened within the last 30 days
+   * Gets transactions from an account that happened within the last 30 days
    *
    * @param accountNr (Integer): The account being checked
    * @return Set&lt;TransactionDto&gt; of all transactions from the account in the last 30 days.
@@ -184,9 +183,9 @@ public class BankService {
     Account account = findAccountByAccountNr(accountNr);
 
     return account.getTransactions().stream()
-            .filter(t -> !t.getDate().isBefore(thirtyDaysAgo))
-            .map(transactionMapper::toDto)
-            .collect(Collectors.toSet());
+        .filter(t -> !t.getDate().isBefore(thirtyDaysAgo))
+        .map(transactionMapper::toDto)
+        .collect(Collectors.toSet());
   }
 
   /**
