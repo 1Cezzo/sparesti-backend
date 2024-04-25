@@ -13,6 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 public class ChallengeDTO {
   private Long id;
+  private String title;
   private String description;
   private double targetAmount;
   private double savedAmount;
@@ -29,6 +30,7 @@ public class ChallengeDTO {
    */
   public ChallengeDTO(Challenge challenge) {
     this.id = challenge.getId();
+    this.title = challenge.getTitle();
     this.description = challenge.getDescription();
     this.targetAmount = challenge.getTargetAmount();
     this.savedAmount = challenge.getSavedAmount();
@@ -47,6 +49,7 @@ public class ChallengeDTO {
   public Challenge toEntity() {
     Challenge challenge = new Challenge();
     challenge.setId(this.id);
+    challenge.setTitle(this.title);
     challenge.setDescription(this.description);
     challenge.setTargetAmount(this.targetAmount);
     challenge.setSavedAmount(this.savedAmount);

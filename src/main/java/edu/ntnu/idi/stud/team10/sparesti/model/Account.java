@@ -24,7 +24,7 @@ public class Account {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false) // does this need to have nullable false?
   private Long ownerId;
 
   @Column(nullable = false, unique = true)

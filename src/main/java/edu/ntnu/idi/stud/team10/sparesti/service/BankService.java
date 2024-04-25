@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -84,26 +85,6 @@ public class BankService {
   }
 
   /**
-   * Get all transactions for an account.
-   *
-   * @param userId (Long) The user id to get transactions for.
-   * @return The transactions for all the accounts owned by the user.
-   */
-  public Set<Transaction> getTransactionsByUserId(Long userId) {
-    if (userId == null) {
-      throw new IllegalArgumentException("User id parameter cannot be null");
-    }
-    Set<Account> accounts = accountRepository.findAllByOwnerId(userId);
-
-    Set<Transaction> transactions = new HashSet<>();
-
-    for (Account account : accounts) {
-      transactions.addAll(transactionRepository.findByAccount(account));
-    }
-    return transactions;
-  }
-
-  /**
    * Adds a transaction to an account.
    *
    * @param transactionDto (TransactionDto) The transaction details.
@@ -138,5 +119,86 @@ public class BankService {
     return accountRepository
         .findByAccountNr(accountNr)
         .orElseThrow(() -> new NotFoundException("Account not found"));
+  }
+
+  /**
+   * Transfers money between two accounts by creating two transactions.
+   *
+   * @param fromAccountNr the accountNr that is sending money.
+   * @param toAccountNr the accountNr that is receiving money.
+   * @param amount the amount of money being transferred.
+   * @throws IllegalArgumentException if an attempt is made to transfer a negative amount.
+   */
+  @Transactional
+  public void transferMoney(Integer fromAccountNr, Integer toAccountNr, double amount) {
+    if (amount < 0) {
+      throw new IllegalArgumentException("Cannot transfer a negative amount.");
+    }
+
+    TransactionDto fromTransactionDto = new TransactionDto();
+    fromTransactionDto.setAmount(-amount);
+    fromTransactionDto.setCategory("Transfer");
+    fromTransactionDto.setDescription("Transferred to account: " + toAccountNr);
+    fromTransactionDto.setAccountNr(fromAccountNr);
+    fromTransactionDto.setDate(LocalDate.now());
+    addTransaction(fromTransactionDto);
+
+    TransactionDto toTransactionDto = new TransactionDto();
+    toTransactionDto.setAmount(amount);
+    toTransactionDto.setCategory("Transfer");
+    toTransactionDto.setDescription("Transferred from account: " + fromAccountNr);
+    toTransactionDto.setAccountNr(toAccountNr);
+    toTransactionDto.setDate(LocalDate.now());
+    addTransaction(toTransactionDto);
+  }
+
+  /**
+   * Get all transactions for an account.
+   *
+   * @param userId (Long) The user id to get transactions for.
+   * @return The transactions for all the accounts owned by the user.
+   */
+  public Set<Transaction> getTransactionsByUserId(Long userId) {
+    if (userId == null) {
+      throw new IllegalArgumentException("User id parameter cannot be null");
+    }
+    Set<Account> accounts = accountRepository.findAllByOwnerId(userId);
+
+    Set<Transaction> transactions = new HashSet<>();
+
+    for (Account account : accounts) {
+      transactions.addAll(transactionRepository.findByAccount(account));
+    }
+    return transactions;
+  }
+
+  /**
+   * Gets transactions from an account that happened within the last 30 days
+   *
+   * @param accountNr (Integer): The account being checked
+   * @return Set&lt;TransactionDto&gt; of all transactions from the account in the last 30 days.
+   */
+  public Set<TransactionDto> getRecentTransactionsByAccountNr(Integer accountNr) {
+    LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+    Account account = findAccountByAccountNr(accountNr);
+
+    return account.getTransactions().stream()
+        .filter(t -> !t.getDate().isBefore(thirtyDaysAgo))
+        .map(transactionMapper::toDto)
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * Gets a list of all transactions by a singular account number
+   *
+   * @param accountNr (Integer) The accountNr being checked
+   * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt; &gt;) Set of all transactions by the
+   *     account.
+   */
+  public Set<TransactionDto> getTransactionsByAccountNr(Integer accountNr) {
+    Account account = findAccountByAccountNr(accountNr);
+    return account.getTransactions().stream()
+        .map(transaction -> transactionMapper.toDto(transaction))
+        .collect(Collectors.toSet());
   }
 }

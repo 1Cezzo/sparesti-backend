@@ -111,6 +111,11 @@
 			<artifactId>aws-java-sdk</artifactId>
 			<version>1.12.687</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -171,6 +176,37 @@
 						<formatAnnotations />
 					</java>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.8</version>
+				<configuration>
+					<excludes>
+						<!-- Exclude files that depend on external services -->
+						<exclude>/ImageController.</exclude>
+						<exclude>/EmailController.</exclude>
+						<exclude>/AmazonClient.</exclude>
+						<exclude>/MockDataService</exclude>
+						<exclude>/MockDataController</exclude>
+						<exclude>/Idatt2105BackendApplication.</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

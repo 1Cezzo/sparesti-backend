@@ -2,6 +2,7 @@ package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,11 +30,10 @@ public class UserInfoController {
     return ResponseEntity.ok(userInfoService.createUserInfo(userInfoDto));
   }
 
-  //  public ResponseEntity<UserInfoDto> updateUserInfo(UserInfoDto userInfoDto) {
-  //    return ResponseEntity.ok(userInfoService.updateUserInfo(userInfoDto));
-  //  }
-  //
-  //  public ResponseEntity<UserInfoDto> getUserInfo(Long userId) {
-  //    return ResponseEntity.ok(userInfoService.getUserInfo(userId));
-  //  }
+  @PostMapping("/update/{userId}")
+  @Operation(summary = "Update user info")
+  public ResponseEntity<UserInfoDto> updateUserInfo(
+      @PathVariable Long userId, @RequestBody UserInfoDto userInfoDto) {
+    return ResponseEntity.ok(userInfoService.updateUserInfo(userId, userInfoDto));
+  }
 }

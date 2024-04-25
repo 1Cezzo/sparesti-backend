@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
@@ -54,7 +55,7 @@ public class UserService implements UserDetailsService {
     }
     userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
     User newUser = new User(userDto);
-    newUser.setTotalSavings(0);
+    newUser.setTotalSavings(0.0);
     return new UserDto(userRepository.save(newUser));
   }
 
@@ -85,12 +86,33 @@ public class UserService implements UserDetailsService {
     User userToUpdate = findUserById(userDto.getId());
 
     // Update all non-null fields included in the request.
-    Optional.ofNullable(userDto.getPassword()).ifPresent(userToUpdate::setPassword);
     Optional.ofNullable(userDto.getEmail()).ifPresent(userToUpdate::setEmail);
     Optional.ofNullable(userDto.getProfilePictureUrl())
         .ifPresent(userToUpdate::setProfilePictureUrl);
+    Optional.ofNullable(userDto.getTotalSavings()).ifPresent(userToUpdate::setTotalSavings);
+    Optional.ofNullable(userDto.getCheckingAccountNr())
+        .ifPresent(userToUpdate::setCheckingAccountNr);
+    Optional.ofNullable(userDto.getSavingsAccountNr()).ifPresent(userToUpdate::setSavingsAccountNr);
 
     return new UserDto(userRepository.save(userToUpdate));
+  }
+
+  /**
+   * Sets a user's savings- or checking account to a created bank account that has an ownerId.
+   *
+   * @param accountDto DTO representing the account.
+   * @param isSavings (boolean) whether it is a savings account (true) or checking account (false)
+   */
+  @Transactional
+  public void setUserAccount(AccountDto accountDto, boolean isSavings) {
+    User user = findUserById(accountDto.getOwnerId());
+    if (isSavings) {
+      user.setSavingsAccountNr(accountDto.getAccountNr());
+    } else {
+      user.setCheckingAccountNr(accountDto.getAccountNr());
+    }
+    userRepository.save(user);
+    // can be moved anywhere else easily, but will need the UserRepository.
   }
 
   /**
@@ -118,6 +140,7 @@ public class UserService implements UserDetailsService {
         userRepository
             .findByEmail(email)
             .orElseThrow(() -> new NotFoundException("User not found"));
+
     return new UserDto(foundUser);
   }
 
@@ -153,5 +176,25 @@ public class UserService implements UserDetailsService {
         .password(foundUser.getPassword())
         .roles("USER") // Can be changed to take roles from database
         .build();
+  }
+
+  /**
+   * Resets a user's password.
+   *
+   * @param loginRequest (LoginRequestDTO) Password reset request containing username and new
+   *     password.
+   * @throws NotFoundException If no user with the given username is found.
+   * @return true if the password was reset successfully, false otherwise.
+   */
+  public boolean resetPassword(LoginRequestDto loginRequest) {
+    try {
+      UserDto user = getUserByEmail(loginRequest.getUsername());
+      String hashedPassword = passwordEncoder.encode(loginRequest.getPassword());
+      user.setPassword(hashedPassword);
+      User updatedUser = userRepository.save(new User(user));
+      return true;
+    } catch (NotFoundException e) {
+      return false;
+    }
   }
 }
