@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>SpareSti</title>
     <link rel="stylesheet" href="./stylesheet.css">
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
     <script src="script.js"></script>
 </head>
 <body>
@@ -14,49 +15,63 @@
         </div>
         <div class="authentication-container">
             <div class="static-content">
-                <p>Welcome to SpareSti! <br>Application to make your wallet happier. <br>Free to use, money back guarantee.</p>
+                <p>Velkommen til Sparesti <br>Applikasjonen som gjør lommeboken din lykkeligere.<br>Gratis å bruke, penger tilbake garanti.</p>
             </div>
             <div class="dynamic-content">
                 <div class="login-container" id="login-container">
-                    <h1>Login</h1>
-                    <p>Sign in to your account</p>
+                    <h1>Logg inn</h1>
+                    <p>Logg på kontoen din</p>
                     <form method="post" action="/login">
                         <div>
                             <div class="input-wrapper">
-                                <input type="email" id="username" name="username" placeholder="Enter your email"/>
+                                <input type="email" id="username" name="username" placeholder="Skriv inn Email"/>
                             </div>
                         </div>
                         <div>
                             <div class="input-wrapper">
-                                <input type="password" id="password" name="password" placeholder="Password"/>
+                                <input type="password" id="password" name="password" placeholder="Passord"/>
+                            </div>
+                            <div class="forgot-password-button">
+                                <button type="button" id="forgot-password" class="forgot-password-btn">Glemt passord?</button>
                             </div>
                         </div>
-                        <button type="submit" class="form-button">Login</button>
+                        <button type="submit" class="form-button">Logg inn</button>
                     </form>
                     <div class="sign-up-link">
-                        <p>Don't have an account? <button id="signup-link">Sign Up</button></p>
+                        <p>Har ikke bruker? <button id="signup-link">Registrer deg</button></p>
                     </div>
                 </div>
-
                 <div class="signup-container hidden" id="signup-container">
-                    <h1>Sign up</h1>
-                    <p>Create your account</p>
+                    <h1>Registrer deg</h1>
+                    <p>Lag din bruker</p>
                     <form id="signup-form">
                         <div>
                             <div class="input-wrapper">
-                                <input type="email" id="email" name="email" placeholder="Enter your email"/>
+                                <input type="email" id="email" name="email" placeholder="Skriv inn din Email"/>
                             </div>
                         </div>
                         <div>
                             <div class="input-wrapper">
-                                <input type="password" id="signup-password" name="password" placeholder="Password"/>
+                                <input type="password" id="signup-password" name="password" placeholder="Passord"/>
                             </div>
                         </div>
-                        <button id="signup-submit" type="submit" class="form-button">Sign Up</button>
+                        <button id="signup-submit" type="submit" class="form-button">Registrer deg</button>
                     </form>
                     <div class="login-link">
-                        <p>Already have an account? <button id="login-link">Login</button></p>
+                        <p>Har allerede en bruker? <button id="login-link">Logg inn</button></p>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div id="forgot-password-modal" class="modal hidden">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <h2>Nullstille passord</h2>
+                <p>Vennligst skriv inn emailen din for å motta en lenke for tilbakestilling av passord.</p>
+                <input type="email" class="input-email" placeholder="Skriv inn din email" id="reset-email">
+                <div class="button-group">
+                    <button class="cancel-btn" onclick="closeForgotPasswordModal()">Avbryt</button>
+                    <button class="confirm-reset-btn" onclick="sendResetLink()">Send nullstill link</button>
                 </div>
             </div>
         </div>
