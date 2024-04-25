@@ -112,6 +112,8 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
       UserDto adminUser = new UserDto();
       adminUser.setEmail("admin@admin");
       adminUser.setPassword("password");
+      adminUser.setProfilePictureUrl(
+          "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/09663791-e23b-427b-b8d4-a341664f4f0a_amongus.png");
       userService.addUser(adminUser);
     }
 
@@ -130,7 +132,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     challenge1.setDifficultyLevel(DifficultyLevel.valueOf("EASY"));
     challenge1.setTitle("Spar 100 kr på kaffe");
     challenge1.setDescription("Ikke kjøp kaffe i dag og spar 10 kr");
-    challenge1.setMediaUrl("https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/kaffe.jpg");
+    challenge1.setMediaUrl("☕");
     challenge1.setTargetAmount(100);
     challenge1.setProductCategory("kaffe");
     challenge1.setReductionPercentage(15);
@@ -144,8 +146,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     challenge2.setDifficultyLevel(DifficultyLevel.valueOf("MEDIUM"));
     challenge2.setTitle("Spar 100 kr på Red Bull");
     challenge2.setDescription("Ikke kjøp Red Bull i dag og spar 10 kr");
-    challenge2.setMediaUrl(
-        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/red_bull.jpg");
+    challenge2.setMediaUrl("🧃");
     challenge2.setTargetAmount(100);
     challenge2.setProductCategory("Red Bull");
     challenge2.setReductionPercentage(15);
