@@ -10,4 +10,6 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
   Optional<UserInfo> findByUserId(Long userId);
 
   boolean existsByUserId(Long userId);
+
+  boolean existsByDisplayName(String displayName);
 }

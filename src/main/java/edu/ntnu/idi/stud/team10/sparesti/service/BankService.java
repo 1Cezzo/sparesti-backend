@@ -16,6 +16,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.Account;
 import edu.ntnu.idi.stud.team10.sparesti.model.Transaction;
 import edu.ntnu.idi.stud.team10.sparesti.repository.bank.AccountRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.bank.TransactionRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.ConflictException;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -49,6 +50,9 @@ public class BankService {
   public AccountDto createAccount(AccountDto accountDto) {
     if (accountDto == null) {
       throw new IllegalArgumentException("Account parameter cannot be null");
+    }
+    if (accountRepository.existsByAccountNr(accountDto.getAccountNr())) {
+      throw new ConflictException("Account number already exists");
     }
     Account account = accountMapper.toEntity(accountDto);
     account.setId(null);
@@ -200,5 +204,29 @@ public class BankService {
     return account.getTransactions().stream()
         .map(transaction -> transactionMapper.toDto(transaction))
         .collect(Collectors.toSet());
+  }
+
+  /**
+   * Checks if a user can legally access an account. The user is allowed to access an account if it
+   * does not exist yet.
+   *
+   * @param accountNr (Integer) The account number
+   * @param userId (Long) The user id
+   * @return {@code false} only if the account is registered with another userId as owned, {@code
+   *     true} otherwise.
+   */
+  public boolean userHasAccessToAccount(Integer accountNr, Long userId) {
+    Account account = accountRepository.findByAccountNr(accountNr).orElse(null);
+    return account == null || account.getOwnerId().equals(userId);
+  }
+
+  /**
+   * Checks if an account exits.
+   *
+   * @param accountNr (Integer) The account number
+   * @return {@code true} if the account exists, {@code false} otherwise.
+   */
+  public boolean accountExists(Integer accountNr) {
+    return accountRepository.existsByAccountNr(accountNr);
   }
 }

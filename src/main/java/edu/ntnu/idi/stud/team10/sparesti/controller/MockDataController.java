@@ -17,26 +17,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Mock Data", description = "Operations relating to all mock data creation")
 public class MockDataController {
 
-  private MockDataService mockDataService;
+  private final MockDataService mockDataService;
 
   @Autowired
   public MockDataController(MockDataService mockDataService) {
     this.mockDataService = mockDataService;
-  }
-
-  /**
-   * Generates a mock bank account and sets it to be a user's checking or savings account.
-   *
-   * @param email (String) email of the user
-   * @param isSavingsAccount (boolean) true for savings account, false for checking account
-   * @return ResponseEntity&lt;?&gt; with ok message.
-   */
-  @PutMapping("/accounts/generate")
-  @Operation(summary = "create and connect an account to a user")
-  public ResponseEntity<?> addMockAccountToUser(
-      @RequestParam String email, @RequestParam boolean isSavingsAccount) {
-    mockDataService.addMockBankAccount(email, isSavingsAccount);
-    return ResponseEntity.ok().body("Account added successfully");
   }
 
   /**
@@ -50,31 +35,8 @@ public class MockDataController {
   @Operation(summary = "Generate an amount of random mock purchases for an account")
   public ResponseEntity<?> generateMockTransactions(
       @RequestParam Integer accountNr, @RequestParam(defaultValue = "10") int count) {
-
     mockDataService.storeRandomMockTransactions(accountNr, count);
     return ResponseEntity.ok(
         "Successfully generated " + count + " random transactions for account " + accountNr);
-  }
-
-  /**
-   * Sets up and generates a mock savings and checking account for a user during the questionnaire.
-   * Will add transactions to the checking account.
-   *
-   * @param name (String): some kind of name signifying the particular user.
-   * @param savingsAccountNr (Integer): number for the savings account
-   * @param checkingAccountNr (Integer): number for the checking account.
-   * @param userId (Long): the unique id of the user (owner of the accounts)
-   * @return ResponseEntity&lt;?&gt; with an ok message if successful.
-   */
-  @PutMapping("/accounts/questionnaire/generate")
-  @Operation(summary = "setup mock savings and checking accounts")
-  public ResponseEntity<?> setupAccount(
-      @RequestParam String name,
-      @RequestParam Integer savingsAccountNr,
-      @RequestParam Integer checkingAccountNr,
-      @RequestParam Long userId) {
-    mockDataService.assignQuestionnaireMockAccounts(
-        name, savingsAccountNr, checkingAccountNr, userId);
-    return ResponseEntity.ok().body("Successfully generated & initialized accounts");
   }
 }

@@ -13,27 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
-import edu.ntnu.idi.stud.team10.sparesti.model.User;
-import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.ConflictException;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /** Service for mock data creation */
 @Service
 public class MockDataService {
-  private final UserRepository userRepository;
   private final BankService bankService;
-  private final UserService userService;
   private final UserInfoService userInfoService;
 
   @Autowired
-  public MockDataService(
-      UserRepository userRepository,
-      BankService bankService,
-      UserService userService,
-      UserInfoService userInfoService) {
-    this.userRepository = userRepository;
+  public MockDataService(BankService bankService, UserInfoService userInfoService) {
     this.bankService = bankService;
-    this.userService = userService;
     this.userInfoService = userInfoService;
   }
 
@@ -104,34 +95,20 @@ public class MockDataService {
   }
 
   /**
-   * Creates a new mock account and adds it to the user.
+   * Creates and initializes a mock bank account.
    *
-   * @param email (String): The email of the user the account is being added to
-   * @param isSavingsAcc (boolean): Whether the account is going to be the savings account (if
-   *     false; will be checking account)
-   * @return the AccountDto that was created.
+   * @param account (AccountDto) a Dto representing the account to mock.
+   * @throws NotFoundException if the user does not exist.
+   * @throws ConflictException if the account number is already in use.
+   * @throws IllegalArgumentException if the account number is invalid.
    */
   @Transactional
-  public AccountDto addMockBankAccount(String email, boolean isSavingsAcc) {
-    // Can change to use a different arg than displayName. ATM I don't know what is stored on the
-    User mockUser = findUserByEmail(email);
-    UserInfoDto mockUserInfo = userInfoService.getUserInfoByEmail(email);
-    int accountNr = generateUniqueAccountNumber();
-    AccountDto accountDto = new AccountDto();
-    accountDto.setAccountNr(accountNr);
-    accountDto.setOwnerId(mockUser.getId());
+  public void createMockBankAccount(AccountDto account) {
+    UserInfoDto mockUserInfo = userInfoService.getUserInfoByUserId(account.getOwnerId());
     String name = mockUserInfo.getFirstName() + " " + mockUserInfo.getLastName();
-
-    if (isSavingsAcc) {
-      accountDto.setName(name + "'s savings account");
-      mockUser.setSavingsAccountNr(accountNr);
-    } else {
-      accountDto.setName(accountDto.getName() + "'s checking account");
-      mockUser.setCheckingAccountNr(accountNr);
-    }
-
-    userRepository.save(mockUser);
-    return bankService.createAccount(accountDto);
+    account.setName(name + "'s account");
+    bankService.createAccount(account);
+    initFakeAccount(account.getAccountNr());
   }
 
   /**
@@ -143,59 +120,16 @@ public class MockDataService {
     return ThreadLocalRandom.current().nextInt(100000, 999999);
   }
 
-  /**
-   * Finds and returns a user of email.
-   *
-   * @param email (String) the email/displayname of the user.
-   * @return (User) the User, if found.
-   * @throws NotFoundException if the user is not found
-   */
-  private User findUserByEmail(String email) {
-    return userRepository
-        .findById(userService.getUserByEmail(email).getId())
-        .orElseThrow(() -> new NotFoundException("user with email" + email + " not found"));
-  }
-
-  /**
-   * Assigns a mock savings and checkings account.
-   *
-   * @param name (String) user's display-name or first + last name
-   * @param checkingAccountNr (Integer) number for the checking account
-   * @param savingsAccountNr (Integer) number for the savings account
-   * @param userId (Long) id of the user.
-   */
-  @Transactional
-  public void assignQuestionnaireMockAccounts(
-      String name, Integer checkingAccountNr, Integer savingsAccountNr, Long userId) {
-    AccountDto checkingAccountDto = new AccountDto();
-    checkingAccountDto.setAccountNr(checkingAccountNr);
-    checkingAccountDto.setOwnerId(userId);
-    checkingAccountDto.setName(name + "'s checking account");
-    bankService.createAccount(checkingAccountDto);
-
-    AccountDto savingsAccountDto = new AccountDto();
-    savingsAccountDto.setAccountNr(savingsAccountNr);
-    savingsAccountDto.setOwnerId(userId);
-    savingsAccountDto.setName(name + "'s savings account");
-    bankService.createAccount(savingsAccountDto);
-
-    userService.setUserAccount(checkingAccountDto, false);
-    userService.setUserAccount(savingsAccountDto, true);
-
-    // Add a bunch of money and transactions.
-    initFakeAccount(checkingAccountDto);
-  }
-
-  private void initFakeAccount(AccountDto accountDto) {
+  private void initFakeAccount(Integer accountNr) {
     TransactionDto transactionDto = new TransactionDto();
-    transactionDto.setAccountNr(accountDto.getAccountNr());
+    transactionDto.setAccountNr(accountNr);
     transactionDto.setDate(LocalDate.now().minusDays(31));
     transactionDto.setAmount(20000);
     transactionDto.setCategory("Donation");
     transactionDto.setDescription("<3 TO MY FAVORITE CHILD, A BIG MONEY DONO");
     bankService.addTransaction(transactionDto);
 
-    storeRandomMockTransactions(accountDto.getAccountNr(), 60);
+    storeRandomMockTransactions(accountNr, 60);
     // according to a singular google search:
     // The average bank transaction amount is 59.5 per person per month.
   }
