@@ -1,8 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.config;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
-import edu.ntnu.idi.stud.team10.sparesti.model.User;
-import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
@@ -22,8 +19,6 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
-import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
@@ -36,8 +31,6 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
-import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsContext;
-import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsSet;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -47,8 +40,10 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserInfoService;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
 
 /** Configuration for the Authorization Server. */
 @Configuration
@@ -224,16 +219,17 @@ public class AuthorizationServerConfig {
     return context -> {
       JwtClaimsSet.Builder claimsBuilder = context.getClaims();
       if (context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)) {
-        claimsBuilder.claims(claims -> {
-          Long userId;
-          try {
-            UserDto user = userService.getUserByEmail(context.getPrincipal().getName());
-            userId = user.getId();
-          } catch (Exception ignored) {
-            userId = null;
-          }
-          claims.put("userId", userId);
-        });
+        claimsBuilder.claims(
+            claims -> {
+              Long userId;
+              try {
+                UserDto user = userService.getUserByEmail(context.getPrincipal().getName());
+                userId = user.getId();
+              } catch (Exception ignored) {
+                userId = null;
+              }
+              claims.put("userId", userId);
+            });
       }
     };
   }
