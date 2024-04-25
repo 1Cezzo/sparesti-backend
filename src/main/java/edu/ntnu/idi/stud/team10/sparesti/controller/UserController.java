@@ -78,4 +78,16 @@ public class UserController {
     userService.deleteUser(id);
     return ResponseEntity.noContent().build();
   }
+
+  /**
+   * Update a user.
+   *
+   * @param userDTO the user to update
+   * @return the response entity
+   */
+  @PostMapping("/update")
+  @Operation(summary = "Update a user")
+  public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDTO) {
+    return ResponseEntity.ok(userService.updateUser(userDTO));
+  }
 }

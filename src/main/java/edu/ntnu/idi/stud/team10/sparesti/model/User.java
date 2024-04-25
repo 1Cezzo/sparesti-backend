@@ -26,7 +26,7 @@ public class User {
   @Column(unique = true)
   private String email;
 
-  @Column private double totalSavings;
+  @Column private Double totalSavings;
 
   // TODO: Add "Total amount saved" to the user?
 

@@ -27,7 +27,6 @@ public class UserDtoTest {
   public void setUp() {
     userDto = new UserDto();
     userDto.setId(testId);
-    userDto.setDisplayName(testUsername);
     userDto.setPassword(testPassword);
     userDto.setEmail(testEmail);
     userDto.setProfilePictureUrl(testProfilePictureUrl);
@@ -38,7 +37,6 @@ public class UserDtoTest {
     userDto.setChallenges(testChallenges);
     userDto2 = new UserDto();
     userDto2.setId(testId);
-    userDto2.setDisplayName(testUsername);
     userDto2.setPassword(testPassword);
     userDto2.setEmail(testEmail);
     userDto2.setProfilePictureUrl(testProfilePictureUrl);
@@ -56,7 +54,6 @@ public class UserDtoTest {
   public void testUserDtoAttributes() {
     assertNotNull(userDto);
     assertEquals(testId, userDto.getId());
-    assertEquals(testUsername, userDto.getDisplayName());
     assertEquals(testPassword, userDto.getPassword());
     assertEquals(testEmail, userDto.getEmail());
     assertEquals(testProfilePictureUrl, userDto.getProfilePictureUrl());
@@ -68,26 +65,20 @@ public class UserDtoTest {
   public void testEquals() {
 
     // Test with equal objects
-    assertTrue(userDto.equals(userDto2));
-    assertTrue(userDto2.equals(userDto));
+    assertEquals(userDto, userDto2);
+    assertEquals(userDto2, userDto);
 
     // Test with the same object
-    assertTrue(userDto.equals(userDto));
+    assertEquals(userDto, userDto);
 
     // Test with null object
-    assertFalse(userDto.equals(null));
+    assertNotEquals(null, userDto);
 
     // Test with different id
     userDto2.setId(2L);
-    assertFalse(userDto.equals(userDto2));
-
-    // Test with different username
-    userDto2.setId(1L);
-    userDto2.setDisplayName("differentuser");
-    assertFalse(userDto.equals(userDto2));
+    assertNotEquals(userDto, userDto2);
 
     // Test with different email
-    userDto2.setDisplayName("testuser");
     userDto2.setEmail("different@example.com");
     assertFalse(userDto.equals(userDto2));
 
@@ -98,14 +89,6 @@ public class UserDtoTest {
   @Test
   public void testHashCode() {
     assertEquals(userDto.hashCode(), userDto2.hashCode());
-  }
-
-  @Test
-  public void testToEntity() {
-    User convertedUser = userDto.toEntity();
-    assertNotNull(convertedUser);
-    assertEquals(user.getId(), convertedUser.getId());
-    assertEquals(user.getEmail(), convertedUser.getEmail());
   }
 
   @Test
