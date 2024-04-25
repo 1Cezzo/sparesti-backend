@@ -59,7 +59,6 @@ body.dark {
     --color-button-base: var(--vt-c-button-base-dark);
     --color-button-hover: var(--vt-c-button-hover-dark);
 }
-
 *,
 *::before,
 *::after {
@@ -175,7 +174,6 @@ button:hover {
 .sign-up-link button {
     background-color: transparent;
     border: none;
-    /*color: var(--color-primary);*/
     cursor: pointer;
 }
 
@@ -213,11 +211,74 @@ button:hover {
 .login-link button {
     background-color: transparent;
     border: none;
-    color: var(--color-primary);
     cursor: pointer;
-    font: bold;
 }
 
 .hidden {
     display: none;
+}
+
+.forgot-password-btn {
+    background: none;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 10px 0;
+}
+
+.forgot-password-btn:hover {
+    background: transparent;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: var(--color-background);
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    width: 80%;
+    max-width: 450px;
+}
+
+.modal:not(.hidden) {
+    display: block;
+}
+
+.modal .button-group .cancel-btn {
+    color: var(--color-text);
+}
+
+.cancel-btn:hover {
+    color: #d9534f
+}
+
+.modal .button-group .confirm-reset-btn {
+    background-color: var(--color-button-base);
+    color: var(--color-text);
+}
+
+.modal .button-group .confirm-reset-btn:hover {
+    background-color: var(--color-button-hover);
+}
+
+.modal .cancel-btn, .confirm-reset-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    margin: 10px;
+    max-width: 300px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
