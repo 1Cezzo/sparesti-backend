@@ -32,7 +32,8 @@ public class UserInfoController {
 
   @PostMapping("/update/{userId}")
   @Operation(summary = "Update user info")
-  public ResponseEntity<UserInfoDto> updateUserInfo(@PathVariable Long userId, @RequestBody UserInfoDto userInfoDto) {
+  public ResponseEntity<UserInfoDto> updateUserInfo(
+      @PathVariable Long userId, @RequestBody UserInfoDto userInfoDto) {
     return ResponseEntity.ok(userInfoService.updateUserInfo(userId, userInfoDto));
   }
 }

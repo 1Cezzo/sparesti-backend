@@ -2,6 +2,7 @@ package edu.ntnu.idi.stud.team10.sparesti.mapper;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -38,9 +39,13 @@ public interface UserInfoMapper {
     Optional.ofNullable(userInfoDto.getMotivation()).ifPresent(userInfo::setMotivation);
     Optional.ofNullable(userInfoDto.getIncome()).ifPresent(userInfo::setIncome);
     Optional.ofNullable(userInfoDto.getBudgetingProducts())
-        .ifPresent(products -> userInfo.setBudgetingProducts(products.stream()
-                                                                 .map(BudgetingProductMapper.INSTANCE::toEntity)
-                                                                 .collect(Collectors.toSet())));
-    Optional.ofNullable(userInfoDto.getBudgetingLocations()).ifPresent(userInfo::setBudgetingLocations);
+        .ifPresent(
+            products ->
+                userInfo.setBudgetingProducts(
+                    products.stream()
+                        .map(BudgetingProductMapper.INSTANCE::toEntity)
+                        .collect(Collectors.toSet())));
+    Optional.ofNullable(userInfoDto.getBudgetingLocations())
+        .ifPresent(userInfo::setBudgetingLocations);
   }
 }

@@ -54,7 +54,7 @@ public class UserService implements UserDetailsService {
     }
     userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
     User newUser = new User(userDto);
-    newUser.setTotalSavings(0);
+    newUser.setTotalSavings(0.0);
     return new UserDto(userRepository.save(newUser));
   }
 
@@ -88,6 +88,10 @@ public class UserService implements UserDetailsService {
     Optional.ofNullable(userDto.getEmail()).ifPresent(userToUpdate::setEmail);
     Optional.ofNullable(userDto.getProfilePictureUrl())
         .ifPresent(userToUpdate::setProfilePictureUrl);
+    Optional.ofNullable(userDto.getTotalSavings()).ifPresent(userToUpdate::setTotalSavings);
+    Optional.ofNullable(userDto.getCheckingAccountNr())
+        .ifPresent(userToUpdate::setCheckingAccountNr);
+    Optional.ofNullable(userDto.getSavingsAccountNr()).ifPresent(userToUpdate::setSavingsAccountNr);
 
     return new UserDto(userRepository.save(userToUpdate));
   }

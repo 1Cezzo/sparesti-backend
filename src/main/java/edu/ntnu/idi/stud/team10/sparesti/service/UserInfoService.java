@@ -108,8 +108,10 @@ public class UserInfoService {
    * @throws NotFoundException if the user info is not found.
    */
   public UserInfoDto updateUserInfo(Long userId, UserInfoDto userInfoDto) {
-    UserInfo info = userInfoRepository.findByUserId(userId)
-        .orElseThrow(() -> new NotFoundException("User info not found"));
+    UserInfo info =
+        userInfoRepository
+            .findByUserId(userId)
+            .orElseThrow(() -> new NotFoundException("User info not found"));
     userInfoMapper.updateFromDto(userInfoDto, info);
     return userInfoMapper.toDto(userInfoRepository.save(info));
   }

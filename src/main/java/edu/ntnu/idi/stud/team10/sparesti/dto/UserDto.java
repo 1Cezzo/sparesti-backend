@@ -12,7 +12,6 @@ import lombok.*;
 @AllArgsConstructor
 public class UserDto {
   private Long id;
-  private String displayName;
   private String password;
   private String email;
   private String profilePictureUrl;
@@ -31,6 +30,8 @@ public class UserDto {
     this.id = user.getId();
     this.email = user.getEmail();
     this.profilePictureUrl = user.getProfilePictureUrl();
+    this.checkingAccountNr = user.getCheckingAccountNr();
+    this.savingsAccountNr = user.getSavingsAccountNr();
     this.totalSavings = user.getTotalSavings();
     if (user.getSavingsGoals() != null) {
       this.savingsGoals = user.getSavingsGoals().stream().map(SavingsGoalDTO::new).toList();
