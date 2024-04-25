@@ -40,7 +40,7 @@ public class MockDataService {
   /**
    * Creates and returns a random transaction to an account. Intended for creation of mock data for
    * bank.
-   *
+   * The date will always be a random day in the last 30 days.
    * @param accountNr number of the account (who the transaction is coming from)
    * @return a randomly generated transaction
    */
@@ -70,17 +70,20 @@ public class MockDataService {
   }
 
   private static final Map<String, List<String>> CATEGORY_DESCRIPTIONS =
-      Map.of(
-          "Groceries",
-              List.of("Supermarket purchase", "Grocery store", "Bakery shop", "Butcher shop"),
-          "Entertainment",
-              List.of("Movie tickets", "Concert tickets", "Streaming service subscription"),
-          "Utilities",
-              List.of("Electric bill payment", "Water bill payment", "Internet bill payment"),
-          "Dining", List.of("Restaurant", "Coffee shop", "Fast food"),
-          "Transportation", List.of("Gas station", "Public transport ticket", "Taxi fare"),
-          "Clothing", List.of("Clothing retail", "Online apparel shop", "Shoe store purchase")
-          // ... more categories and descriptions
+          Map.of(
+                  "Dagligvarer",
+                  List.of("Supermarkedkjøp", "Dagligvarebutikk", "Bakeri", "Slakter"),
+                  "Underholdning",
+                  List.of("Kinobilletter", "Konsertbilletter", "Abonnement på strømmetjeneste"),
+                  "Nyttetjenester",
+                  List.of("Betaling av strømregning", "Betaling av vannregning", "Betaling av internettregning"),
+                  "Spisesteder",
+                  List.of("Restaurant", "Kafé", "Hurtigmat"),
+                  "Transport",
+                  List.of("Bensinstasjon", "Offentlig transportbillett", "Taxi"),
+                  "Klær",
+                  List.of("Klærforretning", "Nettbutikk for klær", "Skobutikk")
+                  // ... flere kategorier og beskrivelser
           );
 
   private static final List<String> CATEGORIES = List.copyOf(CATEGORY_DESCRIPTIONS.keySet());
@@ -148,5 +151,48 @@ public class MockDataService {
     return userRepository
         .findById(userService.getUserByEmail(email).getId())
         .orElseThrow(() -> new NotFoundException("user with email" + email + " not found"));
+  }
+
+  /**
+   * Assigns a mock savings and checkings account.
+   *
+   * @param name (String) user's display-name or first + last name
+   * @param checkingAccountNr (Integer) number for the checking account
+   * @param savingsAccountNr (Integer) number for the savings account
+   * @param userId (Long) id of the user.
+   */
+  @Transactional
+  public void assignQuestionnaireMockAccounts(String name, Integer checkingAccountNr, Integer savingsAccountNr, Long userId) {
+    AccountDto checkingAccountDto = new AccountDto();
+    checkingAccountDto.setAccountNr(checkingAccountNr);
+    checkingAccountDto.setOwnerId(userId);
+    checkingAccountDto.setName(name + "'s checking account");
+    bankService.createAccount(checkingAccountDto);
+
+    AccountDto savingsAccountDto = new AccountDto();
+    savingsAccountDto.setAccountNr(savingsAccountNr);
+    savingsAccountDto.setOwnerId(userId);
+    savingsAccountDto.setName(name + "'s savings account");
+    bankService.createAccount(savingsAccountDto);
+
+    userService.setUserAccount(checkingAccountDto, false);
+    userService.setUserAccount(savingsAccountDto, true);
+
+    //Add a bunch of money and transactions.
+    initFakeAccount(checkingAccountDto);
+  }
+
+  private void initFakeAccount(AccountDto accountDto) {
+    TransactionDto transactionDto = new TransactionDto();
+    transactionDto.setAccountNr(accountDto.getAccountNr());
+    transactionDto.setDate(LocalDate.now().minusDays(31));
+    transactionDto.setAmount(20000);
+    transactionDto.setCategory("Donation");
+    transactionDto.setDescription("<3 TO MY FAVORITE CHILD, A BIG MONEY DONO");
+    bankService.addTransaction(transactionDto);
+
+    storeRandomMockTransactions(accountDto.getAccountNr(), 60);
+    // according to a singular google search:
+    // The average bank transaction amount is 59.5 per person per month.
   }
 }
