@@ -177,4 +177,24 @@ public class UserService implements UserDetailsService {
         .roles("USER") // Can be changed to take roles from database
         .build();
   }
+
+  /**
+   * Resets a user's password.
+   *
+   * @param loginRequest (LoginRequestDTO) Password reset request containing username and new
+   *     password.
+   * @throws NotFoundException If no user with the given username is found.
+   * @return true if the password was reset successfully, false otherwise.
+   */
+  public boolean resetPassword(LoginRequestDto loginRequest) {
+    try {
+      UserDto user = getUserByEmail(loginRequest.getUsername());
+      String hashedPassword = passwordEncoder.encode(loginRequest.getPassword());
+      user.setPassword(hashedPassword);
+      User updatedUser = userRepository.save(new User(user));
+      return true;
+    } catch (NotFoundException e) {
+      return false;
+    }
+  }
 }
