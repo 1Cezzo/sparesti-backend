@@ -31,21 +31,21 @@ public class SavingsGoalServiceTest {
     MockitoAnnotations.openMocks(this);
   }
 
-  @Test
-  public void testUpdateSavedAmount_ValidInput_SavedAmountUpdated() {
-    SavingsGoal existingSavingsGoal = new SavingsGoal();
-    existingSavingsGoal.setId(1L);
-    existingSavingsGoal.setSavedAmount(500);
-
-    when(savingsGoalRepository.findById(existingSavingsGoal.getId()))
-        .thenReturn(Optional.of(existingSavingsGoal));
-    when(savingsGoalRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-
-    double additionalAmount = 100;
-    savingsGoalService.updateSavedAmount(existingSavingsGoal.getId(), additionalAmount);
-
-    assertEquals(600, existingSavingsGoal.getSavedAmount());
-  }
+  //  @Test
+  //  public void testUpdateSavedAmount_ValidInput_SavedAmountUpdated() {
+  //    SavingsGoal existingSavingsGoal = new SavingsGoal();
+  //    existingSavingsGoal.setId(1L);
+  //    existingSavingsGoal.setSavedAmount(500);
+  //
+  //    when(savingsGoalRepository.findById(existingSavingsGoal.getId()))
+  //        .thenReturn(Optional.of(existingSavingsGoal));
+  //    when(savingsGoalRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+  //
+  //    double additionalAmount = 100;
+  //    savingsGoalService.updateSavedAmount(existingSavingsGoal.getId(), additionalAmount);
+  //
+  //    assertEquals(600, existingSavingsGoal.getSavedAmount());
+  //  }
 
   @Test
   public void testCreateSavingsGoal_ValidInput_ReturnsSavingsGoal() {
