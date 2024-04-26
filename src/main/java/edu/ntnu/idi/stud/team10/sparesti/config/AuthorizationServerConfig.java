@@ -19,7 +19,9 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -28,6 +30,8 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.nimbusds.jose.jwk.JWKSet;
@@ -36,18 +40,22 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserInfoService;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
 
 /** Configuration for the Authorization Server. */
 @Configuration
 @EnableWebSecurity
 public class AuthorizationServerConfig {
   private final UserInfoService userInfoService;
+  private final UserService userService;
 
   @Autowired
-  public AuthorizationServerConfig(UserInfoService userInfoService) {
+  public AuthorizationServerConfig(UserInfoService userInfoService, UserService userService) {
     this.userInfoService = userInfoService;
+    this.userService = userService;
   }
 
   /**
@@ -199,5 +207,30 @@ public class AuthorizationServerConfig {
         .tokenEndpoint("/oauth2/token")
         .oidcUserInfoEndpoint("/userinfo")
         .build();
+  }
+
+  /**
+   * Token customizer to add user specific claims to the JWT.
+   *
+   * @return The OAuth2TokenCustomizer bean
+   */
+  @Bean
+  public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
+    return context -> {
+      JwtClaimsSet.Builder claimsBuilder = context.getClaims();
+      if (context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)) {
+        claimsBuilder.claims(
+            claims -> {
+              Long userId;
+              try {
+                UserDto user = userService.getUserByEmail(context.getPrincipal().getName());
+                userId = user.getId();
+              } catch (Exception ignored) {
+                userId = null;
+              }
+              claims.put("userId", userId);
+            });
+      }
+    };
   }
 }
