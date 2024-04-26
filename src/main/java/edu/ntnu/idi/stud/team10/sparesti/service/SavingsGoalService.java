@@ -194,7 +194,6 @@ public class SavingsGoalService {
                 () ->
                     new NotFoundException("Savings goal with ID " + savingsGoalId + " not found"));
 
-    user.getSavingsGoals().remove(savingsGoal);
     userRepository.save(user);
     savingsGoalRepository.delete(savingsGoal);
   }
