@@ -63,17 +63,43 @@ function showForgotPasswordModal() {
     document.getElementById('forgot-password-modal').classList.remove('hidden');
 }
 
+async function sendResetLink() {
+    const email = document.getElementById('reset-email').value;
+    if (!email) {
+        alert('Please enter an email address.');
+        return;
+    }
 
-function sendResetLink() {
-    var email = document.getElementById('reset-email').value;
-    if(email) {
-        // Implement your logic for sending a password reset email
-        alert('En passord reset link er blitt sendt til ' + email);
-        closeForgotPasswordModal();
-    } else {
-        alert('Vennligs skriv inn en email.');
+    const url = `/api/sendEmail?to=${encodeURIComponent(email)}`; // Append email as a query parameter
+
+    try {
+        console.log('Sending email to:', email); // Debug: log the email being sent
+        const response = await fetch(url, {
+            method: 'POST', // Ensure method is POST
+            headers: {
+                'Accept': '*/*' // Match header as per your working example
+            }
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Response Data:', responseData); // Debug: log response data
+            alert(`A password reset link has been sent to ${email}`);
+        } else {
+            const error = await response.text();
+            console.error('Error response text:', error); // Debug: log error text
+            throw new Error(`Failed to send email: ${error}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to send password reset link. Please try again.');
+    } finally {
+        closeForgotPasswordModal(); // Ensure this function exists and is accessible
     }
 }
+
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
     hideForgotPasswordModal(); // Hide the modal initially
@@ -101,5 +127,4 @@ async function submitSignUp(event) {
     }
     return false;
 }
-
 
