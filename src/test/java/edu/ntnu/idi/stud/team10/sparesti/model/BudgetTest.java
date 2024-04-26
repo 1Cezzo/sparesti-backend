@@ -66,7 +66,7 @@ public class BudgetTest {
     budget.setUser(user);
 
     String expectedString =
-        "Budget(id=1, row=[], expiryDate=2024-12-31, user=User{id=1, email='test@example.com'})";
+        "Budget(id=1, row=[], expiryDate=2024-12-31, creationDate=null, user=User{id=1, email='test@example.com'})";
     assertEquals(expectedString, budget.toString());
   }
 }
