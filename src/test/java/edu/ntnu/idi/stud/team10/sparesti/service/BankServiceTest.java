@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class BankServiceTest {
+class BankServiceTest {
 
   @Mock private AccountRepository accountRepository;
 
@@ -41,7 +41,7 @@ public class BankServiceTest {
   }
 
   @Test
-  public void testCreateAccount() {
+  void testCreateAccount() {
     AccountDto accountDto = new AccountDto();
     Account account = new Account();
     when(accountMapper.toEntity(any())).thenReturn(account);
@@ -57,13 +57,14 @@ public class BankServiceTest {
   }
 
   @Test
-  public void testGetAccountDetails() {
+  void testGetAccountDetails() {
     Account account = new Account();
+    account.setOwnerId(1L);
     AccountDto accountDto = new AccountDto();
     when(accountRepository.findByAccountNr(anyInt())).thenReturn(java.util.Optional.of(account));
     when(accountMapper.toDto(any())).thenReturn(accountDto);
 
-    AccountDto result = bankService.getAccountDetails(1);
+    AccountDto result = bankService.getAccountDetails(1, 1L);
 
     assertNotNull(result);
     verify(accountRepository, times(1)).findByAccountNr(1);
@@ -71,7 +72,7 @@ public class BankServiceTest {
   }
 
   @Test
-  public void testGetUserAccounts() {
+  void testGetUserAccounts() {
     Set<Account> accounts = new HashSet<>();
     accounts.add(new Account());
     when(accountRepository.findAllByOwnerId(anyLong())).thenReturn(accounts);
@@ -86,7 +87,7 @@ public class BankServiceTest {
   }
 
   @Test
-  public void testGetTransactionsByUserId() {
+  void testGetTransactionsByUserId() {
     Set<Account> accounts = new HashSet<>();
     accounts.add(new Account());
     when(accountRepository.findAllByOwnerId(anyLong())).thenReturn(accounts);
@@ -100,7 +101,7 @@ public class BankServiceTest {
   }
 
   @Test
-  public void testAddTransaction() {
+  void testAddTransaction() {
     TransactionDto transactionDto = new TransactionDto();
     transactionDto.setAccountNr(1);
     transactionDto.setAmount(100);

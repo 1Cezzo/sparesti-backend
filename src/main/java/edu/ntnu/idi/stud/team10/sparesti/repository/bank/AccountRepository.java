@@ -16,6 +16,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
   Set<Account> findAllByOwnerId(Long ownerId);
 
+  boolean existsByAccountNr(int accountNr);
+
   @Query("SELECT a FROM Account a WHERE a.accountNr = :accountNr")
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   Optional<Account> findByAccountNrWithLock(int accountNr);

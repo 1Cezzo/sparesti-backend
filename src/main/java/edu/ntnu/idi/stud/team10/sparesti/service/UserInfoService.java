@@ -11,6 +11,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.model.UserInfo;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserInfoRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.ConflictException;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -43,8 +44,16 @@ public class UserInfoService {
    *
    * @param userInfoDto (UserInfoDto) A Dto representing the user info.
    * @return The stored UserInfo, as a Dto.
+   * @throws ConflictException if the user info already exists.
+   * @throws NotFoundException if the user is not found.
    */
   public UserInfoDto createUserInfo(UserInfoDto userInfoDto) {
+    if (userInfoRepository.existsByUserId(userInfoDto.getUserId())) {
+      throw new ConflictException("User info already exists");
+    }
+    if (userInfoRepository.existsByDisplayName(userInfoDto.getDisplayName())) {
+      throw new ConflictException("Display name is taken.");
+    }
     UserInfo userInfo = userInfoMapper.toEntity(userInfoDto);
     userInfo
         .getBudgetingProducts()

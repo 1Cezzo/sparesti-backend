@@ -16,7 +16,9 @@ import edu.ntnu.idi.stud.team10.sparesti.model.Account;
 import edu.ntnu.idi.stud.team10.sparesti.model.Transaction;
 import edu.ntnu.idi.stud.team10.sparesti.repository.bank.AccountRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.bank.TransactionRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.ConflictException;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
+import edu.ntnu.idi.stud.team10.sparesti.util.UnauthorizedException;
 import jakarta.transaction.Transactional;
 
 /** Service for bank operations. */
@@ -50,6 +52,9 @@ public class BankService {
     if (accountDto == null) {
       throw new IllegalArgumentException("Account parameter cannot be null");
     }
+    if (accountRepository.existsByAccountNr(accountDto.getAccountNr())) {
+      throw new ConflictException("Account number already exists");
+    }
     Account account = accountMapper.toEntity(accountDto);
     account.setId(null);
     account.setBalance(0);
@@ -64,8 +69,11 @@ public class BankService {
    * @return A Dto with the account details.
    * @throws NotFoundException If the account is not found.
    */
-  public AccountDto getAccountDetails(int accountNr) {
+  public AccountDto getAccountDetails(int accountNr, Long userId) {
     Account account = findAccountByAccountNr(accountNr);
+    if (!account.getOwnerId().equals(userId)) {
+      throw new UnauthorizedException("User does not have access to this account");
+    }
     return accountMapper.toDto(account);
   }
 
@@ -195,10 +203,37 @@ public class BankService {
    * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt; &gt;) Set of all transactions by the
    *     account.
    */
-  public Set<TransactionDto> getTransactionsByAccountNr(Integer accountNr) {
+  public Set<TransactionDto> getTransactionsByAccountNr(Integer accountNr, Long userId) {
     Account account = findAccountByAccountNr(accountNr);
+    if (!account.getOwnerId().equals(userId)) {
+      throw new UnauthorizedException("User does not have access to this account");
+    }
     return account.getTransactions().stream()
-        .map(transaction -> transactionMapper.toDto(transaction))
+        .map(transactionMapper::toDto)
         .collect(Collectors.toSet());
+  }
+
+  /**
+   * Checks if a user can legally access an account. The user is allowed to access an account if it
+   * does not exist yet.
+   *
+   * @param accountNr (Integer) The account number
+   * @param userId (Long) The user id
+   * @return {@code false} only if the account is registered with another userId as owned, {@code
+   *     true} otherwise.
+   */
+  public boolean userHasAccessToAccount(Integer accountNr, Long userId) {
+    Account account = accountRepository.findByAccountNr(accountNr).orElse(null);
+    return account == null || account.getOwnerId().equals(userId);
+  }
+
+  /**
+   * Checks if an account exits.
+   *
+   * @param accountNr (Integer) The account number
+   * @return {@code true} if the account exists, {@code false} otherwise.
+   */
+  public boolean accountExists(Integer accountNr) {
+    return accountRepository.existsByAccountNr(accountNr);
   }
 }

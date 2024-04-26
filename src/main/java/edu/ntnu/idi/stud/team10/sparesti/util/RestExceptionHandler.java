@@ -36,4 +36,24 @@ public class RestExceptionHandler {
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
   }
+
+  @ExceptionHandler(ConflictException.class)
+  public ResponseEntity<ErrorResponse> handleConflictException(ConflictException e) {
+    ErrorResponse res = new ErrorResponse();
+    res.setTitle(e.getMessage());
+    res.setStatus(HttpStatus.CONFLICT.value());
+    res.setTimestamp(java.time.LocalDate.now().toString());
+
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
+  }
+
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<ErrorResponse> handleUnauthorizedException(UnauthorizedException e) {
+    ErrorResponse res = new ErrorResponse();
+    res.setTitle(e.getMessage());
+    res.setStatus(HttpStatus.UNAUTHORIZED.value());
+    res.setTimestamp(java.time.LocalDate.now().toString());
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
+  }
 }

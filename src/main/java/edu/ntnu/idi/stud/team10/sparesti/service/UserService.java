@@ -9,22 +9,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
-import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
+import edu.ntnu.idi.stud.team10.sparesti.util.UnauthorizedException;
 
 /** Service for User entities. */
 @Service
 public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final MockDataService mockDataService;
+  private final BankService bankService;
 
   /**
    * Constructor for UserService, with automatic injection of dependencies.
@@ -33,12 +32,11 @@ public class UserService implements UserDetailsService {
    */
   @Autowired
   public UserService(
-      UserRepository userRepository,
-      BudgetRepository budgetRepository,
-      BudgetRowRepository budgetRowRepository,
-      BadgeRepository badgeRepository) {
+      UserRepository userRepository, MockDataService mockDataService, BankService bankService) {
     this.userRepository = userRepository;
     this.passwordEncoder = new BCryptPasswordEncoder();
+    this.mockDataService = mockDataService;
+    this.bankService = bankService;
   }
 
   /**
@@ -91,28 +89,18 @@ public class UserService implements UserDetailsService {
         .ifPresent(userToUpdate::setProfilePictureUrl);
     Optional.ofNullable(userDto.getTotalSavings()).ifPresent(userToUpdate::setTotalSavings);
     Optional.ofNullable(userDto.getCheckingAccountNr())
-        .ifPresent(userToUpdate::setCheckingAccountNr);
-    Optional.ofNullable(userDto.getSavingsAccountNr()).ifPresent(userToUpdate::setSavingsAccountNr);
-
+        .ifPresent(
+            accountNr -> {
+              validateMockAccount(accountNr, userToUpdate.getId());
+              userToUpdate.setCheckingAccountNr(accountNr);
+            });
+    Optional.ofNullable(userDto.getSavingsAccountNr())
+        .ifPresent(
+            accountNr -> {
+              validateMockAccount(accountNr, userToUpdate.getId());
+              userToUpdate.setSavingsAccountNr(accountNr);
+            });
     return new UserDto(userRepository.save(userToUpdate));
-  }
-
-  /**
-   * Sets a user's savings- or checking account to a created bank account that has an ownerId.
-   *
-   * @param accountDto DTO representing the account.
-   * @param isSavings (boolean) whether it is a savings account (true) or checking account (false)
-   */
-  @Transactional
-  public void setUserAccount(AccountDto accountDto, boolean isSavings) {
-    User user = findUserById(accountDto.getOwnerId());
-    if (isSavings) {
-      user.setSavingsAccountNr(accountDto.getAccountNr());
-    } else {
-      user.setCheckingAccountNr(accountDto.getAccountNr());
-    }
-    userRepository.save(user);
-    // can be moved anywhere else easily, but will need the UserRepository.
   }
 
   /**
@@ -195,6 +183,27 @@ public class UserService implements UserDetailsService {
       return true;
     } catch (NotFoundException e) {
       return false;
+    }
+  }
+
+  /**
+   * Ensures that a mock account exists, and belongs to the user.
+   *
+   * @param accountNr (Integer) The account number to validate.
+   * @param userId (Long) The id of the user.
+   * @throws UnauthorizedException If the account does not exist or does not belong to the user.
+   */
+  private void validateMockAccount(Integer accountNr, Long userId) {
+    if (bankService.userHasAccessToAccount(accountNr, userId)) {
+      if (!bankService.accountExists(accountNr)) {
+        AccountDto account = new AccountDto();
+        account.setOwnerId(userId);
+        account.setAccountNr(accountNr);
+        mockDataService.createMockBankAccount(account);
+      }
+    } else {
+      throw new UnauthorizedException(
+          "Account number: " + accountNr + " not found, or does not belong to the user.");
     }
   }
 }
