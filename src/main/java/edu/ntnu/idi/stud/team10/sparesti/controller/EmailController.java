@@ -54,13 +54,13 @@ public class EmailController {
       // Generate token using PasswordResetTokenService
       String token = passwordResetTokenService.generateToken(to).getToken();
 
-      String resetLink = "http://localhost:8080/reset-password?token=" + token;
+      String resetLink = "http://localhost:8080/resetpassword.html?token=" + token;
 
       String htmlContent =
-          "<html><body><h1>Hello!</h1><p>You requested to reset your password. "
-              + "Click <a href=\""
+          "<html><body><h1>Hei!</h1><p>Du vile nullstille passordet ditt? "
+              + "Klikk <a href=\""
               + resetLink
-              + "\">here</a> to reset your password.</p></body></html>";
+              + "\">here</a> for å nullstille passordet ditt.</p></body></html>";
       helper.setText(htmlContent, true); // true indicates HTML content
 
       emailSender.send(message);

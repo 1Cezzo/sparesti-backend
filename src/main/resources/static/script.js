@@ -34,16 +34,24 @@ document.addEventListener("DOMContentLoaded", () => {
     login.addEventListener('click', toggleForm);
     signupForm.addEventListener('submit', submitSignUp);
 });
-
 function updateImageSource() {
     const imageElement = document.getElementById('piggy-bank-image');
+    console.log('Image Element:', imageElement); // Should show the element or null if not found
+
     const darkMode = localStorage.getItem('darkMode');
-    if (darkMode === 'true') {
-        imageElement.src = './images/long-logo-darkmode.png';
+    console.log('Dark Mode:', darkMode); // Should show 'true' or 'false'
+
+    if (imageElement) {
+        if (darkMode === 'true') {
+            imageElement.src = './images/long-logo-darkmode.png';
+        } else {
+            imageElement.src = './images/long-logo.png';
+        }
     } else {
-        imageElement.src = './images/long-logo.png';
+        console.error('Piggy bank image element not found');
     }
 }
+
 
 function toggleForm() {
     document.getElementById('signup-container').classList.toggle('hidden');
@@ -98,9 +106,6 @@ async function sendResetLink() {
     }
 }
 
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
     hideForgotPasswordModal(); // Hide the modal initially
     // Rest of your code...
@@ -120,11 +125,27 @@ async function submitSignUp(event) {
         })
     })
     if (res.ok) {
-        alert("Success!")
         toggleForm();
     } else {
-        console.error('Failed to create user');
+        // Attempt to read the JSON response to get more detailed error messages
+        try {
+            const data = await res.json(); // Assuming the server sends a JSON response with an error message field
+            const errorMessage = data.message || 'Denne eposten er allerede ';
+            displayErrorMessage('signup-container', errorMessage); // Display a specific error message if available
+        } catch (error) {
+            // If parsing the JSON fails or no message is included, display a generic error
+            displayErrorMessage('signup-container', 'An error occurred during signup. Please try again.');
+        }
     }
-    return false;
+    return false; // Prevent the default form submission
 }
 
+function displayErrorMessage(containerId, message) {
+    const container = document.getElementById(containerId);
+    const errorMessageDiv = container.querySelector('.error-message'); // Make sure this div exists within the container
+    if(errorMessageDiv) {
+        errorMessageDiv.textContent = message;
+    } else {
+        console.error('Error message div not found in the container');
+    }
+}
