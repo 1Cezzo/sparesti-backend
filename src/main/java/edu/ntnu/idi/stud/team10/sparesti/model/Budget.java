@@ -10,9 +10,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /**
- * A budget is created by a user to help them save money
- * by keeping their spendings limited in a few categories,
- * that are set in a BudgetRow.
+ * A budget is created by a user to help them save money by keeping their spendings limited in a few
+ * categories, that are set in a BudgetRow.
  */
 @AllArgsConstructor
 @NoArgsConstructor

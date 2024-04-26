@@ -1,6 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.util;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Hibernate;
@@ -56,7 +55,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
   private void initialize() {
     createBadges();
-    createSavingTips(); //works only if DB is empty
+    createSavingTips(); // works only if DB is empty
 
     try {
       UserDto adminUser = userService.getUserByEmail("admin@admin");
@@ -174,7 +173,8 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
   private void createSavingTips() {
     if (savingTipService.noSavingTips()) {
-      List<String> savingTips = List.of(
+      List<String> savingTips =
+          List.of(
               "Visste du? Å slå av lysene når du forlater et rom kan spare deg for omtrent 6 % på strømregningen hver måned.",
               "Miljøtips: Ved å senke termostaten med bare én grad om vinteren kan du redusere oppvarmingsregningen med opptil 8 %.",
               "Budsjetteringsfakta: Personer som sporer utgiftene sine kan spare opptil 20 % mer enn de som ikke gjør det.",
@@ -194,8 +194,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
               "Finansiell helse: Å jevnlig sjekke kredittscoren din kan hjelpe med å forebygge svindel og forbedre dine finansielle muligheter.",
               "Energisparende fakta: LED-pærer bruker minst 75 % mindre energi, og varer 25 ganger lenger, enn glødepærer.",
               "Vannsparetips: Å reparere en lekk kran kan spare opptil 37 liter vann per dag.",
-              "Sparemotivasjon: Å sette kortsiktige økonomiske mål kan gjøre prosessen med å spare penger mer håndterbar og givende."
-      );
+              "Sparemotivasjon: Å sette kortsiktige økonomiske mål kan gjøre prosessen med å spare penger mer håndterbar og givende.");
       for (String tip : savingTips) {
         savingTipService.createSavingTip(tip);
       }
