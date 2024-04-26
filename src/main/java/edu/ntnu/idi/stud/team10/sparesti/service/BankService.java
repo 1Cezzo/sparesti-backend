@@ -18,6 +18,7 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.bank.AccountRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.bank.TransactionRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ConflictException;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
+import edu.ntnu.idi.stud.team10.sparesti.util.UnauthorizedException;
 import jakarta.transaction.Transactional;
 
 /** Service for bank operations. */
@@ -68,8 +69,11 @@ public class BankService {
    * @return A Dto with the account details.
    * @throws NotFoundException If the account is not found.
    */
-  public AccountDto getAccountDetails(int accountNr) {
+  public AccountDto getAccountDetails(int accountNr, Long userId) {
     Account account = findAccountByAccountNr(accountNr);
+    if (!account.getOwnerId().equals(userId)) {
+      throw new UnauthorizedException("User does not have access to this account");
+    }
     return accountMapper.toDto(account);
   }
 
@@ -199,10 +203,13 @@ public class BankService {
    * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt; &gt;) Set of all transactions by the
    *     account.
    */
-  public Set<TransactionDto> getTransactionsByAccountNr(Integer accountNr) {
+  public Set<TransactionDto> getTransactionsByAccountNr(Integer accountNr, Long userId) {
     Account account = findAccountByAccountNr(accountNr);
+    if (!account.getOwnerId().equals(userId)) {
+      throw new UnauthorizedException("User does not have access to this account");
+    }
     return account.getTransactions().stream()
-        .map(transaction -> transactionMapper.toDto(transaction))
+        .map(transactionMapper::toDto)
         .collect(Collectors.toSet());
   }
 

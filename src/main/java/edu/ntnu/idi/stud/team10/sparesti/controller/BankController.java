@@ -5,6 +5,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
@@ -19,6 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Bank", description = "Operations related to the bank mock")
 public class BankController {
   private final BankService bankService;
+  private static final String USER_ID_CLAIM = "userId";
 
   @Autowired
   public BankController(BankService bankService) {
@@ -33,7 +36,10 @@ public class BankController {
    */
   @PutMapping("/account/create")
   @Operation(summary = "Create a new account")
-  public ResponseEntity<AccountDto> createAccount(@RequestBody AccountDto accountDto) {
+  public ResponseEntity<AccountDto> createAccount(
+      @RequestBody AccountDto accountDto, @AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
+    accountDto.setOwnerId(userId);
     AccountDto createdAccount = bankService.createAccount(accountDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
   }
@@ -59,8 +65,10 @@ public class BankController {
    */
   @GetMapping("/account/details/{accountNr}")
   @Operation(summary = "Get account details for an account number.")
-  public ResponseEntity<AccountDto> getAccountDetails(@PathVariable int accountNr) {
-    AccountDto accountDetails = bankService.getAccountDetails(accountNr);
+  public ResponseEntity<AccountDto> getAccountDetails(
+      @PathVariable int accountNr, @AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
+    AccountDto accountDetails = bankService.getAccountDetails(accountNr, userId);
     return ResponseEntity.ok(accountDetails);
   }
 
@@ -87,7 +95,7 @@ public class BankController {
    */
   @PutMapping("/account/transfer")
   @Operation(summary = "Transfer money from one account to another")
-  public ResponseEntity<?> transferMoney(
+  public ResponseEntity<String> transferMoney(
       @RequestParam Integer fromAccountNr,
       @RequestParam Integer toAccountNr,
       @RequestParam double amount) {
@@ -105,8 +113,9 @@ public class BankController {
   @GetMapping("/transactions/{accountNr}")
   @Operation(summary = "Get all transactions by an account number")
   public ResponseEntity<Set<TransactionDto>> getAllTransactionsByAccountNr(
-      @PathVariable Integer accountNr) {
-    return ResponseEntity.ok().body(bankService.getTransactionsByAccountNr(accountNr));
+      @PathVariable Integer accountNr, @AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
+    return ResponseEntity.ok().body(bankService.getTransactionsByAccountNr(accountNr, userId));
   }
 
   @GetMapping("/transactions/recent/{accountNr}")
