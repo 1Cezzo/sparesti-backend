@@ -73,6 +73,30 @@ public class UserBudgetService {
   }
 
   /**
+   * Gets a budget for a user.
+   * @param userId the ID of the user.
+   * @param budgetId the ID of the budget.
+   * @return the budget DTO.
+   */
+  public BudgetDto getBudgetForUser(Long userId, Long budgetId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+
+    Budget budget =
+        budgetRepository
+            .findById(budgetId)
+            .orElseThrow(() -> new NotFoundException("Budget with ID " + budgetId + " not found"));
+
+    if (!budget.getUser().equals(user)) {
+      throw new IllegalArgumentException("The budget does not belong to the user");
+    }
+
+    return new BudgetDto(budget);
+  }
+
+  /**
    * Deletes a budget from a user.
    *
    * @param userId the user id to delete the budget from.
