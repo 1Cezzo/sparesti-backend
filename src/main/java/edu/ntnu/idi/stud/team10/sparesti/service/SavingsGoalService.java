@@ -152,7 +152,6 @@ public class SavingsGoalService {
     }
     savingsGoal.setSavedAmount(0);
     savingsGoal.setCompleted(false);
-    savingsGoal.setUser(user);
     savingsGoalRepository.save(savingsGoal);
     return new UserDto(user);
   }

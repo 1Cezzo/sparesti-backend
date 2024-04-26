@@ -33,16 +33,13 @@ public class UserDtoTest {
     testSavingsGoals = new ArrayList<>();
     testChallenges = new ArrayList<>();
     // Add test savings goals and challenges as needed
-    userDto.setSavingsGoals(testSavingsGoals);
     userDto.setChallenges(testChallenges);
     userDto2 = new UserDto();
     userDto2.setId(testId);
     userDto2.setPassword(testPassword);
     userDto2.setEmail(testEmail);
     userDto2.setProfilePictureUrl(testProfilePictureUrl);
-    userDto2.setSavingsGoals(testSavingsGoals);
     userDto2.setChallenges(testChallenges);
-    userDto2.setSavingsGoals(testSavingsGoals);
     userDto2.setChallenges(testChallenges);
 
     user = new User();
@@ -57,7 +54,6 @@ public class UserDtoTest {
     assertEquals(testPassword, userDto.getPassword());
     assertEquals(testEmail, userDto.getEmail());
     assertEquals(testProfilePictureUrl, userDto.getProfilePictureUrl());
-    assertEquals(testSavingsGoals, userDto.getSavingsGoals());
     assertEquals(testChallenges, userDto.getChallenges());
   }
 

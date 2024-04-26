@@ -44,7 +44,7 @@ public class SavingsGoal {
   @Column(name = "completed", nullable = false)
   private boolean completed;
 
-  @ManyToMany(mappedBy = "users")
+  @ManyToMany(mappedBy = "userSavingsGoals")
   @JsonBackReference
   @Hidden
   private List<User> users;

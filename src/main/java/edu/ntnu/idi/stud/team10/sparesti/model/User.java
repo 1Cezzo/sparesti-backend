@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,11 +36,10 @@ public class User {
 
   @ManyToMany
   @JoinTable(
-          name="user_savings_goal",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "savings_goal_id", referencedColumnName = "id")
-  )
-  private List<SavingsGoal> savingsGoals;
+      name = "user_savings_goal",
+      joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+      inverseJoinColumns = @JoinColumn(name = "savings_goal_id", referencedColumnName = "id"))
+  private List<SavingsGoal> userSavingsGoals;
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
