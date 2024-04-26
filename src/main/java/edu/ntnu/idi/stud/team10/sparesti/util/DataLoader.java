@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Hibernate;
@@ -23,18 +24,21 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
   private final UserService userService;
   private final ConsumptionChallengeService consumptionChallengeService;
   private final UserChallengeService userChallengeService;
+  private final SavingTipService savingTipService;
 
   public DataLoader(
       BadgeService badgeService,
       UserBadgeService userBadgeService,
       UserService userService,
       ConsumptionChallengeService consumptionChallengeService,
-      UserChallengeService userChallengeService) {
+      UserChallengeService userChallengeService,
+      SavingTipService savingTipService) {
     this.badgeService = badgeService;
     this.userBadgeService = userBadgeService;
     this.userService = userService;
     this.consumptionChallengeService = consumptionChallengeService;
     this.userChallengeService = userChallengeService;
+    this.savingTipService = savingTipService;
   }
 
   @Override
@@ -52,6 +56,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
   private void initialize() {
     createBadges();
+    createSavingTips(); //works only if DB is empty
 
     try {
       UserDto adminUser = userService.getUserByEmail("admin@admin");
@@ -165,5 +170,35 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
         "Bunin",
         "Medalje for ikke å handle på Bunnpris på en uke",
         "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/bunin.png\n");
+  }
+
+  private void createSavingTips() {
+    if (savingTipService.noSavingTips()) {
+      List<String> savingTips = List.of(
+              "Visste du? Å slå av lysene når du forlater et rom kan spare deg for omtrent 6 % på strømregningen hver måned.",
+              "Miljøtips: Ved å senke termostaten med bare én grad om vinteren kan du redusere oppvarmingsregningen med opptil 8 %.",
+              "Budsjetteringsfakta: Personer som sporer utgiftene sine kan spare opptil 20 % mer enn de som ikke gjør det.",
+              "Finansiell visdom: Å betale ned gjelden med høyest rente først kan spare deg for hundrevis i renteutgifter.",
+              "Smart shopping: Å kjøpe ikke-bedervelige varer i bulk kan spare deg for opptil 50 % på nødvendige husholdningsartikler.",
+              "Visste du? Å trekke ut støpselet på elektronikk når de ikke er i bruk, kan spare deg for opptil 1 000 kr i året på energikostnader.",
+              "Matlagingstips: Å lage mat hjemme fire dager i uken kan spare deg for over 15 000 kr årlig sammenlignet med å spise ute.",
+              "Transportfakta: Regelmessig vedlikehold av bilen kan forbedre drivstoffeffektiviteten og spare deg for penger på bensin.",
+              "Energisparetips: Å vaske klær i kaldt vann kan spare opptil 90 % av energien brukt per vask.",
+              "Sparestrategi: Å sette opp automatiske overføringer til sparekontoer kan hjelpe deg med å spare uten å tenke på det.",
+              "Visste du? Å ta med egen kaffe på jobb kan spare deg for over 10 000 kr per år.",
+              "Miljøtips: Å bruke en gjenbrukbar vannflaske kan spare deg for opptil 2 600 kr i året sammenlignet med å kjøpe flaskevann.",
+              "Budsjetteringstips: Å gjennomgå abonnementstjenester årlig kan hjelpe deg med å unngå å betale for noe du ikke bruker.",
+              "Smart shopping: Å sjekke priser på nettet før kjøp kan føre til betydelige besparelser.",
+              "Bærekraftig livsstil: Å plante en hage kan redusere matvareutgiftene dine ved å dyrke dine egne grønnsaker og urter.",
+              "Reisetips: Å bestille flybilletter på en tirsdag kan ofte resultere i lavere priser sammenlignet med andre dager.",
+              "Finansiell helse: Å jevnlig sjekke kredittscoren din kan hjelpe med å forebygge svindel og forbedre dine finansielle muligheter.",
+              "Energisparende fakta: LED-pærer bruker minst 75 % mindre energi, og varer 25 ganger lenger, enn glødepærer.",
+              "Vannsparetips: Å reparere en lekk kran kan spare opptil 37 liter vann per dag.",
+              "Sparemotivasjon: Å sette kortsiktige økonomiske mål kan gjøre prosessen med å spare penger mer håndterbar og givende."
+      );
+      for (String tip : savingTips) {
+        savingTipService.createSavingTip(tip);
+      }
+    }
   }
 }

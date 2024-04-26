@@ -189,6 +189,9 @@
 						<exclude>/AmazonClient.</exclude>
 						<exclude>/MockDataService</exclude>
 						<exclude>/MockDataController</exclude>
+						<exclude>/SavingTip</exclude>
+						<exclude>/SavingTipService</exclude>
+						<exclude>/SavingTipController</exclude>
 						<exclude>/Idatt2105BackendApplication.</exclude>
 					</excludes>
 				</configuration>
