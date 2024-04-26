@@ -30,6 +30,7 @@ public class Budget {
   private Set<BudgetRow> row = new HashSet<>();
 
   @Column private LocalDate expiryDate;
+  @Column private LocalDate creationDate;
 
   @JsonBackReference
   @ManyToOne

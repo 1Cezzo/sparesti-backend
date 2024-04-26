@@ -7,7 +7,6 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 
@@ -24,8 +23,8 @@ public class BudgetDtoTest {
     budgetDto.setId(1L);
 
     Set<BudgetRow> rows = new HashSet<>();
-    rows.add(new BudgetRow("Matvarer", 200, 500, CategoryEnum.GROCERIES));
-    rows.add(new BudgetRow("Spill", 200, 500, CategoryEnum.ENTERTAINMENT));
+    rows.add(new BudgetRow("Matvarer", 200, 500, "Groceries", "🍕"));
+    rows.add(new BudgetRow("Spill", 200, 500, "Entertainment", "🎮"));
     budgetDto.setRow(rows);
 
     budgetDto.setExpiryDate(LocalDate.now().plusMonths(1));

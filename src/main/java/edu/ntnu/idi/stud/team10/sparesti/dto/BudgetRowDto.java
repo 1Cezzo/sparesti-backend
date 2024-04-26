@@ -1,6 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
-import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +16,8 @@ public class BudgetRowDto {
   private String name;
   private double usedAmount;
   private double maxAmount;
-  private CategoryEnum category;
+  private String category;
+  private String emoji;
 
   /**
    * Constructor for creating a new BudgetRowDTO.
@@ -30,6 +30,7 @@ public class BudgetRowDto {
     this.usedAmount = budgetRow.getUsedAmount();
     this.maxAmount = budgetRow.getMaxAmount();
     this.category = budgetRow.getCategory();
+    this.emoji = budgetRow.getEmoji();
   }
 
   /**
@@ -44,6 +45,7 @@ public class BudgetRowDto {
     budgetRow.setUsedAmount(usedAmount);
     budgetRow.setMaxAmount(maxAmount);
     budgetRow.setCategory(category);
+    budgetRow.setEmoji(emoji);
     return budgetRow;
   }
 }
