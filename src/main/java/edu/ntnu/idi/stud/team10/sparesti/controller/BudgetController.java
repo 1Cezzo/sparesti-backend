@@ -54,6 +54,14 @@ public class BudgetController {
     return ResponseEntity.ok(budgets);
   }
 
+  @GetMapping("/{userId}/budgets/{budgetId}")
+  @Operation(summary = "Get a budget for a user")
+  public ResponseEntity<BudgetDto> getBudgetForUser(
+      @PathVariable Long userId, @PathVariable Long budgetId) {
+    BudgetDto budget = userBudgetService.getBudgetForUser(userId, budgetId);
+    return ResponseEntity.ok(budget);
+  }
+
   /**
    * Delete a budget from a user.
    *
