@@ -22,7 +22,6 @@ public class UserTest {
     user.setProfilePictureUrl("https://example.com/profile.jpg");
     user.setCheckingAccountNr(123456);
     user.setSavingsAccountNr(789012);
-    user.setSavingsGoals(new ArrayList<>());
     user.setChallenges(new ArrayList<>());
     user.setEarnedBadges(new HashSet<>());
   }
@@ -36,7 +35,6 @@ public class UserTest {
     assertEquals("https://example.com/profile.jpg", user.getProfilePictureUrl());
     assertEquals(123456, user.getCheckingAccountNr());
     assertEquals(789012, user.getSavingsAccountNr());
-    assertNotNull(user.getSavingsGoals());
     assertNotNull(user.getChallenges());
     assertNotNull(user.getEarnedBadges());
   }

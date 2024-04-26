@@ -3,7 +3,6 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -156,23 +155,23 @@ public class SavingsGoalService {
     return new UserDto(user);
   }
 
-  /**
-   * Gets all savings goals for a user.
-   *
-   * @param userId The ID of the user.
-   * @return A list of savings goal DTOs.
-   * @throws NotFoundException If the user does not exist.
-   */
-  public List<SavingsGoalDTO> getAllSavingsGoalsForUser(Long userId) {
-    User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
-
-    return savingsGoalRepository.findByUser(user).stream()
-        .map(SavingsGoalDTO::new)
-        .collect(Collectors.toList());
-  }
+  //  /**
+  //   * Gets all savings goals for a user.
+  //   *
+  //   * @param userId The ID of the user.
+  //   * @return A list of savings goal DTOs.
+  //   * @throws NotFoundException If the user does not exist.
+  //   */
+  //  public List<SavingsGoalDTO> getAllSavingsGoalsForUser(Long userId) {
+  //    User user =
+  //        userRepository
+  //            .findById(userId)
+  //            .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+  //
+  //    return savingsGoalRepository.findByUserSavingsGoalsUserId(userId).stream()
+  //        .map(SavingsGoalDTO::new)
+  //        .collect(Collectors.toList());
+  //  }
 
   /**
    * Deletes a savings goal from a user.

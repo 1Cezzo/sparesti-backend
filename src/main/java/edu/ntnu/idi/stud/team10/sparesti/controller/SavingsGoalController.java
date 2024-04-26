@@ -125,18 +125,19 @@ public class SavingsGoalController {
     return ResponseEntity.ok(updatedUserDto);
   }
 
-  /**
-   * Get all savings goals for a user.
-   *
-   * @param userId The ID of the user.
-   * @return A list of savings goal DTOs.
-   */
-  @GetMapping("/{userId}/savings-goals")
-  @Operation(summary = "Get all savings goals for a user")
-  public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(@PathVariable Long userId) {
-    List<SavingsGoalDTO> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
-    return ResponseEntity.ok(savingsGoals);
-  }
+  //  /**
+  //   * Get all savings goals for a user.
+  //   *
+  //   * @param userId The ID of the user.
+  //   * @return A list of savings goal DTOs.
+  //   */
+  //  @GetMapping("/{userId}/savings-goals")
+  //  @Operation(summary = "Get all savings goals for a user")
+  //  public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(@PathVariable Long
+  // userId) {
+  //    List<SavingsGoalDTO> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
+  //    return ResponseEntity.ok(savingsGoals);
+  //  }
 
   /**
    * Delete a savings goal from a user.
