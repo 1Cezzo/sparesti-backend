@@ -7,8 +7,6 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,7 +46,7 @@ public class BudgetTest {
     budgetRow.setId(1L);
     budgetRow.setName("Test Budget Row");
     budgetRow.setMaxAmount(500.0);
-    budgetRow.setCategory(CategoryEnum.GROCERIES);
+    budgetRow.setCategory("Groceries");
     rows.add(budgetRow);
     budget.setRow(rows);
 

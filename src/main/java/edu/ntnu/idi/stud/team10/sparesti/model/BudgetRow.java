@@ -1,7 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
-import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
 import jakarta.persistence.*;
 import lombok.Setter;
 
@@ -16,9 +15,8 @@ public class BudgetRow {
   private String name;
   private double usedAmount;
   private double maxAmount;
-
-  @Enumerated(EnumType.STRING)
-  private CategoryEnum category;
+  private String category;
+  private String emoji;
 
   @ManyToOne
   @JoinColumn(name = "budget_id")
@@ -32,11 +30,13 @@ public class BudgetRow {
    * @param maxAmount The maximum amount of the budget row.
    * @param category The category of the budget row.
    */
-  public BudgetRow(String name, double usedAmount, double maxAmount, CategoryEnum category) {
+  public BudgetRow(
+      String name, double usedAmount, double maxAmount, String category, String emoji) {
     this.name = name;
     this.usedAmount = usedAmount;
     this.maxAmount = maxAmount;
     this.category = category;
+    this.emoji = emoji;
   }
 
   public BudgetRow() {}
@@ -73,7 +73,7 @@ public class BudgetRow {
    *
    * @return (CategoryEnum) The category of the budget row.
    */
-  public CategoryEnum getCategory() {
+  public String getCategory() {
     return category;
   }
 
@@ -81,10 +81,15 @@ public class BudgetRow {
     return id;
   }
 
+  public String getEmoji() {
+    return emoji;
+  }
+
   public void updateFromDto(BudgetRowDto budgetRowDto) {
     this.name = budgetRowDto.getName();
     this.usedAmount = budgetRowDto.getUsedAmount();
     this.maxAmount = budgetRowDto.getMaxAmount();
     this.category = budgetRowDto.getCategory();
+    this.emoji = budgetRowDto.getEmoji();
   }
 }
