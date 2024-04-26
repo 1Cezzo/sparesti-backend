@@ -36,8 +36,12 @@ public class User {
 
   @Column() private Integer savingsAccountNr;
 
-  @JsonIgnore
-  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+  @ManyToMany
+  @JoinTable(
+          name="user_savings_goal",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "savings_goal_id", referencedColumnName = "id")
+  )
   private List<SavingsGoal> savingsGoals;
 
   @ManyToMany(fetch = FetchType.EAGER)

@@ -1,17 +1,12 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -49,8 +44,8 @@ public class SavingsGoal {
   @Column(name = "completed", nullable = false)
   private boolean completed;
 
+  @ManyToMany(mappedBy = "users")
   @JsonBackReference
-  @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+  @Hidden
+  private List<User> users;
 }
