@@ -120,7 +120,7 @@ public class SavingsGoalController {
    * @param savingsGoalId The ID of the savings goal.
    * @return The updated user DTO.
    */
-  @PostMapping("/{userId}/savings-goals/add")
+  @PostMapping("/add-user")
   @Operation(summary = "Add a savings goal to a user")
   public ResponseEntity<Void> addSavingsGoalToUser(
       @RequestParam Long userId, @RequestParam Long savingsGoalId) {
@@ -147,7 +147,7 @@ public class SavingsGoalController {
    * @param userId The ID of the user.
    * @param savingsGoalId The ID of the savings goal.
    */
-  @DeleteMapping("/{userId}/savings-goals/{savingsGoalId}")
+  @DeleteMapping("/{savingsGoalId}/user/{userId}/delete")
   @Operation(summary = "Delete a savings goal from a user")
   public ResponseEntity<Void> deleteSavingsGoalFromUser(
       @PathVariable Long userId, @PathVariable Long savingsGoalId) {
