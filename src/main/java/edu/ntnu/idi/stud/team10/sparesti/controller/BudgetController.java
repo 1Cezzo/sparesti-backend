@@ -56,7 +56,8 @@ public class BudgetController {
 
   @GetMapping("/{userId}/budgets/{budgetId}")
   @Operation(summary = "Get a budget for a user")
-  public ResponseEntity<BudgetDto> getBudgetForUser(@PathVariable Long userId, @PathVariable Long budgetId) {
+  public ResponseEntity<BudgetDto> getBudgetForUser(
+      @PathVariable Long userId, @PathVariable Long budgetId) {
     BudgetDto budget = userBudgetService.getBudgetForUser(userId, budgetId);
     return ResponseEntity.ok(budget);
   }

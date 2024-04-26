@@ -74,6 +74,7 @@ public class UserBudgetService {
 
   /**
    * Gets a budget for a user.
+   *
    * @param userId the ID of the user.
    * @param budgetId the ID of the budget.
    * @return the budget DTO.
