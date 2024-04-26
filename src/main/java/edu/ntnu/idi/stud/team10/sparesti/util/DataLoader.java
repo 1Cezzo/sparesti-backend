@@ -55,7 +55,6 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
     try {
       UserDto adminUser = userService.getUserByEmail("admin@admin");
-      Hibernate.initialize(adminUser.getSavingsGoals());
       Hibernate.initialize(adminUser.getChallenges());
     } catch (NotFoundException e) {
       // User not found, proceed with creating the admin user

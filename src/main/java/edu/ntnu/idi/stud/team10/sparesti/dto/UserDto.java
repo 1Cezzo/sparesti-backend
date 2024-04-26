@@ -18,7 +18,6 @@ public class UserDto {
   private Integer checkingAccountNr;
   private Integer savingsAccountNr;
   private Double totalSavings;
-  private List<SavingsGoalDTO> savingsGoals;
   private List<ChallengeDTO> challenges;
 
   /**
@@ -33,11 +32,6 @@ public class UserDto {
     this.checkingAccountNr = user.getCheckingAccountNr();
     this.savingsAccountNr = user.getSavingsAccountNr();
     this.totalSavings = user.getTotalSavings();
-    if (user.getSavingsGoals() != null) {
-      this.savingsGoals = user.getSavingsGoals().stream().map(SavingsGoalDTO::new).toList();
-    } else {
-      this.savingsGoals = null;
-    }
     if (user.getChallenges() != null) {
       this.challenges =
           user.getChallenges().stream().map(ChallengeDTO::new).collect(Collectors.toList());

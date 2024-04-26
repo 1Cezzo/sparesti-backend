@@ -10,11 +10,12 @@ import lombok.Data;
 @Data
 @Table(name = "user_badges")
 @IdClass(UserBadgeId.class)
+/** Represents a user's badge. */
 public class UserBadge {
 
   @Id
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "users_id")
   private User user;
 
   @Id

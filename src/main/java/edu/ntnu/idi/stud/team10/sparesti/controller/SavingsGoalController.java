@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserSavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.service.SavingsGoalService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
@@ -99,14 +99,17 @@ public class SavingsGoalController {
   /**
    * Update saved amount of a savings goal.
    *
-   * @param id The ID of the savings goal.
+   * @param user_id The ID of the savings goal.
+   * @param savings_goal_id The ID of the savings goal.
    * @param savedAmount The new saved amount.
    */
-  @PutMapping("/{id}/update-saved-amount")
+  @PutMapping("/user/{user_id}/saving_goal/{savings_goal_id}/update-saved-amount")
   @Operation(summary = "Update the saved amount of a savings goal")
   public ResponseEntity<Void> updateSavedAmount(
-      @PathVariable Long id, @RequestParam double savedAmount) {
-    savingsGoalService.updateSavedAmount(id, savedAmount);
+      @PathVariable Long user_id,
+      @PathVariable Long savings_goal_id,
+      @RequestParam double savedAmount) {
+    savingsGoalService.updateSavedAmount(user_id, savings_goal_id, savedAmount);
     return ResponseEntity.ok().build();
   }
 
@@ -114,15 +117,15 @@ public class SavingsGoalController {
    * Add a savings goal to a user.
    *
    * @param userId The ID of the user.
-   * @param savingsGoalDTO The savings goal to add.
+   * @param savingsGoalId The ID of the savings goal.
    * @return The updated user DTO.
    */
   @PostMapping("/{userId}/savings-goals/add")
   @Operation(summary = "Add a savings goal to a user")
-  public ResponseEntity<UserDto> addSavingsGoalToUser(
-      @PathVariable Long userId, @RequestBody SavingsGoalDTO savingsGoalDTO) {
-    UserDto updatedUserDto = savingsGoalService.addSavingsGoalToUser(userId, savingsGoalDTO);
-    return ResponseEntity.ok(updatedUserDto);
+  public ResponseEntity<Void> addSavingsGoalToUser(
+      @RequestParam Long userId, @RequestParam Long savingsGoalId) {
+    savingsGoalService.addSavingsGoalToUser(userId, savingsGoalId);
+    return ResponseEntity.ok().build();
   }
 
   /**
@@ -150,5 +153,18 @@ public class SavingsGoalController {
       @PathVariable Long userId, @PathVariable Long savingsGoalId) {
     savingsGoalService.deleteSavingsGoalFromUser(userId, savingsGoalId);
     return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Get users by saving goal.
+   *
+   * @param savingsGoalId The ID of the savings goal.
+   */
+  @GetMapping("/{savingsGoalId}/users")
+  @Operation(summary = "Get users by saving goal")
+  public ResponseEntity<List<UserSavingsGoalDto>> getUsersBySavingsGoal(
+      @PathVariable Long savingsGoalId) {
+    List<UserSavingsGoalDto> users = savingsGoalService.getUsersBySavingsGoal(savingsGoalId);
+    return ResponseEntity.ok(users);
   }
 }

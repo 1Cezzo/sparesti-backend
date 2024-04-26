@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import lombok.Data;
 
+/** Composite key for the UserBadge entity. */
 @Data
 public class UserBadgeId implements Serializable {
   private Long user;

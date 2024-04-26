@@ -29,7 +29,6 @@ public class SavingsGoalTest {
     savingsGoal.setDeadline(testDeadline);
     savingsGoal.setCompleted(testCompleted);
     testUser = new User(); // Instantiate test user as needed
-    savingsGoal.setUser(testUser);
   }
 
   @Test
@@ -41,7 +40,6 @@ public class SavingsGoalTest {
     assertEquals(testMediaUrl, savingsGoal.getMediaUrl());
     assertEquals(testDeadline, savingsGoal.getDeadline());
     assertEquals(testCompleted, savingsGoal.isCompleted());
-    assertEquals(testUser, savingsGoal.getUser());
   }
 
   // Add more tests as needed...
