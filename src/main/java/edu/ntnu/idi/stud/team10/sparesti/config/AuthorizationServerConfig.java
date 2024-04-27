@@ -8,6 +8,8 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,10 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -44,6 +50,7 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserInfoService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 /** Configuration for the Authorization Server. */
 @Configuration
@@ -51,11 +58,21 @@ import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
 public class AuthorizationServerConfig {
   private final UserInfoService userInfoService;
   private final UserService userService;
+  private final BCryptPasswordEncoder passwordEncoder;
+  private final SessionRegistry sessionRegistry;
+  private Logger logger = LoggerFactory.getLogger(AuthorizationServerConfig.class);
+
+  public static final String USER_ID_CLAIM = "userId";
 
   @Autowired
-  public AuthorizationServerConfig(UserInfoService userInfoService, UserService userService) {
+  public AuthorizationServerConfig(UserInfoService userInfoService,
+                                   UserService userService,
+                                   BCryptPasswordEncoder passwordEncoder,
+                                   SessionRegistry sessionRegistry) {
     this.userInfoService = userInfoService;
     this.userService = userService;
+    this.passwordEncoder = passwordEncoder;
+    this.sessionRegistry = sessionRegistry;
   }
 
   /**
@@ -124,10 +141,9 @@ public class AuthorizationServerConfig {
     RegisteredClient oidcClient =
         RegisteredClient.withId(UUID.randomUUID().toString())
             .clientId("sparestiClient")
-            .clientSecret("{noop}secret")
+            .clientSecret("{noop}somesecret")
             .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
             .redirectUri("http://localhost:5173/token")
             .postLogoutRedirectUri("http://localhost:5173")
             .scope(OidcScopes.OPENID)
@@ -142,8 +158,19 @@ public class AuthorizationServerConfig {
                     .accessTokenTimeToLive(Duration.of(180, ChronoUnit.MINUTES))
                     .build())
             .build();
+    RegisteredClient swaggerClient =
+        RegisteredClient.withId(UUID.randomUUID().toString())
+            .clientId("swagger")
+            .clientSecret(passwordEncoder.encode("secret"))
+            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+            .tokenSettings(
+                TokenSettings.builder()
+                    .accessTokenTimeToLive(Duration.of(180, ChronoUnit.MINUTES))
+                    .build())
+            .build();
 
-    return new InMemoryRegisteredClientRepository(oidcClient);
+    return new InMemoryRegisteredClientRepository(oidcClient, swaggerClient);
   }
 
   /**
@@ -217,18 +244,36 @@ public class AuthorizationServerConfig {
   @Bean
   public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
     return context -> {
+      Object details = context.getPrincipal().getDetails();
+      String sessionId;
+      String principalName;
+      try {
+        WebAuthenticationDetails webDetails = (WebAuthenticationDetails) details;
+        sessionId = webDetails.getSessionId();
+        SessionInformation info = sessionRegistry.getSessionInformation(sessionId);
+        principalName = ((User) info.getPrincipal()).getUsername();
+      } catch (Exception e) {
+        logger.error(e.getMessage());
+        principalName = null;
+      }
+
+      // The userId is extracted from the UserService using the name from the authentication process,
+      // by using the Http session stored in SessionRegistry or the principal name from the context.
+      principalName = principalName == null ? context.getPrincipal().getName() : principalName;
       JwtClaimsSet.Builder claimsBuilder = context.getClaims();
       if (context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)) {
+        String finalPrincipalName = principalName;
         claimsBuilder.claims(
             claims -> {
               Long userId;
               try {
-                UserDto user = userService.getUserByEmail(context.getPrincipal().getName());
+                UserDto user = userService.getUserByEmail(finalPrincipalName);
                 userId = user.getId();
-              } catch (Exception ignored) {
+              } catch (Exception e) {
+                logger.error(e.getMessage());
                 userId = null;
               }
-              claims.put("userId", userId);
+              claims.put(USER_ID_CLAIM, userId);
             });
       }
     };

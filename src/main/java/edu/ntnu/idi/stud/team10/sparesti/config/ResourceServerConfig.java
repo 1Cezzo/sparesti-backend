@@ -8,6 +8,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
@@ -20,11 +21,13 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 public class ResourceServerConfig {
   private final JwtDecoder jwtDecoder;
   private final HttpSessionRequestCache requestCache;
+  private final SessionRegistry sessionRegistry;
 
   @Autowired
-  public ResourceServerConfig(JwtDecoder jwtDecoder, HttpSessionRequestCache requestCache) {
+  public ResourceServerConfig(JwtDecoder jwtDecoder, HttpSessionRequestCache requestCache, SessionRegistry sessionRegistry) {
     this.jwtDecoder = jwtDecoder;
     this.requestCache = requestCache;
+    this.sessionRegistry = sessionRegistry;
   }
 
   @Bean
@@ -37,6 +40,8 @@ public class ResourceServerConfig {
             authorize ->
                 authorize
                     .requestMatchers("/api/users/create")
+                    .permitAll()
+                    .requestMatchers("/oauth2/token")
                     .permitAll()
                     .requestMatchers("/login.html")
                     .permitAll()
@@ -61,6 +66,11 @@ public class ResourceServerConfig {
                           // type
                           // of request,
                           // so two checks are required.
+
+                          // This is a workaround to allow for manual generation of access tokens in swagger.
+                          // The session is stored to get the authenticated users username,
+                          // which is then used to get the users id during token customization.
+                          sessionRegistry.registerNewSession(request.getSession().getId(), authentication.getPrincipal());
                           var cachedRequest = requestCache.getRequest(request, response);
                           String alternativeRedirect =
                               cachedRequest == null
