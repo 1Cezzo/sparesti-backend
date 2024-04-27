@@ -32,7 +32,10 @@ public class UserService implements UserDetailsService {
    */
   @Autowired
   public UserService(
-      UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, MockDataService mockDataService, BankService bankService) {
+      UserRepository userRepository,
+      BCryptPasswordEncoder passwordEncoder,
+      MockDataService mockDataService,
+      BankService bankService) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.mockDataService = mockDataService;

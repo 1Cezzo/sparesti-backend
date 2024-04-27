@@ -39,6 +39,7 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -50,7 +51,6 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserInfoService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 /** Configuration for the Authorization Server. */
 @Configuration
@@ -65,10 +65,11 @@ public class AuthorizationServerConfig {
   public static final String USER_ID_CLAIM = "userId";
 
   @Autowired
-  public AuthorizationServerConfig(UserInfoService userInfoService,
-                                   UserService userService,
-                                   BCryptPasswordEncoder passwordEncoder,
-                                   SessionRegistry sessionRegistry) {
+  public AuthorizationServerConfig(
+      UserInfoService userInfoService,
+      UserService userService,
+      BCryptPasswordEncoder passwordEncoder,
+      SessionRegistry sessionRegistry) {
     this.userInfoService = userInfoService;
     this.userService = userService;
     this.passwordEncoder = passwordEncoder;
@@ -257,7 +258,8 @@ public class AuthorizationServerConfig {
         principalName = null;
       }
 
-      // The userId is extracted from the UserService using the name from the authentication process,
+      // The userId is extracted from the UserService using the name from the authentication
+      // process,
       // by using the Http session stored in SessionRegistry or the principal name from the context.
       principalName = principalName == null ? context.getPrincipal().getName() : principalName;
       JwtClaimsSet.Builder claimsBuilder = context.getClaims();

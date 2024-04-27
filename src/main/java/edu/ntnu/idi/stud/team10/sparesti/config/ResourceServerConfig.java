@@ -24,7 +24,10 @@ public class ResourceServerConfig {
   private final SessionRegistry sessionRegistry;
 
   @Autowired
-  public ResourceServerConfig(JwtDecoder jwtDecoder, HttpSessionRequestCache requestCache, SessionRegistry sessionRegistry) {
+  public ResourceServerConfig(
+      JwtDecoder jwtDecoder,
+      HttpSessionRequestCache requestCache,
+      SessionRegistry sessionRegistry) {
     this.jwtDecoder = jwtDecoder;
     this.requestCache = requestCache;
     this.sessionRegistry = sessionRegistry;
@@ -67,10 +70,12 @@ public class ResourceServerConfig {
                           // of request,
                           // so two checks are required.
 
-                          // This is a workaround to allow for manual generation of access tokens in swagger.
+                          // This is a workaround to allow for manual generation of access tokens in
+                          // swagger.
                           // The session is stored to get the authenticated users username,
                           // which is then used to get the users id during token customization.
-                          sessionRegistry.registerNewSession(request.getSession().getId(), authentication.getPrincipal());
+                          sessionRegistry.registerNewSession(
+                              request.getSession().getId(), authentication.getPrincipal());
                           var cachedRequest = requestCache.getRequest(request, response);
                           String alternativeRedirect =
                               cachedRequest == null

@@ -1,7 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
-import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,8 @@ import edu.ntnu.idi.stud.team10.sparesti.service.SavingsGoalService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 @RestController
 @RequestMapping("/api/savings-goals")
@@ -138,7 +138,8 @@ public class SavingsGoalController {
    */
   @GetMapping("/savings-goals")
   @Operation(summary = "Get all savings goals for a user")
-  public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(@AuthenticationPrincipal Jwt token) {
+  public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(
+      @AuthenticationPrincipal Jwt token) {
     Long userId = token.getClaim(USER_ID_CLAIM);
     List<SavingsGoalDTO> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
     return ResponseEntity.ok(savingsGoals);

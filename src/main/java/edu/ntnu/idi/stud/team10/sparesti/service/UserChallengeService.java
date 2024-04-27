@@ -1,6 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
-import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,6 +10,7 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.model.*;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /**
  * Service for User Challenge entities.
@@ -38,9 +38,7 @@ public class UserChallengeService<T extends Challenge> {
    */
   public UserDto removeChallengeFromUser(Long userId, Long challengeId) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NotFoundException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     T challengeToRemove =
         challengeRepository
@@ -74,24 +72,25 @@ public class UserChallengeService<T extends Challenge> {
     allChallenges.addAll(savingChallenges);
 
     // Sort the challenges
-    allChallenges.sort((a, b) -> {
-      // First, sort by completion status
-      if (a.isCompleted() && !b.isCompleted()) {
-        return -1; // a comes before b if a is completed and b is not
-      }
-      if (!a.isCompleted() && b.isCompleted()) {
-        return 1; // b comes before a if b is completed and a is not
-      }
+    allChallenges.sort(
+        (a, b) -> {
+          // First, sort by completion status
+          if (a.isCompleted() && !b.isCompleted()) {
+            return -1; // a comes before b if a is completed and b is not
+          }
+          if (!a.isCompleted() && b.isCompleted()) {
+            return 1; // b comes before a if b is completed and a is not
+          }
 
-      // If completion status is the same, sort by expiry date
-      int dateComparison = b.getExpiryDate().compareTo(a.getExpiryDate());
-      if (dateComparison != 0) {
-        return dateComparison; // If expiry dates are different, return the comparison result
-      }
+          // If completion status is the same, sort by expiry date
+          int dateComparison = b.getExpiryDate().compareTo(a.getExpiryDate());
+          if (dateComparison != 0) {
+            return dateComparison; // If expiry dates are different, return the comparison result
+          }
 
-      // If expiry dates are the same, sort by challenge ID
-      return Long.compare(a.getId(), b.getId());
-    });
+          // If expiry dates are the same, sort by challenge ID
+          return Long.compare(a.getId(), b.getId());
+        });
 
     return allChallenges;
   }
@@ -104,9 +103,7 @@ public class UserChallengeService<T extends Challenge> {
    */
   public List<ConsumptionChallengeDTO> fetchConsumptionChallengesForUser(Long userId) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NotFoundException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     return user.getChallenges().stream()
         .filter(challenge -> challenge instanceof ConsumptionChallenge)
@@ -122,9 +119,7 @@ public class UserChallengeService<T extends Challenge> {
    */
   public List<PurchaseChallengeDTO> fetchPurchaseChallengesForUser(Long userId) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NotFoundException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     return user.getChallenges().stream()
         .filter(challenge -> challenge instanceof PurchaseChallenge)
@@ -140,9 +135,7 @@ public class UserChallengeService<T extends Challenge> {
    */
   public List<SavingChallengeDTO> fetchSavingChallengesForUser(Long userId) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NotFoundException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     return user.getChallenges().stream()
         .filter(challenge -> challenge instanceof SavingChallenge)
@@ -159,9 +152,7 @@ public class UserChallengeService<T extends Challenge> {
    */
   public UserDto addChallengeToUser(Long userId, Long challengeId) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NotFoundException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     T challenge =
         challengeRepository
