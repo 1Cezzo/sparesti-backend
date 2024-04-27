@@ -6,7 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
@@ -15,16 +16,17 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 public class UserServiceTest {
 
   @Mock private UserRepository userRepository;
 
+  @Mock private BCryptPasswordEncoder passwordEncoder;
+
   @InjectMocks private UserService userService;
 
   @BeforeEach
-  public void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
+  public void setUp() {}
 
   @Test
   public void testAddUser() {
@@ -41,7 +43,7 @@ public class UserServiceTest {
   @Test
   public void testGetUserById() {
     User user = new User();
-    when(userRepository.findById(any())).thenReturn(Optional.of(user));
+    when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
 
     UserDto result = userService.getUserById(1L);
 
