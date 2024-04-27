@@ -32,9 +32,9 @@ public class UserService implements UserDetailsService {
    */
   @Autowired
   public UserService(
-      UserRepository userRepository, MockDataService mockDataService, BankService bankService) {
+      UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, MockDataService mockDataService, BankService bankService) {
     this.userRepository = userRepository;
-    this.passwordEncoder = new BCryptPasswordEncoder();
+    this.passwordEncoder = passwordEncoder;
     this.mockDataService = mockDataService;
     this.bankService = bankService;
   }
@@ -159,10 +159,11 @@ public class UserService implements UserDetailsService {
         userRepository
             .findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    String role = foundUser.getRole() == null ? "USER" : foundUser.getRole();
     return org.springframework.security.core.userdetails.User.builder()
         .username(foundUser.getEmail())
         .password(foundUser.getPassword())
-        .roles("USER") // Can be changed to take roles from database
+        .roles(role) // Can be changed to take roles from database
         .build();
   }
 

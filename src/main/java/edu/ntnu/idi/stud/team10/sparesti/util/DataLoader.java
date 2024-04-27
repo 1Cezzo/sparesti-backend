@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.util;
 
+import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import java.util.List;
 
 import org.hibernate.Hibernate;
@@ -23,18 +24,21 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
   private final UserService userService;
   private final ConsumptionChallengeService consumptionChallengeService;
   private final UserChallengeService userChallengeService;
+  private final UserRepository userRepository;
 
   public DataLoader(
       BadgeService badgeService,
       UserBadgeService userBadgeService,
       UserService userService,
       ConsumptionChallengeService consumptionChallengeService,
-      UserChallengeService userChallengeService) {
+      UserChallengeService userChallengeService,
+      UserRepository userRepository) {
     this.badgeService = badgeService;
     this.userBadgeService = userBadgeService;
     this.userService = userService;
     this.consumptionChallengeService = consumptionChallengeService;
     this.userChallengeService = userChallengeService;
+    this.userRepository = userRepository;
   }
 
   @Override
@@ -59,12 +63,17 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
       Hibernate.initialize(adminUser.getChallenges());
     } catch (NotFoundException e) {
       // User not found, proceed with creating the admin user
+      // The admin is created normally, then elevated to admin status manually
       UserDto adminUser = new UserDto();
       adminUser.setEmail("admin@admin");
       adminUser.setPassword("password");
       adminUser.setProfilePictureUrl(
           "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/09663791-e23b-427b-b8d4-a341664f4f0a_amongus.png");
       userService.addUser(adminUser);
+      userRepository.findByEmail("admin@admin").ifPresent(user -> {
+        user.setRole("ADMIN");
+        userRepository.save(user);
+      });
     }
 
     Long adminUserId = userService.getUserByEmail("admin@admin").getId();
