@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 /** Controller for Budget entities. */
 @RestController
 @RequestMapping("/api/budget")
-@Tag(name = "Budgets", description = "Operations related to budgetting")
+@Tag(name = "Budgets", description = "Operations related to budgeting")
 public class BudgetController {
 
   private final UserBudgetService userBudgetService;
