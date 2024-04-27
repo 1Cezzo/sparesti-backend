@@ -24,6 +24,9 @@
 
     --vt-c-button-base-dark: #757BFD;
     --vt-c-button-hover-dark: #313273;
+
+    --error-light: #D9534F;
+    --error-dark: #E57373;
 }
 
 /* Default Light theme */
@@ -293,12 +296,23 @@ button:hover {
 
 .reset-password-page {
     display: flex;
+    text-align: center;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
 .reset-password-container {
+    margin: 20px;
+    padding: 50px;
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+    color: var(--error-light);
+}
+
+body.dark .error-message {
+    color: var(--error-dark);
 }

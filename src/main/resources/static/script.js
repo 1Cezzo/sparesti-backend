@@ -153,7 +153,7 @@ async function sendResetLink() {
         console.error('Error:', error);
         alert('Failed to send password reset link. Please try again.');
     } finally {
-        closeForgotPasswordModal(); // Ensure this function exists and is accessible
+        closeForgotPasswordModal();
     }
 }
 
@@ -167,3 +167,50 @@ function displayErrorMessage(containerId, message) {
     }
 }
 
+async function resetPassworxd() {
+    const newPassword = document.getElementById('new-password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const email = document.getElementById('email').value; // Assuming you have an input field for email
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    if (!email) {
+        alert('Please enter your email.');
+        return;
+    }
+    if (!token) {
+        alert('Invalid token. Unable to reset password.');
+        return;
+    }
+    if (newPassword !== confirmPassword) {
+        alert('Passwords do not match.');
+        return;
+    }
+
+    const payload = {
+        username: email,
+        password: newPassword,
+        token: token
+    };
+
+    console.log('Sending payload:', payload); // Log the payload for debugging
+
+    try {
+        const response = await fetch('/api/password-reset/reset-password', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            alert('Your password has been reset successfully.');
+            window.location.href = '/login.html';
+        } else {
+            const errorText = await response.text();
+            console.error('Failed to reset password:', errorText); // Log detailed error response
+            throw new Error(errorText || 'Failed to reset password.');
+        }
+    } catch (error) {
+        console.error('Fetch Error:', error);
+        alert(error.message || 'Failed to reset password. Please try again.');
+    }
+}
