@@ -1,10 +1,14 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
+import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
@@ -113,14 +117,15 @@ public class SavingsGoalController {
   /**
    * Add a savings goal to a user.
    *
-   * @param userId The ID of the user.
+   * @param token The JWT access token.
    * @param savingsGoalDTO The savings goal to add.
    * @return The updated user DTO.
    */
-  @PostMapping("/{userId}/savings-goals/add")
+  @PostMapping("/savings-goals/add")
   @Operation(summary = "Add a savings goal to a user")
   public ResponseEntity<UserDto> addSavingsGoalToUser(
-      @PathVariable Long userId, @RequestBody SavingsGoalDTO savingsGoalDTO) {
+      @AuthenticationPrincipal Jwt token, @RequestBody SavingsGoalDTO savingsGoalDTO) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     UserDto updatedUserDto = savingsGoalService.addSavingsGoalToUser(userId, savingsGoalDTO);
     return ResponseEntity.ok(updatedUserDto);
   }
@@ -128,12 +133,13 @@ public class SavingsGoalController {
   /**
    * Get all savings goals for a user.
    *
-   * @param userId The ID of the user.
+   * @param token The JWT access token.
    * @return A list of savings goal DTOs.
    */
-  @GetMapping("/{userId}/savings-goals")
+  @GetMapping("/savings-goals")
   @Operation(summary = "Get all savings goals for a user")
-  public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(@PathVariable Long userId) {
+  public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(@AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     List<SavingsGoalDTO> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
     return ResponseEntity.ok(savingsGoals);
   }
@@ -141,13 +147,14 @@ public class SavingsGoalController {
   /**
    * Delete a savings goal from a user.
    *
-   * @param userId The ID of the user.
+   * @param token The JWT access token.
    * @param savingsGoalId The ID of the savings goal.
    */
-  @DeleteMapping("/{userId}/savings-goals/{savingsGoalId}")
+  @DeleteMapping("/savings-goals/{savingsGoalId}")
   @Operation(summary = "Delete a savings goal from a user")
   public ResponseEntity<Void> deleteSavingsGoalFromUser(
-      @PathVariable Long userId, @PathVariable Long savingsGoalId) {
+      @AuthenticationPrincipal Jwt token, @PathVariable Long savingsGoalId) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     savingsGoalService.deleteSavingsGoalFromUser(userId, savingsGoalId);
     return ResponseEntity.noContent().build();
   }

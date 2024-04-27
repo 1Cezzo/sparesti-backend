@@ -53,12 +53,13 @@ public class UserController {
   /**
    * Delete a user by id.
    *
-   * @param id The id of the user to delete.
+   * @param token the JWT access token.
    * @return ResponseEntity with status code.
    */
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/delete")
   @Operation(summary = "Delete a user")
-  public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+  public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal Jwt token) {
+    Long id = token.getClaim("userId");
     userService.deleteUser(id);
     return ResponseEntity.noContent().build();
   }

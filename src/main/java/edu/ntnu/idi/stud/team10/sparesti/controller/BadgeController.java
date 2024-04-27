@@ -7,6 +7,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
@@ -15,6 +17,8 @@ import edu.ntnu.idi.stud.team10.sparesti.service.BadgeService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserBadgeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 /** Operations related to badges of users. */
 @RestController
@@ -80,12 +84,14 @@ public class BadgeController {
   /**
    * Get all badges earned by a user.
    *
-   * @param userId the user's ID.
+   * @param token the JWT token.
    * @return a set of all badges earned by the user.
    */
-  @GetMapping("/user/{userId}")
+  @GetMapping("/user")
   @Operation(summary = "Get all badges for a user")
-  public ResponseEntity<Set<Map<String, Object>>> getAllBadgesByUserId(@PathVariable Long userId) {
+  public ResponseEntity<Set<Map<String, Object>>> getAllBadgesByUserId(
+      @AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     Set<Map<String, Object>> badges = userBadgeService.getAllBadgesByUserId(userId);
     return ResponseEntity.ok(badges);
   }
@@ -113,7 +119,8 @@ public class BadgeController {
    */
   @DeleteMapping("/{userId}/remove/{badgeId}")
   @Operation(summary = "Remove a badge from a user")
-  public ResponseEntity<?> removeUserBadge(@PathVariable Long userId, @PathVariable Long badgeId) {
+  public ResponseEntity<Void> removeUserBadge(
+      @PathVariable Long userId, @PathVariable Long badgeId) {
     userBadgeService.removeUserBadge(userId, badgeId);
     return ResponseEntity.noContent().build();
   }
