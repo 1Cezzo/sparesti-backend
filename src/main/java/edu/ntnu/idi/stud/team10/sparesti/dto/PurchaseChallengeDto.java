@@ -9,7 +9,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PurchaseChallengeDTO extends ChallengeDTO {
+public class PurchaseChallengeDto extends ChallengeDto {
   private String productName;
 
   /**
@@ -17,7 +17,7 @@ public class PurchaseChallengeDTO extends ChallengeDTO {
    *
    * @param challenge The PurchaseChallenge entity to convert.
    */
-  public PurchaseChallengeDTO(Challenge challenge) {
+  public PurchaseChallengeDto(Challenge challenge) {
     super(challenge);
     if (challenge instanceof PurchaseChallenge purchaseChallenge) {
       this.productName = purchaseChallenge.getProductName();
@@ -36,7 +36,7 @@ public class PurchaseChallengeDTO extends ChallengeDTO {
     challenge.setTitle(this.getTitle());
     challenge.setDescription(this.getDescription());
     challenge.setTargetAmount(this.getTargetAmount());
-    challenge.setSavedAmount(this.getSavedAmount());
+    challenge.setUsedAmount(this.getUsedAmount());
     challenge.setMediaUrl(this.getMediaUrl());
     challenge.setTimeInterval(this.getTimeInterval());
     challenge.setExpiryDate(this.getExpiryDate());

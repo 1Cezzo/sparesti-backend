@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Data
 /** A DTO for the SavingsGoal entity. */
-public class SavingsGoalDTO {
+public class SavingsGoalDto {
   private Long id;
   private String name;
   private double targetAmount;
@@ -23,7 +23,7 @@ public class SavingsGoalDTO {
    *
    * @param savingsGoal The SavingsGoal entity to convert.
    */
-  public SavingsGoalDTO(SavingsGoal savingsGoal) {
+  public SavingsGoalDto(SavingsGoal savingsGoal) {
     this.id = savingsGoal.getId();
     this.name = savingsGoal.getName();
     this.targetAmount = savingsGoal.getTargetAmount();
@@ -41,7 +41,7 @@ public class SavingsGoalDTO {
    * @param mediaUrl The media URL of the savings goal.
    * @param deadline The deadline of the savings goal.
    */
-  public SavingsGoalDTO(String name, double targetAmount, String mediaUrl, LocalDate deadline) {
+  public SavingsGoalDto(String name, double targetAmount, String mediaUrl, LocalDate deadline) {
     this.name = name;
     this.targetAmount = targetAmount;
     this.savedAmount = 0;

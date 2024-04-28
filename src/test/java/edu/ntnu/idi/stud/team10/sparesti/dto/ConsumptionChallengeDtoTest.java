@@ -11,16 +11,16 @@ import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ConsumptionChallengeDTOTest {
+public class ConsumptionChallengeDtoTest {
 
-  private ConsumptionChallengeDTO consumptionChallengeDto;
+  private ConsumptionChallengeDto consumptionChallengeDto;
 
   @BeforeEach
   public void setUp() {
-    consumptionChallengeDto = new ConsumptionChallengeDTO();
+    consumptionChallengeDto = new ConsumptionChallengeDto();
     consumptionChallengeDto.setDescription("Test Consumption Challenge");
     consumptionChallengeDto.setTargetAmount(1000.0);
-    consumptionChallengeDto.setSavedAmount(500.0);
+    consumptionChallengeDto.setUsedAmount(500.0);
     consumptionChallengeDto.setMediaUrl("https://example.com/image.jpg");
     consumptionChallengeDto.setTimeInterval(TimeInterval.MONTHLY);
     consumptionChallengeDto.setDifficultyLevel(DifficultyLevel.MEDIUM);

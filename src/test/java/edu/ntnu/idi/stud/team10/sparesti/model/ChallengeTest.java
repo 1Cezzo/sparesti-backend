@@ -21,7 +21,7 @@ public class ChallengeTest {
   private final String testName = "Test Challenge";
   private final String testDescription = "Test Description";
   private final double testTargetAmount = 500.0;
-  private final double testSavedAmount = 100.0;
+  private final double testUsedAmount = 100.0;
   private final String testMediaUrl = "http://example.com";
   private final TimeInterval testTimeInterval = TimeInterval.WEEKLY;
   private final DifficultyLevel testDifficultyLevel = DifficultyLevel.EASY;
@@ -37,7 +37,7 @@ public class ChallengeTest {
             testName,
             testDescription,
             testTargetAmount,
-            testSavedAmount,
+            testUsedAmount,
             testMediaUrl,
             testTimeInterval,
             testDifficultyLevel,
@@ -52,7 +52,7 @@ public class ChallengeTest {
     assertEquals(testId, challenge.getId());
     assertEquals(testDescription, challenge.getDescription());
     assertEquals(testTargetAmount, challenge.getTargetAmount());
-    assertEquals(testSavedAmount, challenge.getSavedAmount());
+    assertEquals(testUsedAmount, challenge.getUsedAmount());
     assertEquals(testMediaUrl, challenge.getMediaUrl());
     assertEquals(testTimeInterval, challenge.getTimeInterval());
     assertEquals(testDifficultyLevel, challenge.getDifficultyLevel());
@@ -68,7 +68,7 @@ public class ChallengeTest {
             testName,
             testDescription,
             testTargetAmount,
-            testSavedAmount,
+            testUsedAmount,
             testMediaUrl,
             testTimeInterval,
             testDifficultyLevel,
@@ -81,7 +81,7 @@ public class ChallengeTest {
             testName,
             testDescription,
             testTargetAmount,
-            testSavedAmount,
+            testUsedAmount,
             testMediaUrl,
             testTimeInterval,
             testDifficultyLevel,
@@ -111,7 +111,7 @@ public class ChallengeTest {
   @Test
   public void testToString() {
     String expectedToString =
-        "Challenge(id=1, title=Test Challenge, description=Test Description, targetAmount=500.0, savedAmount=100.0, mediaUrl=http://example.com, timeInterval=WEEKLY, difficultyLevel=EASY, expiryDate="
+        "Challenge(id=1, title=Test Challenge, description=Test Description, targetAmount=500.0, usedAmount=100.0, mediaUrl=http://example.com, timeInterval=WEEKLY, difficultyLevel=EASY, expiryDate="
             + testExpiryDate
             + ", completed=false, users=null)";
     assertEquals(expectedToString, challenge.toString());
@@ -122,7 +122,7 @@ public class ChallengeTest {
     assertEquals(testId, challenge.getId());
     assertEquals(testDescription, challenge.getDescription());
     assertEquals(testTargetAmount, challenge.getTargetAmount());
-    assertEquals(testSavedAmount, challenge.getSavedAmount());
+    assertEquals(testUsedAmount, challenge.getUsedAmount());
     assertEquals(testMediaUrl, challenge.getMediaUrl());
     assertEquals(testTimeInterval, challenge.getTimeInterval());
     assertEquals(testDifficultyLevel, challenge.getDifficultyLevel());

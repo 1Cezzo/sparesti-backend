@@ -26,12 +26,18 @@ public class UserChallengeServiceTest {
 
   @Mock private UserRepository userRepository;
 
+  @Mock private UserInfoService userInfoService;
+
+  @Mock private ChatGPTService chatGPTService;
+
   private UserChallengeService<Challenge> userChallengeService;
 
   @BeforeEach
   public void setUp() {
     MockitoAnnotations.openMocks(this);
-    userChallengeService = new UserChallengeService<>(challengeRepository, userRepository);
+    userChallengeService =
+        new UserChallengeService<>(
+            challengeRepository, userRepository, userInfoService, chatGPTService);
   }
 
   @Test
@@ -91,12 +97,12 @@ public class UserChallengeServiceTest {
 
     when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
-    List<ChallengeDTO> result = userChallengeService.getSortedChallengesByUser(1L);
+    List<ChallengeDto> result = userChallengeService.getSortedChallengesByUser(1L);
 
     assertNotNull(result);
     assertEquals(3, result.size());
-    assertTrue(result.get(0) instanceof ConsumptionChallengeDTO);
-    assertTrue(result.get(1) instanceof PurchaseChallengeDTO);
-    assertTrue(result.get(2) instanceof SavingChallengeDTO);
+    assertTrue(result.get(0) instanceof ConsumptionChallengeDto);
+    assertTrue(result.get(1) instanceof PurchaseChallengeDto);
+    assertTrue(result.get(2) instanceof SavingChallengeDto);
   }
 }

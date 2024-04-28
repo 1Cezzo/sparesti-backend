@@ -47,7 +47,7 @@ public abstract class ChallengeService<T extends Challenge> {
   @Transactional
   protected T createChallenge(T entity) {
     TimeInterval timeInterval = entity.getTimeInterval();
-    entity.setSavedAmount(0.0);
+    entity.setUsedAmount(0.0);
     LocalDate expiryDate = calculateExpiryDate(timeInterval);
     entity.setExpiryDate(expiryDate);
     entity.setCompleted(false);
@@ -85,8 +85,8 @@ public abstract class ChallengeService<T extends Challenge> {
         existingChallenge.setTargetAmount(updatedEntity.getTargetAmount());
       }
 
-      if (updatedEntity.getSavedAmount() > 0) {
-        existingChallenge.setSavedAmount(updatedEntity.getSavedAmount());
+      if (updatedEntity.getUsedAmount() > 0) {
+        existingChallenge.setUsedAmount(updatedEntity.getUsedAmount());
       }
 
       if (updatedEntity.getMediaUrl() != null) {
@@ -174,8 +174,8 @@ public abstract class ChallengeService<T extends Challenge> {
     Optional<T> optionalChallenge = challengeRepository.findById(id);
     if (optionalChallenge.isPresent()) {
       T challenge = optionalChallenge.get();
-      challenge.setSavedAmount(challenge.getSavedAmount() + amount);
-      challenge.setCompleted(challenge.getSavedAmount() > challenge.getTargetAmount());
+      challenge.setUsedAmount(challenge.getUsedAmount() + amount);
+      challenge.setCompleted(challenge.getUsedAmount() > challenge.getTargetAmount());
       challengeRepository.save(challenge);
     } else {
       throw new NotFoundException("Challenge not found");

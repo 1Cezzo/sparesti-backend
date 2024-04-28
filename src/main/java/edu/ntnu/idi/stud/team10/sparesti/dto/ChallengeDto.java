@@ -11,12 +11,12 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChallengeDTO {
+public class ChallengeDto {
   private Long id;
   private String title;
   private String description;
   private double targetAmount;
-  private double savedAmount;
+  private double usedAmount;
   private String mediaUrl;
   private TimeInterval timeInterval;
   private DifficultyLevel difficultyLevel;
@@ -28,12 +28,12 @@ public class ChallengeDTO {
    *
    * @param challenge The Challenge entity to convert.
    */
-  public ChallengeDTO(Challenge challenge) {
+  public ChallengeDto(Challenge challenge) {
     this.id = challenge.getId();
     this.title = challenge.getTitle();
     this.description = challenge.getDescription();
     this.targetAmount = challenge.getTargetAmount();
-    this.savedAmount = challenge.getSavedAmount();
+    this.usedAmount = challenge.getUsedAmount();
     this.mediaUrl = challenge.getMediaUrl();
     this.timeInterval = challenge.getTimeInterval();
     this.difficultyLevel = challenge.getDifficultyLevel();
@@ -52,7 +52,7 @@ public class ChallengeDTO {
     challenge.setTitle(this.title);
     challenge.setDescription(this.description);
     challenge.setTargetAmount(this.targetAmount);
-    challenge.setSavedAmount(this.savedAmount);
+    challenge.setUsedAmount(this.usedAmount);
     challenge.setMediaUrl(this.mediaUrl);
     challenge.setTimeInterval(this.timeInterval);
     challenge.setDifficultyLevel(this.difficultyLevel);

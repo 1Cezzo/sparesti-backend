@@ -16,7 +16,7 @@ public class SavingChallengeTest {
   private SavingChallenge savingChallenge;
   private final String testDescription = "Test Description";
   private final double testTargetAmount = 500.0;
-  private final double testSavedAmount = 100.0;
+  private final double testUsedAmount = 100.0;
   private final String testMediaUrl = "http://example.com";
   private final TimeInterval testTimeInterval = TimeInterval.WEEKLY;
   private final DifficultyLevel testDifficultyLevel = DifficultyLevel.EASY;
@@ -28,7 +28,7 @@ public class SavingChallengeTest {
     savingChallenge = new SavingChallenge();
     savingChallenge.setDescription(testDescription);
     savingChallenge.setTargetAmount(testTargetAmount);
-    savingChallenge.setSavedAmount(testSavedAmount);
+    savingChallenge.setUsedAmount(testUsedAmount);
     savingChallenge.setMediaUrl(testMediaUrl);
     savingChallenge.setTimeInterval(testTimeInterval);
     savingChallenge.setDifficultyLevel(testDifficultyLevel);
@@ -41,7 +41,7 @@ public class SavingChallengeTest {
     assertNotNull(savingChallenge);
     assertEquals(testDescription, savingChallenge.getDescription());
     assertEquals(testTargetAmount, savingChallenge.getTargetAmount());
-    assertEquals(testSavedAmount, savingChallenge.getSavedAmount());
+    assertEquals(testUsedAmount, savingChallenge.getUsedAmount());
     assertEquals(testMediaUrl, savingChallenge.getMediaUrl());
     assertEquals(testTimeInterval, savingChallenge.getTimeInterval());
     assertEquals(testDifficultyLevel, savingChallenge.getDifficultyLevel());

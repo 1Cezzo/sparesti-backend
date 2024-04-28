@@ -72,9 +72,9 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
     Long adminUserId = userService.getUserByEmail("admin@admin").getId();
 
-    Long badgeId = badgeService.getAllBadges().get(0).getId();
+    BadgeDto loginBadge = badgeService.getBadgeByName("På god vei!");
 
-    userBadgeService.giveUserBadge(adminUserId, badgeId);
+    userBadgeService.giveUserBadge(adminUserId, loginBadge.getId());
 
     if (!userChallengeService.getSortedChallengesByUser(adminUserId).isEmpty()) {
       return;

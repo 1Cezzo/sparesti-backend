@@ -92,6 +92,21 @@ public class BadgeService {
   }
 
   /**
+   * Gets a Badge by its name.
+   *
+   * @param name (String): The name of the Badge entity.
+   * @return a DTO representing the Badge.
+   * @throws NotFoundException if the badge is not found.
+   */
+  public BadgeDto getBadgeByName(String name) {
+    Badge badge =
+        badgeRepository
+            .findByName(name)
+            .orElseThrow(() -> new NotFoundException("Badge of name " + name + " not found"));
+    return new BadgeDto(badge);
+  }
+
+  /**
    * Updates a Badge entity.
    *
    * @param id (Long): The unique id of the Badge.

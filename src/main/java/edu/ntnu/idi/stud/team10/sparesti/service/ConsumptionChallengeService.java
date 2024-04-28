@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.ConsumptionChallengeDTO;
+import edu.ntnu.idi.stud.team10.sparesti.dto.ConsumptionChallengeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ConsumptionChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
@@ -38,7 +38,7 @@ public class ConsumptionChallengeService extends ChallengeService<ConsumptionCha
    * @return the updated consumption challenge.
    */
   public ConsumptionChallenge updateConsumptionChallenge(
-      Long id, ConsumptionChallengeDTO consumptionChallengeDTO) {
+      Long id, ConsumptionChallengeDto consumptionChallengeDTO) {
     ConsumptionChallenge updatedEntity = consumptionChallengeDTO.toEntity();
     return super.updateChallenge(id, updatedEntity);
   }

@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
+import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
@@ -49,7 +49,7 @@ public class SavingsGoalServiceTest {
 
   @Test
   public void testCreateSavingsGoal_ValidInput_ReturnsSavingsGoal() {
-    SavingsGoalDTO savingsGoalDTO = new SavingsGoalDTO();
+    SavingsGoalDto savingsGoalDTO = new SavingsGoalDto();
     savingsGoalDTO.setTargetAmount(1000);
 
     SavingsGoal savedSavingsGoal = new SavingsGoal();
@@ -99,7 +99,7 @@ public class SavingsGoalServiceTest {
   @Test
   public void testUpdateSavingsGoal_ValidInput_SavingsGoalUpdated() {
     // Arrange
-    SavingsGoalDTO savingsGoalDTO = new SavingsGoalDTO();
+    SavingsGoalDto savingsGoalDTO = new SavingsGoalDto();
     savingsGoalDTO.setName("New Goal");
     savingsGoalDTO.setTargetAmount(2000);
     savingsGoalDTO.setSavedAmount(500);

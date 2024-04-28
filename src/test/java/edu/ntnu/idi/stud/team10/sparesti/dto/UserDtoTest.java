@@ -20,8 +20,8 @@ public class UserDtoTest {
   private final String testPassword = "testpassword";
   private final String testEmail = "test@example.com";
   private final String testProfilePictureUrl = "http://example.com/image.jpg";
-  private List<SavingsGoalDTO> testSavingsGoals;
-  private List<ChallengeDTO> testChallenges;
+  private List<SavingsGoalDto> testSavingsGoals;
+  private List<ChallengeDto> testChallenges;
 
   @BeforeEach
   public void setUp() {
