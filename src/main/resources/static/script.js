@@ -83,40 +83,30 @@ function closeForgotPasswordModal() {
 
 async function submitSignUp(event) {
     event.preventDefault();
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('signup-password').value;
-
     const res = await fetch('/api/users/create', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-    });
-
-    console.log('Response Status:', res.status);
-
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: document.getElementById('email').value,
+            password: document.getElementById('signup-password').value
+        })
+    })
     if (res.ok) {
         toggleForm();
     } else {
-        let errorMessage = 'En feil skjedde under registrering, vennligst prøv på nytt.';
-        if (res.status === 401) {
-            errorMessage = 'Denne emailen er allerede i bruk, vennligst benytt en annen.';
+        // Attempt to read the JSON response to get more detailed error messages
+        try {
+            const data = await res.json(); // Assuming the server sends a JSON response with an error message field
+            const errorMessage = data.message || 'Denne eposten er allerede ';
+            displayErrorMessage('signup-container', errorMessage); // Display a specific error message if available
+        } catch (error) {
+            // If parsing the JSON fails or no message is included, display a generic error
+            displayErrorMessage('signup-container', 'An error occurred during signup. Please try again.');
         }
-
-        if (res.headers.get("Content-Type")?.includes("application/json")) {
-            try {
-                const data = await res.json();
-                console.log('Error Data:', data);
-                if (data && data.message) {
-                    errorMessage = data.message;
-                }
-            } catch (error) {
-                console.error('Error parsing JSON:', error);
-            }
-        }
-
-        displayErrorMessage('signup-container', errorMessage);
     }
-    return false;
+    return false; // Prevent the default form submission
 }
 
 async function sendResetLink() {
