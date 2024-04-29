@@ -180,6 +180,46 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
         "Bunin",
         "Medalje for ikke å handle på Bunnpris på en uke",
         "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/bunin.png\n");
+    createBadge(
+        "Budget",
+        "Medalje for å opprette et budsjett",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/budget.png\n");
+    createBadge(
+        "Månedtlig utfordring",
+        "Medalje for å fullføre en månedtlig utfordring",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/calendar.png\n");
+    createBadge(
+        "Klær",
+        "Medalje for å spare 500 kr på klær i måneden",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/clothes.png\n");
+    createBadge(
+        "Sparemål oppnådd",
+        "Medalje for å oppnå et sparemål",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/completing_saving_goal.png\n");
+    createBadge(
+        "Profilbilde",
+        "Medalje for å endre profilbilde",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/profile_picture.png\n");
+    createBadge(
+        "Dagligvare handel",
+        "Medalje for å spare 500 kr på dagligvare handel i uken",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/shopping_cart.png\n");
+    createBadge(
+        "Luftballong klikkeren!",
+        "Medalje for å klikke på luftballongen",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/red_airballoon.png\n");
+    createBadge(
+        "Delt sparemål",
+        "Medalje for å dele et sparemål med andre brukere",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/shared_goal.png\n");
+    createBadge(
+        "Husk å betal regninga!",
+        "Medalje for å legge til en regning til en kategori",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/recipt.png\n");
+    createBadge(
+        "Transport",
+        "Medalje for å spare 600 kr på transport i måneden",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/transportation.png\n");
   }
 
   private void createSavingTips() {
