@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./sparesti-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    container_name: backend
+
+  db:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=backend
+    container_name: idatt2106_db
+    healthcheck:
+          test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+          timeout: 5s
+          retries: 10
