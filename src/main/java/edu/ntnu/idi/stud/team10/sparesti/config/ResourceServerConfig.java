@@ -42,11 +42,15 @@ public class ResourceServerConfig {
         .authorizeHttpRequests(
             authorize ->
                 authorize
+                    .requestMatchers("/api/sendEmail")
+                    .permitAll()
                     .requestMatchers("/api/users/create")
                     .permitAll()
-                    .requestMatchers("/oauth2/token")
+                    .requestMatchers("/api/password-reset/reset-password")
                     .permitAll()
                     .requestMatchers("/login.html")
+                    .permitAll()
+                    .requestMatchers("/resetpassword.html")
                     .permitAll()
                     .requestMatchers("/stylesheet.css")
                     .permitAll()
