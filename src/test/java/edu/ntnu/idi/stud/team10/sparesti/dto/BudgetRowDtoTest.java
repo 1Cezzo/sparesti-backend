@@ -3,7 +3,6 @@ package edu.ntnu.idi.stud.team10.sparesti.dto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,13 +18,13 @@ public class BudgetRowDtoTest {
     budgetRowDto1.setId(1L);
     budgetRowDto1.setName("Test Category");
     budgetRowDto1.setMaxAmount(500.0);
-    budgetRowDto1.setCategory(CategoryEnum.GROCERIES);
+    budgetRowDto1.setCategory("Groceries");
 
     budgetRowDto2 = new BudgetRowDto();
     budgetRowDto2.setId(1L);
     budgetRowDto2.setName("Test Category");
     budgetRowDto2.setMaxAmount(500.0);
-    budgetRowDto2.setCategory(CategoryEnum.GROCERIES);
+    budgetRowDto2.setCategory("Groceries");
   }
 
   @Test
@@ -33,7 +32,7 @@ public class BudgetRowDtoTest {
     assertEquals(1L, budgetRowDto1.getId());
     assertEquals("Test Category", budgetRowDto1.getName());
     assertEquals(500.0, budgetRowDto1.getMaxAmount());
-    assertEquals(CategoryEnum.GROCERIES, budgetRowDto1.getCategory());
+    assertEquals("Groceries", budgetRowDto1.getCategory());
   }
 
   @Test
@@ -43,7 +42,7 @@ public class BudgetRowDtoTest {
     assertEquals(1L, budgetRow.getId());
     assertEquals("Test Category", budgetRow.getName());
     assertEquals(500.0, budgetRow.getMaxAmount());
-    assertEquals(CategoryEnum.GROCERIES, budgetRow.getCategory());
+    assertEquals("Groceries", budgetRow.getCategory());
   }
 
   @Test

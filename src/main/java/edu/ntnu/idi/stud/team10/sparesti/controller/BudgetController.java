@@ -20,7 +20,7 @@ import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig
 /** Controller for Budget entities. */
 @RestController
 @RequestMapping("/api/budget")
-@Tag(name = "Budgets", description = "Operations related to budgetting")
+@Tag(name = "Budgets", description = "Operations related to budgeting")
 public class BudgetController {
 
   private final UserBudgetService userBudgetService;
@@ -58,6 +58,14 @@ public class BudgetController {
     Long userId = token.getClaim(USER_ID_CLAIM);
     List<BudgetDto> budgets = userBudgetService.getAllBudgetsForUser(userId);
     return ResponseEntity.ok(budgets);
+  }
+
+  @GetMapping("/{userId}/budgets/{budgetId}")
+  @Operation(summary = "Get a budget for a user")
+  public ResponseEntity<BudgetDto> getBudgetForUser(
+      @PathVariable Long userId, @PathVariable Long budgetId) {
+    BudgetDto budget = userBudgetService.getBudgetForUser(userId, budgetId);
+    return ResponseEntity.ok(budget);
   }
 
   /**

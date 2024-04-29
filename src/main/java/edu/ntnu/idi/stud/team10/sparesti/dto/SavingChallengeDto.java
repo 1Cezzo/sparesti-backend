@@ -8,13 +8,13 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-public class SavingChallengeDTO extends ChallengeDTO {
+public class SavingChallengeDto extends ChallengeDto {
   /**
    * Constructor for creating a new SavingChallengeDTO.
    *
    * @param challenge The SavingChallenge entity to convert.
    */
-  public SavingChallengeDTO(Challenge challenge) {
+  public SavingChallengeDto(Challenge challenge) {
     super(challenge);
   }
 
@@ -30,7 +30,7 @@ public class SavingChallengeDTO extends ChallengeDTO {
     challenge.setTitle(this.getTitle());
     challenge.setDescription(this.getDescription());
     challenge.setTargetAmount(this.getTargetAmount());
-    challenge.setSavedAmount(this.getSavedAmount());
+    challenge.setUsedAmount(this.getUsedAmount());
     challenge.setMediaUrl(this.getMediaUrl());
     challenge.setTimeInterval(this.getTimeInterval());
     challenge.setExpiryDate(this.getExpiryDate());

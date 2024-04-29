@@ -16,6 +16,7 @@ public class BudgetDto {
   private Long id;
   private Set<BudgetRow> row = new HashSet<>();
   private LocalDate expiryDate;
+  private LocalDate creationDate;
 
   /**
    * Constructor for converting Budget entity to BudgetDto.
@@ -25,12 +26,12 @@ public class BudgetDto {
   public BudgetDto(Budget budget) {
     this.id = budget.getId();
     this.row = budget.getRow();
-    this.expiryDate = LocalDate.now().plusMonths(1);
+    this.expiryDate = budget.getExpiryDate();
   }
 
   /** Constructor for creating a new BudgetDto. */
   public BudgetDto() {
-    this.expiryDate = LocalDate.now().plusMonths(1);
+    this.creationDate = LocalDate.now();
   }
 
   /**
@@ -43,6 +44,7 @@ public class BudgetDto {
     budget.setId(id);
     budget.setRow(row);
     budget.setExpiryDate(expiryDate);
+    budget.setCreationDate(creationDate);
     return budget;
   }
 }

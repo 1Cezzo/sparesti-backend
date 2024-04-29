@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,29 +26,30 @@ public class User {
 
   @Column private Double totalSavings;
 
-  // TODO: Add "Total amount saved" to the user?
-
   @Column() private String profilePictureUrl;
 
   @Column() private Integer checkingAccountNr;
 
   @Column() private Integer savingsAccountNr;
 
-  @JsonIgnore
-  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-  private List<SavingsGoal> savingsGoals;
+  @ManyToMany
+  @JoinTable(
+      name = "user_savings_goal",
+      joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
+      inverseJoinColumns = @JoinColumn(name = "savings_goals_id", referencedColumnName = "id"))
+  private List<SavingsGoal> userSavingsGoals;
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "user_challenge",
-      joinColumns = @JoinColumn(name = "user_id"),
+      joinColumns = @JoinColumn(name = "users_id"),
       inverseJoinColumns = @JoinColumn(name = "challenge_id"))
   private List<Challenge> challenges;
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "user_badges",
-      joinColumns = @JoinColumn(name = "user_id"),
+      joinColumns = @JoinColumn(name = "users_id"),
       inverseJoinColumns = @JoinColumn(name = "badge_id"))
   private Set<Badge> earnedBadges;
 

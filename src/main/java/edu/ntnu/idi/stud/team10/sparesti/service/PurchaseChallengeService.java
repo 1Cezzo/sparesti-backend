@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.PurchaseChallengeDTO;
+import edu.ntnu.idi.stud.team10.sparesti.dto.PurchaseChallengeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.PurchaseChallengeRepository;
 
@@ -36,7 +36,7 @@ public class PurchaseChallengeService extends ChallengeService<PurchaseChallenge
    * @return the updated purchase challenge.
    */
   public PurchaseChallenge updatePurchaseChallenge(
-      Long id, PurchaseChallengeDTO purchaseChallengeDTO) {
+      Long id, PurchaseChallengeDto purchaseChallengeDTO) {
     PurchaseChallenge updatedEntity = purchaseChallengeDTO.toEntity();
     return super.updateChallenge(id, updatedEntity);
   }

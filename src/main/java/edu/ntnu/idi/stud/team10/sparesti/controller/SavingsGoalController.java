@@ -9,8 +9,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserSavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.service.SavingsGoalService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
@@ -42,7 +42,7 @@ public class SavingsGoalController {
    */
   @PostMapping
   @Operation(summary = "Create a new savings goal")
-  public ResponseEntity<SavingsGoal> createSavingsGoal(@RequestBody SavingsGoalDTO savingsGoalDTO) {
+  public ResponseEntity<SavingsGoal> createSavingsGoal(@RequestBody SavingsGoalDto savingsGoalDTO) {
     SavingsGoal savingsGoal = savingsGoalService.createSavingsGoal(savingsGoalDTO);
     return new ResponseEntity<>(savingsGoal, HttpStatus.CREATED);
   }
@@ -82,7 +82,7 @@ public class SavingsGoalController {
   @PutMapping("/{id}")
   @Operation(summary = "Update a savings goal by its ID")
   public ResponseEntity<SavingsGoal> updateSavingsGoal(
-      @PathVariable Long id, @RequestBody SavingsGoalDTO savingsGoalDTO) {
+      @PathVariable Long id, @RequestBody SavingsGoalDto savingsGoalDTO) {
     SavingsGoal updatedSavingsGoal = savingsGoalService.updateSavingsGoal(id, savingsGoalDTO);
     return ResponseEntity.ok(updatedSavingsGoal);
   }
@@ -103,14 +103,17 @@ public class SavingsGoalController {
   /**
    * Update saved amount of a savings goal.
    *
-   * @param id The ID of the savings goal.
+   * @param user_id The ID of the savings goal.
+   * @param savings_goal_id The ID of the savings goal.
    * @param savedAmount The new saved amount.
    */
-  @PutMapping("/{id}/update-saved-amount")
+  @PutMapping("/user/{user_id}/saving_goal/{savings_goal_id}/update-saved-amount")
   @Operation(summary = "Update the saved amount of a savings goal")
   public ResponseEntity<Void> updateSavedAmount(
-      @PathVariable Long id, @RequestParam double savedAmount) {
-    savingsGoalService.updateSavedAmount(id, savedAmount);
+      @PathVariable Long user_id,
+      @PathVariable Long savings_goal_id,
+      @RequestParam double savedAmount) {
+    savingsGoalService.updateSavedAmount(user_id, savings_goal_id, savedAmount);
     return ResponseEntity.ok().build();
   }
 
@@ -121,13 +124,13 @@ public class SavingsGoalController {
    * @param savingsGoalDTO The savings goal to add.
    * @return The updated user DTO.
    */
-  @PostMapping("/savings-goals/add")
+  @PostMapping("/add-user")
   @Operation(summary = "Add a savings goal to a user")
-  public ResponseEntity<UserDto> addSavingsGoalToUser(
-      @AuthenticationPrincipal Jwt token, @RequestBody SavingsGoalDTO savingsGoalDTO) {
+  public ResponseEntity<Void> addSavingsGoalToUser(
+      @AuthenticationPrincipal Jwt token, @RequestBody Long savingsGoalId) {
     Long userId = token.getClaim(USER_ID_CLAIM);
-    UserDto updatedUserDto = savingsGoalService.addSavingsGoalToUser(userId, savingsGoalDTO);
-    return ResponseEntity.ok(updatedUserDto);
+    savingsGoalService.addSavingsGoalToUser(userId, savingsGoalId);
+    return ResponseEntity.ok().build();
   }
 
   /**
@@ -138,10 +141,10 @@ public class SavingsGoalController {
    */
   @GetMapping("/savings-goals")
   @Operation(summary = "Get all savings goals for a user")
-  public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(
+  public ResponseEntity<List<SavingsGoalDto>> getAllSavingsGoalsForUser(
       @AuthenticationPrincipal Jwt token) {
     Long userId = token.getClaim(USER_ID_CLAIM);
-    List<SavingsGoalDTO> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
+    List<SavingsGoalDto> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
     return ResponseEntity.ok(savingsGoals);
   }
 
@@ -151,12 +154,25 @@ public class SavingsGoalController {
    * @param token The JWT access token.
    * @param savingsGoalId The ID of the savings goal.
    */
-  @DeleteMapping("/savings-goals/{savingsGoalId}")
+  @DeleteMapping("/{savingsGoalId}/user/delete")
   @Operation(summary = "Delete a savings goal from a user")
   public ResponseEntity<Void> deleteSavingsGoalFromUser(
       @AuthenticationPrincipal Jwt token, @PathVariable Long savingsGoalId) {
     Long userId = token.getClaim(USER_ID_CLAIM);
     savingsGoalService.deleteSavingsGoalFromUser(userId, savingsGoalId);
     return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Get users by saving goal.
+   *
+   * @param savingsGoalId The ID of the savings goal.
+   */
+  @GetMapping("/{savingsGoalId}/users")
+  @Operation(summary = "Get users by saving goal")
+  public ResponseEntity<List<UserSavingsGoalDto>> getUsersBySavingsGoal(
+      @PathVariable Long savingsGoalId) {
+    List<UserSavingsGoalDto> users = savingsGoalService.getUsersBySavingsGoal(savingsGoalId);
+    return ResponseEntity.ok(users);
   }
 }

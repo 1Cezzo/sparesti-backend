@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
-import edu.ntnu.idi.stud.team10.sparesti.enums.CategoryEnum;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -15,11 +14,12 @@ public class BudgetRowTest {
   private final String testName = "Test Name";
   private final double testMaxAmount = 200.0;
   private final double testUsedAmount = 100.0;
-  private final CategoryEnum testCategory = CategoryEnum.GROCERIES;
+  private final String testCategory = "Groceries";
+  private final String testEmoji = "🍕";
 
   @BeforeEach
   public void setUp() {
-    budgetRow = new BudgetRow(testName, testUsedAmount, testMaxAmount, testCategory);
+    budgetRow = new BudgetRow(testName, testUsedAmount, testMaxAmount, testCategory, testEmoji);
   }
 
   @Test
@@ -35,7 +35,7 @@ public class BudgetRowTest {
     BudgetRowDto budgetRowDto = new BudgetRowDto();
     budgetRowDto.setName("Updated Name");
     budgetRowDto.setMaxAmount(250.0);
-    budgetRowDto.setCategory(CategoryEnum.TRANSPORTATION);
+    budgetRowDto.setCategory("Transportation");
 
     budgetRow.updateFromDto(budgetRowDto);
 

@@ -11,16 +11,16 @@ import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SavingChallengeDTOTest {
+public class SavingChallengeDtoTest {
 
-  private SavingChallengeDTO savingChallengeDto;
+  private SavingChallengeDto savingChallengeDto;
 
   @BeforeEach
   public void setUp() {
-    savingChallengeDto = new SavingChallengeDTO();
+    savingChallengeDto = new SavingChallengeDto();
     savingChallengeDto.setDescription("Test Saving Challenge");
     savingChallengeDto.setTargetAmount(1000.0);
-    savingChallengeDto.setSavedAmount(500.0);
+    savingChallengeDto.setUsedAmount(500.0);
     savingChallengeDto.setMediaUrl("https://example.com/image.jpg");
     savingChallengeDto.setTimeInterval(TimeInterval.MONTHLY);
     savingChallengeDto.setDifficultyLevel(DifficultyLevel.MEDIUM);

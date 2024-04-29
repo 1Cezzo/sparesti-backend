@@ -10,8 +10,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /**
- * A savings goal is a goal that a user sets for themselves to save up for. It has a name, a target
- * amount, and a deadline.
+ * A budget is created by a user to help them save money by keeping their spendings limited in a few
+ * categories, that are set in a BudgetRow.
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,6 +30,7 @@ public class Budget {
   private Set<BudgetRow> row = new HashSet<>();
 
   @Column private LocalDate expiryDate;
+  @Column private LocalDate creationDate;
 
   @JsonBackReference
   @ManyToOne

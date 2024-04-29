@@ -25,6 +25,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
   private final ConsumptionChallengeService consumptionChallengeService;
   private final UserChallengeService userChallengeService;
   private final UserRepository userRepository;
+  private final SavingTipService savingTipService;
 
   public DataLoader(
       BadgeService badgeService,
@@ -33,12 +34,14 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
       ConsumptionChallengeService consumptionChallengeService,
       UserChallengeService userChallengeService,
       UserRepository userRepository) {
+      SavingTipService savingTipService) {
     this.badgeService = badgeService;
     this.userBadgeService = userBadgeService;
     this.userService = userService;
     this.consumptionChallengeService = consumptionChallengeService;
     this.userChallengeService = userChallengeService;
     this.userRepository = userRepository;
+    this.savingTipService = savingTipService;
   }
 
   @Override
@@ -56,10 +59,10 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
   private void initialize() {
     createBadges();
+    createSavingTips(); // works only if DB is empty
 
     try {
       UserDto adminUser = userService.getUserByEmail("admin@admin");
-      Hibernate.initialize(adminUser.getSavingsGoals());
       Hibernate.initialize(adminUser.getChallenges());
     } catch (NotFoundException e) {
       // User not found, proceed with creating the admin user
@@ -81,9 +84,9 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
     Long adminUserId = userService.getUserByEmail("admin@admin").getId();
 
-    Long badgeId = badgeService.getAllBadges().get(0).getId();
+    BadgeDto loginBadge = badgeService.getBadgeByName("På god vei!");
 
-    userBadgeService.giveUserBadge(adminUserId, badgeId);
+    userBadgeService.giveUserBadge(adminUserId, loginBadge.getId());
 
     if (!userChallengeService.getSortedChallengesByUser(adminUserId).isEmpty()) {
       return;
@@ -177,5 +180,64 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
         "Bunin",
         "Medalje for ikke å handle på Bunnpris på en uke",
         "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/bunin.png\n");
+  }
+
+  private void createSavingTips() {
+    if (savingTipService.noSavingTips()) {
+      List<String> savingTips =
+          List.of(
+              "Visste du? Å slå av lysene når du forlater et rom kan spare deg for omtrent 6 % på strømregningen hver måned. 💡",
+              "Miljøtips: Ved å senke termostaten med bare én grad om vinteren kan du redusere oppvarmingsregningen med opptil 8 %. ❄️",
+              "Budsjetteringsfakta: Personer som sporer utgiftene sine kan spare opptil 20 % mer enn de som ikke gjør det. 📊",
+              "Finansiell visdom: Å betale ned gjelden med høyest rente først kan spare deg for hundrevis i renteutgifter. 💳",
+              "Smart shopping: Å kjøpe ikke-bedervelige varer i bulk kan spare deg for opptil 50 % på nødvendige husholdningsartikler. 🛒",
+              "Visste du? Å trekke ut støpselet på elektronikk når de ikke er i bruk, kan spare deg for opptil 1 000 kr i året på energikostnader. 🔌",
+              "Matlagingstips: Å lage mat hjemme fire dager i uken kan spare deg for over 15 000 kr årlig sammenlignet med å spise ute. 🍽️",
+              "Transportfakta: Regelmessig vedlikehold av bilen kan forbedre drivstoffeffektiviteten og spare deg for penger på bensin. 🚗",
+              "Energisparetips: Å vaske klær i kaldt vann kan spare opptil 90 % av energien brukt per vask. 🧺",
+              "Sparestrategi: Å sette opp automatiske overføringer til sparekontoer kan hjelpe deg med å spare uten å tenke på det. 🏦",
+              "Visste du? Å ta med egen kaffe på jobb kan spare deg for over 10 000 kr per år. ☕",
+              "Miljøtips: Å bruke en gjenbrukbar vannflaske kan spare deg for opptil 2 600 kr i året sammenlignet med å kjøpe flaskevann. 🍶",
+              "Budsjetteringstips: Å gjennomgå abonnementstjenester årlig kan hjelpe deg med å unngå å betale for noe du ikke bruker. 📝",
+              "Smart shopping: Å sjekke priser på nettet før kjøp kan føre til betydelige besparelser. 💻",
+              "Bærekraftig livsstil: Å plante en hage kan redusere matvareutgiftene dine ved å dyrke dine egne grønnsaker og urter. 🌱",
+              "Reisetips: Å bestille flybilletter på en tirsdag kan ofte resultere i lavere priser sammenlignet med andre dager. ✈️",
+              "Finansiell helse: Å jevnlig sjekke kredittscoren din kan hjelpe med å forebygge svindel og forbedre dine finansielle muligheter. 📈",
+              "Gjenbrukstips: Å selge unna ting du ikke bruker er en god måte å få mer penger inn på kontoen! 🔄",
+              "Energisparende fakta: LED-pærer bruker minst 75 % mindre energi, og varer 25 ganger lenger, enn glødepærer. 💡",
+              "Vannsparetips: Å reparere en lekk kran kan spare opptil 37 liter vann per dag. 💧",
+              "Sparemotivasjon: Å sette kortsiktige økonomiske mål kan gjøre prosessen med å spare penger mer håndterbar og givende. 🎯",
+              "Gjenbrukstips: Du kan spare en del penger dersom du kjøper brukt gjennom finn.no, Facebook marketplace, Tise, Letgo osv. 📦",
+              "Matlagingstips: Kast mindre mat! Spis alt du kjøper og bruk restene i stedet for å kaste dem. Slik får du ned matbudsjettet. 🥗",
+              "Sparetips: Bruk mindre enn du tjener. 🐖 Elles kommer jeg og finner deg.",
+              "Sparetips: Det er best å handle dagligvarer for en hel uke. Jo flere ganger du er innom butikken, jo oftere blir fristelsen for impulskjøp. 🛍️",
+              "Sparetips: Det er lurt å handle i butikken når man ikke er sulten. Sannsynligheten for impulskjøp er større dersom du er sulten! 🥖",
+              "Sparetips: Prøv å ha èn eller flere kostnadsfrie dager i uken. Det er enklere enn du tror, og du vil spare mye! 🗓️",
+              "Økonomitips: Automatiser sparepengene dine til en høyrentekonto for å maksimere avkastningen. 📊",
+              "Miljøvennlig tips: Bruk sykkel eller gå til jobb minst to dager i uken for å redusere transportkostnader og miljøpåvirkning. 🚴",
+              "Smart forbruk: Unngå impulskjøp ved alltid å vente 24 timer før du kjøper varer du ikke trenger umiddelbart. ⏳",
+              "Shoppingtips: Benytt deg av sesongsalg for å kjøpe klær og elektronikk til sterkt reduserte priser. 🎉",
+              "Hjemmetips: Isoler vinduer og dører for å redusere varmetap og spare på oppvarmingskostnadene. 🏠",
+              "Kostholdstips: Planlegg ukens måltider på forhånd og kjøp kun det du trenger, slik reduserer du matsvinn og sparer penger. 📅",
+              "Økonomitips: Betal alltid regningene dine i tide for å unngå forsinkelsesgebyrer. 🧾",
+              "Reisetips: Sammenlign priser fra flere reisenettsteder før du bestiller ferie for å finne de beste tilbudene. 🌍",
+              "Strømsparing: Slå av og trekk ut ladeapparater som ikke er i bruk for å spare strøm. 🔌",
+              "Underholdningstips: Utbytt dyre TV-abonnementer med rimeligere streamingtjenester eller frie alternativer. 📺",
+              "Shoppingtips: Bruk lojalitetskort og apper som tilbyr rabatter og bonuser. 💳",
+              "Vannsparetips: Installer spare dusjhoder for å redusere vannforbruket og spare på vannregningen. 🚿",
+              "Sparetips: Investér i kvalitetsprodukter som varer lenger i stedet for billige alternativer som må erstattes ofte. 🛍️",
+              "Husholdningstips: Rengjør eller bytt ut filtrene i varme- og luftanlegg regelmessig for bedre effektivitet. 🌬️",
+              "Sparetips for barn: Lær barna om penger ved å gi dem et ukentlig budsjett for småutgifter. 👶",
+              "Helseøkonomi: Prioriter regelmessige helsesjekker for å forebygge dyrere behandlinger i fremtiden. 🏥",
+              "Investeringstips: Start tidlig med å sette av en liten sum i aksjemarkedet for å dra nytte av renters rente. 📈",
+              "Energisparetips: Bytt til LED-lys i hele hjemmet for å kutte ned på strømregningen. 💡",
+              "Matlagingstips: Bruk en trykkoker for å spare både tid og energi når du lager mat. 🍲",
+              "Sparetips: Bruk denne appen og spar milliarder med budsjetteringssystemet vårt! 😃",
+              "Sparetips: Lag sparemål på appen for å spare opp for noe konkret! \uD83C\uDF91");
+
+      for (String tip : savingTips) {
+        savingTipService.createSavingTip(tip);
+      }
+    }
   }
 }

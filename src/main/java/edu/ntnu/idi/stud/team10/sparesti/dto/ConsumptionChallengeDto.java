@@ -9,7 +9,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConsumptionChallengeDTO extends ChallengeDTO {
+public class ConsumptionChallengeDto extends ChallengeDto {
   private String productCategory;
   private double reductionPercentage;
 
@@ -18,7 +18,7 @@ public class ConsumptionChallengeDTO extends ChallengeDTO {
    *
    * @param challenge The ConsumptionChallenge entity to convert.
    */
-  public ConsumptionChallengeDTO(Challenge challenge) {
+  public ConsumptionChallengeDto(Challenge challenge) {
     super(challenge);
     if (challenge instanceof ConsumptionChallenge consumptionChallenge) {
       this.productCategory = consumptionChallenge.getProductCategory();
@@ -38,7 +38,7 @@ public class ConsumptionChallengeDTO extends ChallengeDTO {
     challenge.setTitle(this.getTitle());
     challenge.setDescription(this.getDescription());
     challenge.setTargetAmount(this.getTargetAmount());
-    challenge.setSavedAmount(this.getSavedAmount());
+    challenge.setUsedAmount(this.getUsedAmount());
     challenge.setTimeInterval(this.getTimeInterval());
     challenge.setMediaUrl(this.getMediaUrl());
     challenge.setDifficultyLevel(this.getDifficultyLevel());
