@@ -40,6 +40,8 @@ public class ResourceServerConfig {
                     .permitAll()
                     .requestMatchers("/api/users/create")
                     .permitAll()
+                    .requestMatchers("/api/password-reset/reset-password")
+                    .permitAll()
                     .requestMatchers("/login.html")
                     .permitAll()
                     .requestMatchers("/resetpassword.html")

@@ -90,7 +90,6 @@ async function submitSignUp(event) {
     const res = await fetch('/api/users/create', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ email, password })
     });
 
     console.log('Response Status:', res.status);
@@ -98,7 +97,7 @@ async function submitSignUp(event) {
     if (res.ok) {
         toggleForm();
     } else {
-        let errorMessage = 'An error occurred during signup. Please try again.';
+        let errorMessage = 'En feil skjedde under registrering, vennligst prøv på nytt.';
         if (res.status === 401) {
             errorMessage = 'Denne emailen er allerede i bruk, vennligst benytt en annen.';
         }
@@ -119,8 +118,6 @@ async function submitSignUp(event) {
     }
     return false;
 }
-
-
 
 async function sendResetLink() {
     const email = document.getElementById('reset-email').value;
@@ -157,42 +154,29 @@ async function sendResetLink() {
     }
 }
 
-function displayErrorMessage(containerId, message) {
-    const container = document.getElementById(containerId);
-    const errorMessageDiv = container.querySelector('.error-message');
-    if(errorMessageDiv) {
-        errorMessageDiv.textContent = message;
-    } else {
-        console.error('Error message div not found in the container');
-    }
-}
-
-async function resetPassworxd() {
+async function resetPassword() {
     const newPassword = document.getElementById('new-password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
-    const email = document.getElementById('email').value; // Assuming you have an input field for email
+    const email = document.getElementById('email').value;
     const token = new URLSearchParams(window.location.search).get('token');
 
     if (!email) {
-        alert('Please enter your email.');
+        displayErrorMessage('reset-error-message', 'Vennligst skriv inn epost.');
         return;
     }
     if (!token) {
-        alert('Invalid token. Unable to reset password.');
+        displayErrorMessage('reset-error-message', 'Ikke mulig å nullstille password, prøv ny link.');
         return;
     }
     if (newPassword !== confirmPassword) {
-        alert('Passwords do not match.');
+        displayErrorMessage('reset-error-message', 'Passordene samstiller ikke.');
         return;
     }
-
     const payload = {
         username: email,
         password: newPassword,
         token: token
     };
-
-    console.log('Sending payload:', payload); // Log the payload for debugging
 
     try {
         const response = await fetch('/api/password-reset/reset-password', {
@@ -206,11 +190,21 @@ async function resetPassworxd() {
             window.location.href = '/login.html';
         } else {
             const errorText = await response.text();
-            console.error('Failed to reset password:', errorText); // Log detailed error response
-            throw new Error(errorText || 'Failed to reset password.');
+            console.error('Failed to reset password:', errorText);
+            throw new Error(errorText || 'Feil, greide ikke å nullstille passord.');
         }
     } catch (error) {
         console.error('Fetch Error:', error);
         alert(error.message || 'Failed to reset password. Please try again.');
+    }
+}
+
+function displayErrorMessage(containerId, message) {
+    const container = document.getElementById(containerId);
+    const errorMessageDiv = container.querySelector('.error-message');
+    if(errorMessageDiv) {
+        errorMessageDiv.textContent = message;
+    } else {
+        console.error('Error message div not found in the container');
     }
 }
