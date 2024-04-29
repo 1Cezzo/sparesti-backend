@@ -53,6 +53,8 @@ public class User {
       inverseJoinColumns = @JoinColumn(name = "badge_id"))
   private Set<Badge> earnedBadges;
 
+  private String role;
+
   /**
    * Constructor for converting UserDto to User.
    *

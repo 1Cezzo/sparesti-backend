@@ -4,12 +4,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 @RestController
 @RequestMapping("/api/challenges")
@@ -30,14 +34,15 @@ public class ChallengeController {
   /**
    * Add a challenge to a user.
    *
-   * @param userId the id of the user.
+   * @param token the JWT token.
    * @param challengeId the id of the challenge.
    * @return the updated user DTO.
    */
-  @PostMapping("/users/{userId}/challenges/{challengeId}")
+  @PostMapping("/users/challenges/{challengeId}")
   @Operation(summary = "Add a challenge to a user")
   public ResponseEntity<UserDto> addChallengeToUser(
-      @PathVariable Long userId, @PathVariable Long challengeId) {
+      @AuthenticationPrincipal Jwt token, @PathVariable Long challengeId) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     UserDto userDto = userChallengeService.addChallengeToUser(userId, challengeId);
     return ResponseEntity.ok(userDto);
   }
@@ -45,14 +50,15 @@ public class ChallengeController {
   /**
    * Remove a challenge from a user.
    *
-   * @param userId the id of the user.
+   * @param token the JWT token.
    * @param challengeId the id of the challenge.
    * @return the updated user DTO.
    */
-  @DeleteMapping("/users/{userId}/challenges/{challengeId}")
+  @DeleteMapping("/users/challenges/{challengeId}")
   @Operation(summary = "Remove a challenge from a user")
   public ResponseEntity<UserDto> removeChallengeFromUser(
-      @PathVariable Long userId, @PathVariable Long challengeId) {
+      @AuthenticationPrincipal Jwt token, @PathVariable Long challengeId) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     UserDto userDto = userChallengeService.removeChallengeFromUser(userId, challengeId);
     return ResponseEntity.ok(userDto);
   }
@@ -60,13 +66,14 @@ public class ChallengeController {
   /**
    * Fetch all consumption challenges for a user.
    *
-   * @param userId the id of the user.
+   * @param token the JWT token.
    * @return a list of consumption challenges.
    */
-  @GetMapping("/users/{userId}/consumption-challenges")
+  @GetMapping("/users/consumption-challenges")
   @Operation(summary = "Fetch all consumption challenges for a user")
   public ResponseEntity<List<ConsumptionChallengeDto>> fetchConsumptionChallengesForUser(
-      @PathVariable Long userId) {
+      @AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     List<ConsumptionChallengeDto> consumptionChallenges =
         userChallengeService.fetchConsumptionChallengesForUser(userId);
     return ResponseEntity.ok(consumptionChallenges);
@@ -75,13 +82,14 @@ public class ChallengeController {
   /**
    * Fetch all purchase challenges for a user.
    *
-   * @param userId the id of the user.
+   * @param token the JWT token.
    * @return a list of purchase challenges.
    */
-  @GetMapping("/users/{userId}/purchase-challenges")
+  @GetMapping("/users/purchase-challenges")
   @Operation(summary = "Fetch all purchase challenges for a user")
   public ResponseEntity<List<PurchaseChallengeDto>> fetchPurchaseChallengesForUser(
-      @PathVariable Long userId) {
+      @AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     List<PurchaseChallengeDto> purchaseChallenges =
         userChallengeService.fetchPurchaseChallengesForUser(userId);
     return ResponseEntity.ok(purchaseChallenges);
@@ -90,13 +98,14 @@ public class ChallengeController {
   /**
    * Fetch all saving challenges for a user.
    *
-   * @param userId the id of the user.
+   * @param token the JWT token.
    * @return a list of saving challenges.
    */
-  @GetMapping("/users/{userId}/saving-challenges")
+  @GetMapping("/users/saving-challenges")
   @Operation(summary = "Fetch all saving challenges for a user")
   public ResponseEntity<List<SavingChallengeDto>> fetchSavingChallengesForUser(
-      @PathVariable Long userId) {
+      @AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     List<SavingChallengeDto> savingChallenges =
         userChallengeService.fetchSavingChallengesForUser(userId);
     return ResponseEntity.ok(savingChallenges);
@@ -105,12 +114,13 @@ public class ChallengeController {
   /**
    * Get sorted challenges for a user.
    *
-   * @param userId the id of the user.
+   * @param token the JWT token.
    * @return a list of the challenges.
    */
-  @GetMapping("/users/{userId}/challenges")
+  @GetMapping("/users/challenges")
   @Operation(summary = "Get all challenges for a user")
-  public ResponseEntity getChallengesByUser(@PathVariable Long userId) {
+  public ResponseEntity getChallengesByUser(@AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     List challenges = userChallengeService.getSortedChallengesByUser(userId);
 
     return ResponseEntity.ok(challenges);

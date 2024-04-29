@@ -138,9 +138,15 @@ public class BankService {
    * @throws IllegalArgumentException if an attempt is made to transfer a negative amount.
    */
   @Transactional
-  public void transferMoney(Integer fromAccountNr, Integer toAccountNr, double amount) {
+  public void transferMoney(
+      Integer fromAccountNr, Integer toAccountNr, double amount, Long ownerId) {
     if (amount < 0) {
       throw new IllegalArgumentException("Cannot transfer a negative amount.");
+    }
+    Account fromAccount = findAccountByAccountNr(fromAccountNr);
+    Account toAccount = findAccountByAccountNr(toAccountNr);
+    if (!(fromAccount.getOwnerId().equals(ownerId) && toAccount.getOwnerId().equals(ownerId))) {
+      throw new UnauthorizedException("User does not have access to one or both of these accounts");
     }
 
     TransactionDto fromTransactionDto = new TransactionDto();

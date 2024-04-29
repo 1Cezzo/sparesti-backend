@@ -2,7 +2,8 @@ package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,8 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 @RestController
 @RequestMapping("/api/user-info")
@@ -26,14 +29,17 @@ public class UserInfoController {
 
   @PostMapping("/create")
   @Operation(summary = "Create user info")
-  public ResponseEntity<UserInfoDto> createUserInfo(@RequestBody UserInfoDto userInfoDto) {
+  public ResponseEntity<UserInfoDto> createUserInfo(
+      @AuthenticationPrincipal Jwt token, @RequestBody UserInfoDto userInfoDto) {
+    userInfoDto.setUserId(token.getClaim(USER_ID_CLAIM));
     return ResponseEntity.ok(userInfoService.createUserInfo(userInfoDto));
   }
 
-  @PostMapping("/update/{userId}")
+  @PostMapping("/update")
   @Operation(summary = "Update user info")
   public ResponseEntity<UserInfoDto> updateUserInfo(
-      @PathVariable Long userId, @RequestBody UserInfoDto userInfoDto) {
+      @AuthenticationPrincipal Jwt token, @RequestBody UserInfoDto userInfoDto) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     return ResponseEntity.ok(userInfoService.updateUserInfo(userId, userInfoDto));
   }
 }

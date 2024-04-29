@@ -15,13 +15,14 @@ import edu.ntnu.idi.stud.team10.sparesti.service.BankService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
+
 /** Controller to mock interactions with a bank. */
 @RestController
 @RequestMapping("/api/bank")
 @Tag(name = "Bank", description = "Operations related to the bank mock")
 public class BankController {
   private final BankService bankService;
-  private static final String USER_ID_CLAIM = "userId";
 
   @Autowired
   public BankController(BankService bankService) {
@@ -31,7 +32,8 @@ public class BankController {
   /**
    * Create a new account.
    *
-   * @param accountDto (AccountDto) The account to create
+   * @param accountDto (AccountDto) The account to create.
+   * @param token (Jwt) The JWT token.
    * @return (ResponseEntity&lt;AccountDto&gt;) The created account
    */
   @PutMapping("/account/create")
@@ -61,6 +63,7 @@ public class BankController {
    * Get account details for an account number.
    *
    * @param accountNr (int) The account number
+   * @param token (Jwt) The JWT token
    * @return (ResponseEntity<AccountDto>) The account details
    */
   @GetMapping("/account/details/{accountNr}")
@@ -75,12 +78,13 @@ public class BankController {
   /**
    * Get all accounts for a user.
    *
-   * @param userId (Long) The user ID
+   * @param token (Jwt) The JWT token
    * @return (ResponseEntity<Set<AccountDto>>) The set of account details
    */
-  @GetMapping("/account/all/{userId}")
+  @GetMapping("/account/all")
   @Operation(summary = "Get all accounts for a user.")
-  public ResponseEntity<Set<AccountDto>> getAllAccounts(@PathVariable Long userId) {
+  public ResponseEntity<Set<AccountDto>> getAllAccounts(@AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     Set<AccountDto> accountDetails = bankService.getUserAccounts(userId);
     return ResponseEntity.ok(accountDetails);
   }
@@ -98,8 +102,10 @@ public class BankController {
   public ResponseEntity<String> transferMoney(
       @RequestParam Integer fromAccountNr,
       @RequestParam Integer toAccountNr,
-      @RequestParam double amount) {
-    bankService.transferMoney(fromAccountNr, toAccountNr, amount);
+      @RequestParam double amount,
+      @AuthenticationPrincipal Jwt token) {
+    Long ownerId = token.getClaim(USER_ID_CLAIM);
+    bankService.transferMoney(fromAccountNr, toAccountNr, amount, ownerId);
     return ResponseEntity.ok().body("Transfer successful");
   }
 

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
@@ -12,6 +14,8 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserBudgetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 /** Controller for Budget entities. */
 @RestController
@@ -29,14 +33,15 @@ public class BudgetController {
   /**
    * Add a budget to a user.
    *
-   * @param userId The ID of the user.
+   * @param token The JWT token.
    * @param budgetDTO The budget to add.
    * @return The updated user DTO.
    */
-  @PostMapping("/{userId}/budgets/add")
+  @PostMapping("/budgets/add")
   @Operation(summary = "Add a budget to a user")
   public ResponseEntity<UserDto> addBudgetToUser(
-      @PathVariable Long userId, @RequestBody BudgetDto budgetDTO) {
+      @AuthenticationPrincipal Jwt token, @RequestBody BudgetDto budgetDTO) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     UserDto updatedUserDto = userBudgetService.addBudgetToUser(userId, budgetDTO);
     return ResponseEntity.ok(updatedUserDto);
   }
@@ -44,12 +49,13 @@ public class BudgetController {
   /**
    * Get all budgets for a user.
    *
-   * @param userId The ID of the user.
+   * @param token The JWT token.
    * @return A list of budget DTOs.
    */
-  @GetMapping("/{userId}/budgets")
+  @GetMapping("/budgets")
   @Operation(summary = "Get all budgets for a user")
-  public ResponseEntity<List<BudgetDto>> getAllBudgetsForUser(@PathVariable Long userId) {
+  public ResponseEntity<List<BudgetDto>> getAllBudgetsForUser(@AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     List<BudgetDto> budgets = userBudgetService.getAllBudgetsForUser(userId);
     return ResponseEntity.ok(budgets);
   }
@@ -65,13 +71,14 @@ public class BudgetController {
   /**
    * Delete a budget from a user.
    *
-   * @param userId The ID of the user.
+   * @param token The JWT token.
    * @param budgetId The ID of the budget.
    */
-  @DeleteMapping("/{userId}/budgets/{budgetId}")
+  @DeleteMapping("/budgets/{budgetId}")
   @Operation(summary = "Delete a budget from a user")
   public ResponseEntity<Void> deleteBudgetFromUser(
-      @PathVariable Long userId, @PathVariable Long budgetId) {
+      @AuthenticationPrincipal Jwt token, @PathVariable Long budgetId) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     userBudgetService.deleteBudgetFromUser(userId, budgetId);
     return ResponseEntity.noContent().build();
   }
@@ -79,17 +86,18 @@ public class BudgetController {
   /**
    * Add a budget row to a user's budget.
    *
-   * @param userId The ID of the user.
+   * @param token The JWT token.
    * @param budgetId The ID of the budget.
    * @param budgetRowDTO The budget row to add.
    * @return The updated budget DTO.
    */
-  @PostMapping("/{userId}/budgets/{budgetId}/rows/add")
+  @PostMapping("/budgets/{budgetId}/rows/add")
   @Operation(summary = "Add a budget row to a user's budget")
   public ResponseEntity<BudgetDto> addBudgetRowToUserBudget(
-      @PathVariable Long userId,
+      @AuthenticationPrincipal Jwt token,
       @PathVariable Long budgetId,
       @RequestBody BudgetRowDto budgetRowDTO) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     BudgetDto updatedBudgetDto =
         userBudgetService.addBudgetRowToUserBudget(userId, budgetId, budgetRowDTO);
     return ResponseEntity.ok(updatedBudgetDto);
@@ -98,15 +106,18 @@ public class BudgetController {
   /**
    * Delete a budget row from a user's budget.
    *
-   * @param userId The ID of the user.
+   * @param token The JWT token.
    * @param budgetId The ID of the budget.
    * @param budgetRowId The ID of the budget row.
    * @return ResponseEntity with status code.
    */
-  @DeleteMapping("/{userId}/budgets/{budgetId}/rows/{budgetRowId}")
+  @DeleteMapping("/budgets/{budgetId}/rows/{budgetRowId}")
   @Operation(summary = "Delete a budget row from a user's budget")
   public ResponseEntity<Void> deleteBudgetRowFromUserBudget(
-      @PathVariable Long userId, @PathVariable Long budgetId, @PathVariable Long budgetRowId) {
+      @AuthenticationPrincipal Jwt token,
+      @PathVariable Long budgetId,
+      @PathVariable Long budgetRowId) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     userBudgetService.deleteBudgetRowFromUserBudget(userId, budgetId, budgetRowId);
     return ResponseEntity.noContent().build();
   }
@@ -114,19 +125,20 @@ public class BudgetController {
   /**
    * Edit a budget row in a user's budget.
    *
-   * @param userId The ID of the user.
+   * @param token The JWT token.
    * @param budgetId The ID of the budget.
    * @param budgetRowId The ID of the budget row.
    * @param budgetRowDto The budget row data to update.
    * @return The updated budget row DTO.
    */
-  @PutMapping("/{userId}/budgets/{budgetId}/rows/{budgetRowId}")
+  @PutMapping("/budgets/{budgetId}/rows/{budgetRowId}")
   @Operation(summary = "Edit a budget row in a user's budget")
   public ResponseEntity<BudgetRowDto> editBudgetRowInUserBudget(
-      @PathVariable Long userId,
+      @AuthenticationPrincipal Jwt token,
       @PathVariable Long budgetId,
       @PathVariable Long budgetRowId,
       @RequestBody BudgetRowDto budgetRowDto) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     BudgetRowDto updatedBudgetRowDto =
         userBudgetService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
     return ResponseEntity.ok(updatedBudgetRowDto);

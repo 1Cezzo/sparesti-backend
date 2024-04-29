@@ -15,6 +15,7 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ChallengeGenerator;
 import edu.ntnu.idi.stud.team10.sparesti.util.ChallengeParser;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /**
  * Service for User Challenge entities.
@@ -49,14 +50,12 @@ public class UserChallengeService<T extends Challenge> {
    */
   public UserDto removeChallengeFromUser(Long userId, Long challengeId) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     T challengeToRemove =
         challengeRepository
             .findById(challengeId)
-            .orElseThrow(() -> new IllegalArgumentException("Challenge not found"));
+            .orElseThrow(() -> new NotFoundException("Challenge not found"));
 
     user.removeChallenge(challengeToRemove);
     userRepository.save(user);
@@ -120,9 +119,7 @@ public class UserChallengeService<T extends Challenge> {
    */
   public List<ConsumptionChallengeDto> fetchConsumptionChallengesForUser(Long userId) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     return user.getChallenges().stream()
         .filter(challenge -> challenge instanceof ConsumptionChallenge)
@@ -138,9 +135,7 @@ public class UserChallengeService<T extends Challenge> {
    */
   public List<PurchaseChallengeDto> fetchPurchaseChallengesForUser(Long userId) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     return user.getChallenges().stream()
         .filter(challenge -> challenge instanceof PurchaseChallenge)
@@ -156,9 +151,7 @@ public class UserChallengeService<T extends Challenge> {
    */
   public List<SavingChallengeDto> fetchSavingChallengesForUser(Long userId) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     return user.getChallenges().stream()
         .filter(challenge -> challenge instanceof SavingChallenge)
@@ -175,14 +168,12 @@ public class UserChallengeService<T extends Challenge> {
    */
   public UserDto addChallengeToUser(Long userId, Long challengeId) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     T challenge =
         challengeRepository
             .findById(challengeId)
-            .orElseThrow(() -> new IllegalArgumentException("Challenge not found"));
+            .orElseThrow(() -> new NotFoundException("Challenge not found"));
 
     user.addChallenge(challenge);
     userRepository.save(user);
