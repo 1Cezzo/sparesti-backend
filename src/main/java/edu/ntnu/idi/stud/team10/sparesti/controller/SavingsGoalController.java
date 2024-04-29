@@ -121,13 +121,12 @@ public class SavingsGoalController {
    * Add a savings goal to a user.
    *
    * @param token The JWT access token.
-   * @param savingsGoalDTO The savings goal to add.
-   * @return The updated user DTO.
+   * @param savingsGoalId The ID of the savings goal to add.
    */
-  @PostMapping("/add-user")
+  @PostMapping("/add-user/{savingsGoalId}")
   @Operation(summary = "Add a savings goal to a user")
   public ResponseEntity<Void> addSavingsGoalToUser(
-      @AuthenticationPrincipal Jwt token, @RequestBody Long savingsGoalId) {
+      @AuthenticationPrincipal Jwt token, @PathVariable Long savingsGoalId) {
     Long userId = token.getClaim(USER_ID_CLAIM);
     savingsGoalService.addSavingsGoalToUser(userId, savingsGoalId);
     return ResponseEntity.ok().build();
