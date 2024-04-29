@@ -36,7 +36,7 @@ public class ResourceServerConfig {
         .authorizeHttpRequests(
             authorize ->
                 authorize
-                    .requestMatchers ("/api/sendEmail")
+                    .requestMatchers("/api/sendEmail")
                     .permitAll()
                     .requestMatchers("/api/users/create")
                     .permitAll()

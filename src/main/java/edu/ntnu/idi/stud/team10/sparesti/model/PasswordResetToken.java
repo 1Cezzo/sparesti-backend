@@ -1,9 +1,9 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
-        import java.time.LocalDateTime;
+import java.time.LocalDateTime;
 
-        import jakarta.persistence.*;
-        import lombok.*;
+import jakarta.persistence.*;
+import lombok.*;
 
 /** Represents a password reset token. */
 @AllArgsConstructor
