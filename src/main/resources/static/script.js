@@ -1,105 +1,210 @@
+// Handles all DOMContentLoaded activities
 document.addEventListener("DOMContentLoaded", () => {
-    const modal = document.getElementById('forgot-password-modal');
-    const modalOverlay = document.querySelector('.modal-overlay');
-
-    hideForgotPasswordModal(); // Ensure the modal is hidden initially
-
-    modalOverlay.addEventListener('click', function(event) {
-        if (event.target === modalOverlay) { // Check if the click is on the overlay
-            closeForgotPasswordModal();
-        }
-    });
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        || localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark');
-    }
+    setupDarkModeToggle();
     updateImageSource();
-    document.getElementById('forgot-password').addEventListener('click', showForgotPasswordModal);
-
-    const toggleButton = document.getElementById('toggle-dark-mode');
-    const signUp = document.getElementById('signup-link');
-    const login = document.getElementById('login-link');
-    const signupForm = document.getElementById('signup-form');
-
-    toggleButton.addEventListener('click', function() {
-        if(document.body.classList.toggle('dark')) {
-            localStorage.setItem('darkMode', 'true');
-        } else {
-            localStorage.setItem('darkMode', 'false');
-        }
-        updateImageSource();
-    });
-
-    signUp.addEventListener('click', toggleForm);
-    login.addEventListener('click', toggleForm);
-    signupForm.addEventListener('submit', submitSignUp);
+    setupFormSubmissions();
+    setupModals();
 });
 
-function updateImageSource() {
-    const imageElement = document.getElementById('piggy-bank-image');
-    const darkMode = localStorage.getItem('darkMode');
-    if (darkMode === 'true') {
-        imageElement.src = './images/long-logo-darkmode.png';
+// Toggle visibility between login and signup forms
+function toggleForm() {
+    const signupContainer = document.getElementById('signup-container');
+    const loginContainer = document.getElementById('login-container');
+
+    // Check if the elements exist before attempting to toggle
+    if (signupContainer && loginContainer) {
+        signupContainer.classList.toggle('hidden');
+        loginContainer.classList.toggle('hidden');
     } else {
-        imageElement.src = './images/long-logo.png';
+        console.error('One or both containers not found');
     }
 }
 
-function toggleForm() {
-    document.getElementById('signup-container').classList.toggle('hidden');
-    document.getElementById('login-container').classList.toggle('hidden');
+// Attach event listeners to toggle form visibility
+document.addEventListener("DOMContentLoaded", () => {
+    const signUpLink = document.getElementById('signup-link');
+    const loginLink = document.getElementById('login-link');
+
+    // Listen for click events on signup and login links
+    signUpLink?.addEventListener('click', toggleForm);
+    loginLink?.addEventListener('click', toggleForm);
+});
+
+
+// Toggle Dark Mode and update image source based on the setting
+function setupDarkModeToggle() {
+    const toggleButton = document.getElementById('toggle-dark-mode');
+    if (toggleButton) {
+        toggleButton.addEventListener('click', () => {
+            const isDarkMode = document.body.classList.toggle('dark');
+            localStorage.setItem('darkMode', isDarkMode ? 'true' : 'false');
+            updateImageSource();
+        });
+    }
 }
 
-function hideForgotPasswordModal() {
-    document.getElementById('forgot-password-modal').classList.add('hidden');
+// Update image sources based on dark mode
+function updateImageSource() {
+    const imageElements = document.querySelectorAll('.piggy-bank-image img');
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    imageElements.forEach(img => {
+        img.src = darkMode ? './images/long-logo-darkmode.png' : './images/long-logo.png';
+    });
+}
+
+// Setup form submissions and their specific behaviors
+function setupFormSubmissions() {
+    const signupForm = document.getElementById('signup-form');
+
+    signupForm?.addEventListener('submit', event => submitSignUp(event));
+}
+
+// Handle showing and hiding modals
+function setupModals() {
+    const forgotPasswordButton = document.getElementById('forgot-password');
+    const closeModalButtons = document.querySelectorAll('.cancel-btn');
+
+    forgotPasswordButton?.addEventListener('click', showForgotPasswordModal);
+    closeModalButtons.forEach(button => {
+        button.addEventListener('click', () => closeForgotPasswordModal());
+    });
+}
+
+// Display and hide forgot password modal
+function showForgotPasswordModal() {
+    const modal = document.getElementById('forgot-password-modal');
+    modal?.classList.remove('hidden');
 }
 
 function closeForgotPasswordModal() {
-    document.getElementById('forgot-password-modal').classList.add('hidden');
+    const modal = document.getElementById('forgot-password-modal');
+    modal?.classList.add('hidden');
 }
-
-
-function showForgotPasswordModal() {
-    document.getElementById('forgot-password-modal').classList.remove('hidden');
-}
-
-
-function sendResetLink() {
-    var email = document.getElementById('reset-email').value;
-    if(email) {
-        // Implement your logic for sending a password reset email
-        alert('En passord reset link er blitt sendt til ' + email);
-        closeForgotPasswordModal();
-    } else {
-        alert('Vennligs skriv inn en email.');
-    }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    hideForgotPasswordModal(); // Hide the modal initially
-    // Rest of your code...
-    document.getElementById('forgot-password').addEventListener('click', showForgotPasswordModal);
-});
 
 async function submitSignUp(event) {
     event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('signup-password').value;
+
     const res = await fetch('/api/users/create', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            email: document.getElementById('email').value,
-            password: document.getElementById('signup-password').value
-        })
-    })
+        headers: {'Content-Type': 'application/json'},
+    });
+
+    console.log('Response Status:', res.status);
+
     if (res.ok) {
-        alert("Success!")
         toggleForm();
     } else {
-        console.error('Failed to create user');
+        let errorMessage = 'En feil skjedde under registrering, vennligst prøv på nytt.';
+        if (res.status === 401) {
+            errorMessage = 'Denne emailen er allerede i bruk, vennligst benytt en annen.';
+        }
+
+        if (res.headers.get("Content-Type")?.includes("application/json")) {
+            try {
+                const data = await res.json();
+                console.log('Error Data:', data);
+                if (data && data.message) {
+                    errorMessage = data.message;
+                }
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+            }
+        }
+
+        displayErrorMessage('signup-container', errorMessage);
     }
     return false;
 }
 
+async function sendResetLink() {
+    const email = document.getElementById('reset-email').value;
+    if (!email) {
+        alert('Please enter an email address.');
+        return;
+    }
 
+    const url = `/api/sendEmail?to=${encodeURIComponent(email)}`;
+
+    try {
+        console.log('Sending email to:', email); // Debug: log the email being sent
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Accept': '*/*'
+            }
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Response Data:', responseData); // Debug: log response data
+            alert(`A password reset link has been sent to ${email}`);
+        } else {
+            const error = await response.text();
+            console.error('Error response text:', error); // Debug: log error text
+            throw new Error(`Failed to send email: ${error}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to send password reset link. Please try again.');
+    } finally {
+        closeForgotPasswordModal();
+    }
+}
+
+async function resetPassword() {
+    const newPassword = document.getElementById('new-password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const email = document.getElementById('email').value;
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    if (!email) {
+        displayErrorMessage('reset-error-message', 'Vennligst skriv inn epost.');
+        return;
+    }
+    if (!token) {
+        displayErrorMessage('reset-error-message', 'Ikke mulig å nullstille password, prøv ny link.');
+        return;
+    }
+    if (newPassword !== confirmPassword) {
+        displayErrorMessage('reset-error-message', 'Passordene samstiller ikke.');
+        return;
+    }
+    const payload = {
+        username: email,
+        password: newPassword,
+        token: token
+    };
+
+    try {
+        const response = await fetch('/api/password-reset/reset-password', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            alert('Your password has been reset successfully.');
+            window.location.href = '/login.html';
+        } else {
+            const errorText = await response.text();
+            console.error('Failed to reset password:', errorText);
+            throw new Error(errorText || 'Feil, greide ikke å nullstille passord.');
+        }
+    } catch (error) {
+        console.error('Fetch Error:', error);
+        alert(error.message || 'Failed to reset password. Please try again.');
+    }
+}
+
+function displayErrorMessage(containerId, message) {
+    const container = document.getElementById(containerId);
+    const errorMessageDiv = container.querySelector('.error-message');
+    if(errorMessageDiv) {
+        errorMessageDiv.textContent = message;
+    } else {
+        console.error('Error message div not found in the container');
+    }
+}
