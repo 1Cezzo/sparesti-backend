@@ -13,9 +13,9 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.model.*;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
-import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import edu.ntnu.idi.stud.team10.sparesti.util.ChallengeGenerator;
 import edu.ntnu.idi.stud.team10.sparesti.util.ChallengeParser;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /**
  * Service for User Challenge entities.
@@ -106,18 +106,6 @@ public class UserChallengeService<T extends Challenge> {
             // If expiry dates are the same, sort by challenge ID
             return Long.compare(a.getId(), b.getId());
           }
-          if (!a.isCompleted() && b.isCompleted()) {
-            return 1; // b comes before a if b is completed and a is not
-          }
-
-          // If completion status is the same, sort by expiry date
-          int dateComparison = b.getExpiryDate().compareTo(a.getExpiryDate());
-          if (dateComparison != 0) {
-            return dateComparison; // If expiry dates are different, return the comparison result
-          }
-
-          // If expiry dates are the same, sort by challenge ID
-          return Long.compare(a.getId(), b.getId());
         });
 
     return allChallenges;

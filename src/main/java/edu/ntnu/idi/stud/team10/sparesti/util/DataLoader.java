@@ -33,7 +33,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
       UserService userService,
       ConsumptionChallengeService consumptionChallengeService,
       UserChallengeService userChallengeService,
-      UserRepository userRepository) {
+      UserRepository userRepository,
       SavingTipService savingTipService) {
     this.badgeService = badgeService;
     this.userBadgeService = userBadgeService;
