@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
+import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserSavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.service.SavingsGoalService;
@@ -38,7 +38,7 @@ public class SavingsGoalController {
    */
   @PostMapping
   @Operation(summary = "Create a new savings goal")
-  public ResponseEntity<SavingsGoal> createSavingsGoal(@RequestBody SavingsGoalDTO savingsGoalDTO) {
+  public ResponseEntity<SavingsGoal> createSavingsGoal(@RequestBody SavingsGoalDto savingsGoalDTO) {
     SavingsGoal savingsGoal = savingsGoalService.createSavingsGoal(savingsGoalDTO);
     return new ResponseEntity<>(savingsGoal, HttpStatus.CREATED);
   }
@@ -78,7 +78,7 @@ public class SavingsGoalController {
   @PutMapping("/{id}")
   @Operation(summary = "Update a savings goal by its ID")
   public ResponseEntity<SavingsGoal> updateSavingsGoal(
-      @PathVariable Long id, @RequestBody SavingsGoalDTO savingsGoalDTO) {
+      @PathVariable Long id, @RequestBody SavingsGoalDto savingsGoalDTO) {
     SavingsGoal updatedSavingsGoal = savingsGoalService.updateSavingsGoal(id, savingsGoalDTO);
     return ResponseEntity.ok(updatedSavingsGoal);
   }
@@ -136,8 +136,8 @@ public class SavingsGoalController {
    */
   @GetMapping("/{userId}/savings-goals")
   @Operation(summary = "Get all savings goals for a user")
-  public ResponseEntity<List<SavingsGoalDTO>> getAllSavingsGoalsForUser(@PathVariable Long userId) {
-    List<SavingsGoalDTO> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
+  public ResponseEntity<List<SavingsGoalDto>> getAllSavingsGoalsForUser(@PathVariable Long userId) {
+    List<SavingsGoalDto> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
     return ResponseEntity.ok(savingsGoals);
   }
 

@@ -44,7 +44,7 @@ public class ChallengeServiceTest {
     Challenge createdChallenge = challengeService.createChallenge(challenge);
 
     assertNotNull(createdChallenge);
-    assertEquals(0.0, createdChallenge.getSavedAmount());
+    assertEquals(0.0, createdChallenge.getUsedAmount());
     assertFalse(createdChallenge.isCompleted());
   }
 
@@ -69,18 +69,18 @@ public class ChallengeServiceTest {
   public void testAddToSavedAmount() {
     Challenge challenge = new Challenge();
     challenge.setId(1L);
-    challenge.setSavedAmount(50.0);
+    challenge.setUsedAmount(50.0);
     challenge.setTargetAmount(100.0);
     when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
 
     challengeService.addToSavedAmount(1L, 25.0);
 
-    assertEquals(75.0, challenge.getSavedAmount());
+    assertEquals(75.0, challenge.getUsedAmount());
     assertFalse(challenge.isCompleted());
 
     challengeService.addToSavedAmount(1L, 30.0); // Change this line
 
-    assertEquals(105.0, challenge.getSavedAmount()); // And this line
+    assertEquals(105.0, challenge.getUsedAmount()); // And this line
     assertTrue(challenge.isCompleted());
   }
 

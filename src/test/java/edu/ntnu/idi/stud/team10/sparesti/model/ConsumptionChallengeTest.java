@@ -16,7 +16,7 @@ public class ConsumptionChallengeTest {
   private ConsumptionChallenge consumptionChallenge;
   private final String testDescription = "Test Description";
   private final double testTargetAmount = 500.0;
-  private final double testSavedAmount = 100.0;
+  private final double testUsedAmount = 100.0;
   private final String testMediaUrl = "http://example.com";
   private final TimeInterval testTimeInterval = TimeInterval.WEEKLY;
   private final DifficultyLevel testDifficultyLevel = DifficultyLevel.EASY;
@@ -30,7 +30,7 @@ public class ConsumptionChallengeTest {
     consumptionChallenge = new ConsumptionChallenge();
     consumptionChallenge.setDescription(testDescription);
     consumptionChallenge.setTargetAmount(testTargetAmount);
-    consumptionChallenge.setSavedAmount(testSavedAmount);
+    consumptionChallenge.setUsedAmount(testUsedAmount);
     consumptionChallenge.setMediaUrl(testMediaUrl);
     consumptionChallenge.setTimeInterval(testTimeInterval);
     consumptionChallenge.setDifficultyLevel(testDifficultyLevel);
@@ -45,7 +45,7 @@ public class ConsumptionChallengeTest {
     assertNotNull(consumptionChallenge);
     assertEquals(testDescription, consumptionChallenge.getDescription());
     assertEquals(testTargetAmount, consumptionChallenge.getTargetAmount());
-    assertEquals(testSavedAmount, consumptionChallenge.getSavedAmount());
+    assertEquals(testUsedAmount, consumptionChallenge.getUsedAmount());
     assertEquals(testMediaUrl, consumptionChallenge.getMediaUrl());
     assertEquals(testTimeInterval, consumptionChallenge.getTimeInterval());
     assertEquals(testDifficultyLevel, consumptionChallenge.getDifficultyLevel());

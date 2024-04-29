@@ -10,14 +10,14 @@ import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ChallengeDTOTest {
+public class ChallengeDtoTest {
 
   @Test
   public void shouldConvertToEntityWithSameValues() {
-    ChallengeDTO challengeDto = new ChallengeDTO();
+    ChallengeDto challengeDto = new ChallengeDto();
     challengeDto.setDescription("Test Challenge");
     challengeDto.setTargetAmount(1000.0);
-    challengeDto.setSavedAmount(500.0);
+    challengeDto.setUsedAmount(500.0);
     challengeDto.setMediaUrl("https://example.com/image.jpg");
     challengeDto.setTimeInterval(TimeInterval.MONTHLY);
     challengeDto.setDifficultyLevel(DifficultyLevel.MEDIUM);
@@ -28,7 +28,7 @@ public class ChallengeDTOTest {
 
     assertEquals(challengeDto.getDescription(), challenge.getDescription());
     assertEquals(challengeDto.getTargetAmount(), challenge.getTargetAmount());
-    assertEquals(challengeDto.getSavedAmount(), challenge.getSavedAmount());
+    assertEquals(challengeDto.getUsedAmount(), challenge.getUsedAmount());
     assertEquals(challengeDto.getMediaUrl(), challenge.getMediaUrl());
     assertEquals(challengeDto.getTimeInterval(), challenge.getTimeInterval());
     assertEquals(challengeDto.getDifficultyLevel(), challenge.getDifficultyLevel());
@@ -38,10 +38,10 @@ public class ChallengeDTOTest {
 
   @Test
   public void shouldCreateEntityWithNullValuesWhenDtoFieldsAreNull() {
-    ChallengeDTO challengeDto = new ChallengeDTO();
+    ChallengeDto challengeDto = new ChallengeDto();
     challengeDto.setDescription(null);
     challengeDto.setTargetAmount(0.0);
-    challengeDto.setSavedAmount(0.0);
+    challengeDto.setUsedAmount(0.0);
     challengeDto.setMediaUrl(null);
     challengeDto.setTimeInterval(null);
     challengeDto.setDifficultyLevel(null);
@@ -52,7 +52,7 @@ public class ChallengeDTOTest {
 
     assertNull(challenge.getDescription());
     assertEquals(0.0, challenge.getTargetAmount());
-    assertEquals(0.0, challenge.getSavedAmount());
+    assertEquals(0.0, challenge.getUsedAmount());
     assertNull(challenge.getMediaUrl());
     assertNull(challenge.getTimeInterval());
     assertNull(challenge.getDifficultyLevel());
@@ -62,38 +62,38 @@ public class ChallengeDTOTest {
 
   @Test
   public void shouldReturnTrueWhenComparingSameInstance() {
-    ChallengeDTO challengeDto = new ChallengeDTO();
+    ChallengeDto challengeDto = new ChallengeDto();
     assertTrue(challengeDto.equals(challengeDto));
   }
 
   @Test
   public void shouldReturnFalseWhenComparingWithNull() {
-    ChallengeDTO challengeDto = new ChallengeDTO();
+    ChallengeDto challengeDto = new ChallengeDto();
     assertFalse(challengeDto.equals(null));
   }
 
   @Test
   public void shouldReturnFalseWhenComparingWithDifferentType() {
-    ChallengeDTO challengeDto = new ChallengeDTO();
+    ChallengeDto challengeDto = new ChallengeDto();
     assertFalse(challengeDto.equals("test"));
   }
 
   @Test
   public void shouldReturnTrueWhenComparingEqualObjects() {
-    ChallengeDTO challengeDto1 = new ChallengeDTO();
+    ChallengeDto challengeDto1 = new ChallengeDto();
     challengeDto1.setDescription("Test Challenge");
     challengeDto1.setTargetAmount(1000.0);
-    challengeDto1.setSavedAmount(500.0);
+    challengeDto1.setUsedAmount(500.0);
     challengeDto1.setMediaUrl("https://example.com/image.jpg");
     challengeDto1.setTimeInterval(TimeInterval.MONTHLY);
     challengeDto1.setDifficultyLevel(DifficultyLevel.MEDIUM);
     challengeDto1.setExpiryDate(LocalDate.now().plusMonths(1));
     challengeDto1.setCompleted(false);
 
-    ChallengeDTO challengeDto2 = new ChallengeDTO();
+    ChallengeDto challengeDto2 = new ChallengeDto();
     challengeDto2.setDescription("Test Challenge");
     challengeDto2.setTargetAmount(1000.0);
-    challengeDto2.setSavedAmount(500.0);
+    challengeDto2.setUsedAmount(500.0);
     challengeDto2.setMediaUrl("https://example.com/image.jpg");
     challengeDto2.setTimeInterval(TimeInterval.MONTHLY);
     challengeDto2.setDifficultyLevel(DifficultyLevel.MEDIUM);
@@ -106,20 +106,20 @@ public class ChallengeDTOTest {
 
   @Test
   public void shouldReturnSameHashCodeForEqualObjects() {
-    ChallengeDTO challengeDto1 = new ChallengeDTO();
+    ChallengeDto challengeDto1 = new ChallengeDto();
     challengeDto1.setDescription("Test Challenge");
     challengeDto1.setTargetAmount(1000.0);
-    challengeDto1.setSavedAmount(500.0);
+    challengeDto1.setUsedAmount(500.0);
     challengeDto1.setMediaUrl("https://example.com/image.jpg");
     challengeDto1.setTimeInterval(TimeInterval.MONTHLY);
     challengeDto1.setDifficultyLevel(DifficultyLevel.MEDIUM);
     challengeDto1.setExpiryDate(LocalDate.now().plusMonths(1));
     challengeDto1.setCompleted(false);
 
-    ChallengeDTO challengeDto2 = new ChallengeDTO();
+    ChallengeDto challengeDto2 = new ChallengeDto();
     challengeDto2.setDescription("Test Challenge");
     challengeDto2.setTargetAmount(1000.0);
-    challengeDto2.setSavedAmount(500.0);
+    challengeDto2.setUsedAmount(500.0);
     challengeDto2.setMediaUrl("https://example.com/image.jpg");
     challengeDto2.setTimeInterval(TimeInterval.MONTHLY);
     challengeDto2.setDifficultyLevel(DifficultyLevel.MEDIUM);

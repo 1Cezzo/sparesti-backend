@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.SavingChallengeDTO;
+import edu.ntnu.idi.stud.team10.sparesti.dto.SavingChallengeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
@@ -36,7 +36,7 @@ public class SavingChallengeService extends ChallengeService<SavingChallenge> {
    * @param savingChallengeDTO the DTO representing the saving challenge to update.
    * @return the updated saving challenge.
    */
-  public SavingChallenge updateSavingChallenge(Long id, SavingChallengeDTO savingChallengeDTO) {
+  public SavingChallenge updateSavingChallenge(Long id, SavingChallengeDto savingChallengeDTO) {
     SavingChallenge updatedEntity = savingChallengeDTO.toEntity();
     return super.updateChallenge(id, updatedEntity);
   }

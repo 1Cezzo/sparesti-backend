@@ -34,8 +34,8 @@ public class Challenge {
   @Column(name = "target_amount", nullable = false)
   private double targetAmount;
 
-  @Column(name = "saved_amount", nullable = false)
-  private double savedAmount;
+  @Column(name = "used_amount", nullable = false)
+  private double usedAmount;
 
   @Column(name = "media_url")
   private String mediaUrl;

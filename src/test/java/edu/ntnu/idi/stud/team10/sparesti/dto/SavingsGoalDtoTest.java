@@ -11,14 +11,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SavingsGoalDTOTest {
+public class SavingsGoalDtoTest {
 
-  private SavingsGoalDTO savingsGoalDto1;
-  private SavingsGoalDTO savingsGoalDto2;
+  private SavingsGoalDto savingsGoalDto1;
+  private SavingsGoalDto savingsGoalDto2;
 
   @BeforeEach
   public void setUp() {
-    savingsGoalDto1 = new SavingsGoalDTO();
+    savingsGoalDto1 = new SavingsGoalDto();
     savingsGoalDto1.setName("Test Savings Goal");
     savingsGoalDto1.setTargetAmount(1000.0);
     savingsGoalDto1.setSavedAmount(500.0);
@@ -26,7 +26,7 @@ public class SavingsGoalDTOTest {
     savingsGoalDto1.setDeadline(LocalDate.now().plusMonths(6));
     savingsGoalDto1.setCompleted(false);
 
-    savingsGoalDto2 = new SavingsGoalDTO();
+    savingsGoalDto2 = new SavingsGoalDto();
     savingsGoalDto2.setName("Test Savings Goal");
     savingsGoalDto2.setTargetAmount(1000.0);
     savingsGoalDto2.setSavedAmount(500.0);

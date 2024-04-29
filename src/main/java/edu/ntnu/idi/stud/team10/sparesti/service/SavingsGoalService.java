@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDTO;
+import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserSavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
@@ -44,7 +44,7 @@ public class SavingsGoalService {
    * @throws IllegalArgumentException if the target amount is less than or equal to 0
    * @return the created savings goal
    */
-  public SavingsGoal createSavingsGoal(SavingsGoalDTO savingsGoalDTO) {
+  public SavingsGoal createSavingsGoal(SavingsGoalDto savingsGoalDTO) {
     SavingsGoal savingsGoal = savingsGoalDTO.toEntity();
     if (savingsGoalDTO.getTargetAmount() <= 0) {
       throw new IllegalArgumentException("Target amount must be greater than 0");
@@ -82,7 +82,7 @@ public class SavingsGoalService {
    *     goal is null.
    * @return the updated savings goal
    */
-  public SavingsGoal updateSavingsGoal(Long id, SavingsGoalDTO savingsGoalDTO) {
+  public SavingsGoal updateSavingsGoal(Long id, SavingsGoalDto savingsGoalDTO) {
     SavingsGoal savingsGoal =
         savingsGoalRepository
             .findById(id)
@@ -221,13 +221,13 @@ public class SavingsGoalService {
    * @return A list of savings goal DTOs.
    * @throws NotFoundException If the user does not exist.
    */
-  public List<SavingsGoalDTO> getAllSavingsGoalsForUser(Long userId) {
+  public List<SavingsGoalDto> getAllSavingsGoalsForUser(Long userId) {
     List<UserSavingsGoal> userSavingsGoals = userSavingsGoalRepository.findByUserId(userId);
 
-    List<SavingsGoalDTO> savingsGoalDTOs = new ArrayList<>();
+    List<SavingsGoalDto> savingsGoalDtos = new ArrayList<>();
     for (UserSavingsGoal userSavingsGoal : userSavingsGoals) {
       SavingsGoal savingsGoal = userSavingsGoal.getSavingsGoal();
-      SavingsGoalDTO savingsGoalDTO = new SavingsGoalDTO();
+      SavingsGoalDto savingsGoalDTO = new SavingsGoalDto();
       savingsGoalDTO.setId(savingsGoal.getId());
       savingsGoalDTO.setName(savingsGoal.getName());
       savingsGoalDTO.setTargetAmount(savingsGoal.getTargetAmount());
@@ -235,10 +235,10 @@ public class SavingsGoalService {
       savingsGoalDTO.setMediaUrl(savingsGoal.getMediaUrl());
       savingsGoalDTO.setDeadline(savingsGoal.getDeadline());
       savingsGoalDTO.setCompleted(savingsGoal.isCompleted());
-      savingsGoalDTOs.add(savingsGoalDTO);
+      savingsGoalDtos.add(savingsGoalDTO);
     }
 
-    return savingsGoalDTOs;
+    return savingsGoalDtos;
   }
 
   /**

@@ -18,7 +18,7 @@ public class UserDto {
   private Integer checkingAccountNr;
   private Integer savingsAccountNr;
   private Double totalSavings;
-  private List<ChallengeDTO> challenges;
+  private List<ChallengeDto> challenges;
 
   /**
    * Constructor for converting User entity to UserDto. Does not include password.
@@ -34,7 +34,7 @@ public class UserDto {
     this.totalSavings = user.getTotalSavings();
     if (user.getChallenges() != null) {
       this.challenges =
-          user.getChallenges().stream().map(ChallengeDTO::new).collect(Collectors.toList());
+          user.getChallenges().stream().map(ChallengeDto::new).collect(Collectors.toList());
     } else {
       this.challenges = null;
     }

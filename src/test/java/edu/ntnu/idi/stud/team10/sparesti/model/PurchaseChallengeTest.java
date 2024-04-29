@@ -16,7 +16,7 @@ public class PurchaseChallengeTest {
   private PurchaseChallenge purchaseChallenge;
   private final String testDescription = "Test Description";
   private final double testTargetAmount = 500.0;
-  private final double testSavedAmount = 100.0;
+  private final double testUsedAmount = 100.0;
   private final String testMediaUrl = "http://example.com";
   private final TimeInterval testTimeInterval = TimeInterval.WEEKLY;
   private final DifficultyLevel testDifficultyLevel = DifficultyLevel.EASY;
@@ -29,7 +29,7 @@ public class PurchaseChallengeTest {
     purchaseChallenge = new PurchaseChallenge();
     purchaseChallenge.setDescription(testDescription);
     purchaseChallenge.setTargetAmount(testTargetAmount);
-    purchaseChallenge.setSavedAmount(testSavedAmount);
+    purchaseChallenge.setUsedAmount(testUsedAmount);
     purchaseChallenge.setMediaUrl(testMediaUrl);
     purchaseChallenge.setTimeInterval(testTimeInterval);
     purchaseChallenge.setDifficultyLevel(testDifficultyLevel);
@@ -43,7 +43,7 @@ public class PurchaseChallengeTest {
     assertNotNull(purchaseChallenge);
     assertEquals(testDescription, purchaseChallenge.getDescription());
     assertEquals(testTargetAmount, purchaseChallenge.getTargetAmount());
-    assertEquals(testSavedAmount, purchaseChallenge.getSavedAmount());
+    assertEquals(testUsedAmount, purchaseChallenge.getUsedAmount());
     assertEquals(testMediaUrl, purchaseChallenge.getMediaUrl());
     assertEquals(testTimeInterval, purchaseChallenge.getTimeInterval());
     assertEquals(testDifficultyLevel, purchaseChallenge.getDifficultyLevel());
