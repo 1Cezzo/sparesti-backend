@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
+import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 
@@ -49,6 +50,8 @@ public class SavingsGoalServiceTest {
 
   @Test
   public void testCreateSavingsGoal_ValidInput_ReturnsSavingsGoal() {
+    User user = new User();
+    user.setId(1L);
     SavingsGoalDto savingsGoalDTO = new SavingsGoalDto();
     savingsGoalDTO.setTargetAmount(1000);
 
@@ -58,7 +61,8 @@ public class SavingsGoalServiceTest {
 
     when(savingsGoalRepository.save(any())).thenReturn(savedSavingsGoal);
 
-    SavingsGoal createdSavingsGoal = savingsGoalService.createSavingsGoal(savingsGoalDTO);
+    SavingsGoal createdSavingsGoal =
+        savingsGoalService.createSavingsGoal(savingsGoalDTO, user.getId());
 
     assertNotNull(createdSavingsGoal);
     assertEquals(savedSavingsGoal.getId(), createdSavingsGoal.getId());
