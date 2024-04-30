@@ -6,10 +6,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
@@ -20,6 +22,7 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 public class UserBudgetServiceTest {
 
   @InjectMocks private UserBudgetService userBudgetService;
@@ -30,9 +33,12 @@ public class UserBudgetServiceTest {
 
   @Mock private BudgetRowRepository budgetRowRepository;
 
+  @Mock private UserMapper userMapper;
+
   @BeforeEach
   public void setup() {
-    MockitoAnnotations.openMocks(this);
+    when(userMapper.toDto(any(User.class))).thenReturn(new UserDto());
+    when(userMapper.toEntity(any(UserDto.class))).thenReturn(new User());
   }
 
   @Test

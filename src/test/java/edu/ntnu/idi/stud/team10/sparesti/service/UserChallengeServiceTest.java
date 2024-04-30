@@ -7,10 +7,12 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.*;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
@@ -20,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest
 public class UserChallengeServiceTest {
 
   @Mock private ChallengeRepository<Challenge> challengeRepository;
@@ -30,14 +33,14 @@ public class UserChallengeServiceTest {
 
   @Mock private ChatGPTService chatGPTService;
 
-  private UserChallengeService<Challenge> userChallengeService;
+  @Mock private UserMapper userMapper;
+
+  @InjectMocks private UserChallengeService<Challenge> userChallengeService;
 
   @BeforeEach
   public void setUp() {
-    MockitoAnnotations.openMocks(this);
-    userChallengeService =
-        new UserChallengeService<>(
-            challengeRepository, userRepository, userInfoService, chatGPTService);
+    when(userMapper.toDto(any(User.class))).thenReturn(new UserDto());
+    when(userMapper.toEntity(any(UserDto.class))).thenReturn(new User());
   }
 
   @Test

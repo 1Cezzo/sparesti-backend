@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
@@ -26,14 +27,18 @@ public class UserBudgetService {
 
   private final BudgetRowRepository budgetRowRepository;
 
+  private final UserMapper userMapper;
+
   @Autowired
   public UserBudgetService(
       UserRepository userRepository,
       BudgetRepository budgetRepository,
-      BudgetRowRepository budgetRowRepository) {
+      BudgetRowRepository budgetRowRepository,
+      UserMapper userMapper) {
     this.userRepository = userRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
+    this.userMapper = userMapper;
   }
 
   /**
@@ -52,7 +57,7 @@ public class UserBudgetService {
     Budget budget = budgetDto.toEntity();
     budget.setUser(user);
     budgetRepository.save(budget);
-    return new UserDto(user);
+    return userMapper.toDto(user);
   }
 
   /**

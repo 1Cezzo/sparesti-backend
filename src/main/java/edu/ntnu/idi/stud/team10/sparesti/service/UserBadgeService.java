@@ -1,6 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.model.UserBadge;
@@ -27,15 +27,18 @@ public class UserBadgeService {
   private final BadgeRepository badgeRepository;
   private final UserRepository userRepository;
   private final UserBadgeRepository userBadgeRepository;
+  private final UserMapper userMapper;
 
   @Autowired
   public UserBadgeService(
       BadgeRepository badgeRepository,
       UserRepository userRepository,
-      UserBadgeRepository userBadgeRepository) {
+      UserBadgeRepository userBadgeRepository,
+      UserMapper userMapper) {
     this.badgeRepository = badgeRepository;
     this.userRepository = userRepository;
     this.userBadgeRepository = userBadgeRepository;
+    this.userMapper = userMapper;
   }
 
   /**
@@ -122,27 +125,9 @@ public class UserBadgeService {
         .map(
             userBadge -> {
               Map<String, Object> userData = new HashMap<>();
-              userData.put("user", new UserDto(userBadge.getUser()));
+              userData.put("user", userMapper.toDto(userBadge.getUser()));
               return userData;
             })
         .toList();
-  }
-
-  @Transactional
-  public void deleteBadgeWithAssociatedUserBadges(Long badgeId) {
-    // Retrieve the badge
-    Badge badge =
-        badgeRepository
-            .findById(badgeId)
-            .orElseThrow(() -> new NotFoundException("Badge with ID " + badgeId + " not found."));
-
-    // Retrieve all user_badges associated with the badge
-    List<UserBadge> associatedUserBadges = userBadgeRepository.findByBadgeId(badgeId);
-
-    // Delete each associated user_badges record
-    userBadgeRepository.deleteAll(associatedUserBadges);
-
-    // Once all associated user_badges records are deleted, delete the badge
-    badgeRepository.delete(badge);
   }
 }

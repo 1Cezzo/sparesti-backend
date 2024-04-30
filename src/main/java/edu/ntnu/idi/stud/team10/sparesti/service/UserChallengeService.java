@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.*;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
@@ -27,18 +28,21 @@ public class UserChallengeService<T extends Challenge> {
 
   private final ChallengeRepository<T> challengeRepository;
   private final UserRepository userRepository;
-  private UserInfoService userInfoService;
-  private ChatGPTService chatGPTService;
+  private final UserInfoService userInfoService;
+  private final ChatGPTService chatGPTService;
+  private final UserMapper userMapper;
 
   public UserChallengeService(
       ChallengeRepository<T> challengeRepository,
       UserRepository userRepository,
       UserInfoService userInfoService,
-      ChatGPTService chatGPTService) {
+      ChatGPTService chatGPTService,
+      UserMapper userMapper) {
     this.challengeRepository = challengeRepository;
     this.userRepository = userRepository;
     this.userInfoService = userInfoService;
     this.chatGPTService = chatGPTService;
+    this.userMapper = userMapper;
   }
 
   /**
@@ -60,7 +64,7 @@ public class UserChallengeService<T extends Challenge> {
     user.removeChallenge(challengeToRemove);
     userRepository.save(user);
 
-    return new UserDto(user);
+    return userMapper.toDto(user);
   }
 
   /**
@@ -178,7 +182,7 @@ public class UserChallengeService<T extends Challenge> {
     user.addChallenge(challenge);
     userRepository.save(user);
 
-    return new UserDto(user);
+    return userMapper.toDto(user);
   }
 
   /**

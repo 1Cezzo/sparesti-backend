@@ -2,7 +2,6 @@ package edu.ntnu.idi.stud.team10.sparesti.util;
 
 import java.util.List;
 
-import org.hibernate.Hibernate;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -52,7 +51,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
   private void resetBadges() {
     List<Badge> allBadges = badgeService.getAllBadges();
     for (Badge badge : allBadges) {
-      userBadgeService.deleteBadgeWithAssociatedUserBadges(badge.getId());
+      badgeService.deleteBadgeById(badge.getId());
     }
     badgeService.deleteAllBadges(); // Implement this method in BadgeService to delete all badges
   }
@@ -62,8 +61,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     createSavingTips(); // works only if DB is empty
 
     try {
-      UserDto adminUser = userService.getUserByEmail("admin@admin");
-      Hibernate.initialize(adminUser.getChallenges());
+      userService.getUserByEmail("admin@admin");
     } catch (NotFoundException e) {
       // User not found, proceed with creating the admin user
       // The admin is created normally, then elevated to admin status manually

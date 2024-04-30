@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.model.UserBadge;
@@ -28,10 +30,15 @@ public class UserBadgeServiceTest {
 
   @Mock private UserBadgeRepository userBadgeRepository;
 
+  @Mock private UserMapper userMapper;
+
   @InjectMocks private UserBadgeService userBadgeService;
 
   @BeforeEach
-  public void setUp() {}
+  public void setUp() {
+    when(userMapper.toDto(any(User.class))).thenReturn(new UserDto());
+    when(userMapper.toEntity(any(UserDto.class))).thenReturn(new User());
+  }
 
   @Test
   public void testGetAllBadgesByUserId() {
@@ -95,24 +102,5 @@ public class UserBadgeServiceTest {
     assertNotNull(result);
     assertEquals(1, result.size());
     verify(userBadgeRepository, times(1)).findByBadgeId(1L);
-  }
-
-  @Test
-  public void testDeleteBadgeWithAssociatedUserBadges() {
-    Badge badge = new Badge();
-    UserBadge userBadge = new UserBadge();
-    userBadge.setBadge(badge);
-
-    List<UserBadge> associatedUserBadges = new ArrayList<>();
-    associatedUserBadges.add(userBadge);
-
-    when(badgeRepository.findById(anyLong())).thenReturn(Optional.of(badge));
-    when(userBadgeRepository.findByBadgeId(anyLong())).thenReturn(associatedUserBadges);
-
-    assertDoesNotThrow(() -> userBadgeService.deleteBadgeWithAssociatedUserBadges(1L));
-    verify(badgeRepository, times(1)).findById(1L);
-    verify(userBadgeRepository, times(1)).findByBadgeId(1L);
-    verify(userBadgeRepository, times(1)).delete(userBadge);
-    verify(badgeRepository, times(1)).delete(badge);
   }
 }

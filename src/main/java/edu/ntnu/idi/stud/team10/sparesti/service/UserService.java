@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
@@ -24,6 +25,7 @@ public class UserService implements UserDetailsService {
   private final PasswordEncoder passwordEncoder;
   private final MockDataService mockDataService;
   private final BankService bankService;
+  private final UserMapper userMapper;
 
   /**
    * Constructor for UserService, with automatic injection of dependencies.
@@ -35,11 +37,13 @@ public class UserService implements UserDetailsService {
       UserRepository userRepository,
       BCryptPasswordEncoder passwordEncoder,
       MockDataService mockDataService,
-      BankService bankService) {
+      BankService bankService,
+      UserMapper userMapper) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.mockDataService = mockDataService;
     this.bankService = bankService;
+    this.userMapper = userMapper;
   }
 
   /**
@@ -55,9 +59,9 @@ public class UserService implements UserDetailsService {
       throw new IllegalArgumentException("UserDto cannot be null");
     }
     userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-    User newUser = new User(userDto);
+    User newUser = userMapper.toEntity(userDto);
     newUser.setTotalSavings(0.0);
-    return new UserDto(userRepository.save(newUser));
+    return userMapper.toDto(userRepository.save(newUser));
   }
 
   /**
@@ -69,7 +73,7 @@ public class UserService implements UserDetailsService {
    */
   public UserDto getUserById(Long id) {
     User foundUser = findUserById(id);
-    return new UserDto(foundUser);
+    return userMapper.toDto(foundUser);
   }
 
   /**
@@ -103,7 +107,7 @@ public class UserService implements UserDetailsService {
               validateMockAccount(accountNr, userToUpdate.getId());
               userToUpdate.setSavingsAccountNr(accountNr);
             });
-    return new UserDto(userRepository.save(userToUpdate));
+    return userMapper.toDto(userRepository.save(userToUpdate));
   }
 
   /**
@@ -132,7 +136,7 @@ public class UserService implements UserDetailsService {
             .findByEmail(email)
             .orElseThrow(() -> new NotFoundException("User not found"));
 
-    return new UserDto(foundUser);
+    return userMapper.toDto(foundUser);
   }
 
   /**
@@ -183,7 +187,7 @@ public class UserService implements UserDetailsService {
       UserDto user = getUserByEmail(loginRequest.getUsername());
       String hashedPassword = passwordEncoder.encode(loginRequest.getPassword());
       user.setPassword(hashedPassword);
-      User updatedUser = userRepository.save(new User(user));
+      userRepository.save(userMapper.toEntity(user));
       return true;
     } catch (NotFoundException e) {
       return false;
