@@ -315,9 +315,7 @@ public class SavingsGoalService {
         .collect(Collectors.toList());
   }
 
-  /**
-   * Get active saving goal
-   */
+  /** Get active saving goal */
   public boolean hasActiveSavingsGoal(Long userId) {
     List<UserSavingsGoal> userSavingsGoals = userSavingsGoalRepository.findByUserId(userId);
     for (UserSavingsGoal userSavingsGoal : userSavingsGoals) {

@@ -187,10 +187,10 @@ public class SavingsGoalController {
    */
   @GetMapping("/user/{userEmail}/active")
   @Operation(summary = "Check if the user has an active savings goal")
-    public ResponseEntity<Boolean> hasActiveSavingsGoal(@PathVariable String userEmail) {
-        UserDto user = userService.getUserByEmail(userEmail);
-        Long userId = user.getId();
-        boolean hasActiveSavingsGoal = savingsGoalService.hasActiveSavingsGoal(userId);
-        return ResponseEntity.ok(hasActiveSavingsGoal);
-    }
+  public ResponseEntity<Boolean> hasActiveSavingsGoal(@PathVariable String userEmail) {
+    UserDto user = userService.getUserByEmail(userEmail);
+    Long userId = user.getId();
+    boolean hasActiveSavingsGoal = savingsGoalService.hasActiveSavingsGoal(userId);
+    return ResponseEntity.ok(hasActiveSavingsGoal);
+  }
 }
