@@ -223,13 +223,14 @@ public class BankService {
         .collect(Collectors.toSet());
   }
 
-
   /**
-   * Gets an accounts total spendings in the various categories (in transactions) from the last 30 days.
+   * Gets an accounts total spendings in the various categories (in transactions) from the last 30
+   * days.
    *
    * @param accountNr (Integer) the unique number of the account.
    * @param userId (Long) the user's id.
-   * @return (Map&lt;String, Double&gt;) Detailing a category, and how much was spent in it in the last 30 days.
+   * @return (Map&lt;String, Double&gt;) Detailing a category, and how much was spent in it in the
+   *     last 30 days.
    */
   public Map<String, Double> getSpendingsInCategories(Integer accountNr, Long userId) {
     LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
@@ -238,11 +239,15 @@ public class BankService {
       throw new UnauthorizedException("User does not have access to this account");
     }
     // TODO: fix some minor edge-case things like when user has no transactions in past 30 days.
-    Set<Transaction> transactions = transactionRepository.findByAccount(account).stream()
-            .filter(t -> t.getDate().isAfter(LocalDate.now().minusDays(30))).collect(Collectors.toSet());
+    Set<Transaction> transactions =
+        transactionRepository.findByAccount(account).stream()
+            .filter(t -> t.getDate().isAfter(LocalDate.now().minusDays(30)))
+            .collect(Collectors.toSet());
 
-    return transactions.stream().collect(Collectors.groupingBy(Transaction::getCategory,
-            Collectors.summingDouble(Transaction::getAmount)));
+    return transactions.stream()
+        .collect(
+            Collectors.groupingBy(
+                Transaction::getCategory, Collectors.summingDouble(Transaction::getAmount)));
   }
 
   /**

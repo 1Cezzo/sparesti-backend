@@ -130,14 +130,16 @@ public class BankController {
    *
    * @param accountNr (Integer) the accounts unique number in the bank.
    * @param token (Jwt) the JWT token
-   * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt;&gt;): a set including the last 30 days of transactions for the account.
+   * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt;&gt;): a set including the last 30 days of
+   *     transactions for the account.
    */
   @GetMapping("/transactions/recent/{accountNr}")
   @Operation(summary = "Get last 30 days of transactions from an account number")
   public ResponseEntity<Set<TransactionDto>> getRecentTransactions(
       @PathVariable Integer accountNr, @AuthenticationPrincipal Jwt token) {
     Long userId = token.getClaim(USER_ID_CLAIM);
-    return ResponseEntity.ok().body(bankService.getRecentTransactionsByAccountNr(accountNr, userId));
+    return ResponseEntity.ok()
+        .body(bankService.getRecentTransactionsByAccountNr(accountNr, userId));
   }
 
   /**
@@ -148,9 +150,10 @@ public class BankController {
    * @return (Map&lt;String Double&gt;)
    */
   @GetMapping("/transactions/recent/categories/{accountNr}")
-  @Operation(summary = "Get the sum spent in each category in the last 30 days for an account number")
+  @Operation(
+      summary = "Get the sum spent in each category in the last 30 days for an account number")
   public ResponseEntity<Map<String, Double>> getRecentCategorySpendings(
-          @PathVariable Integer accountNr, @AuthenticationPrincipal Jwt token) {
+      @PathVariable Integer accountNr, @AuthenticationPrincipal Jwt token) {
     Long userId = token.getClaim(USER_ID_CLAIM);
     return ResponseEntity.ok().body(bankService.getSpendingsInCategories(accountNr, userId));
   }
