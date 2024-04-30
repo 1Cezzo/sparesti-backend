@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.ntnu.idi.stud.team10.sparesti.mapper.BadgeMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.model.UserBadge;
@@ -28,18 +27,15 @@ public class UserBadgeService {
   private final BadgeRepository badgeRepository;
   private final UserRepository userRepository;
   private final UserBadgeRepository userBadgeRepository;
-  private final BadgeMapper badgeMapper;
 
   @Autowired
   public UserBadgeService(
       BadgeRepository badgeRepository,
       UserRepository userRepository,
-      UserBadgeRepository userBadgeRepository,
-      BadgeMapper badgeMapper) {
+      UserBadgeRepository userBadgeRepository) {
     this.badgeRepository = badgeRepository;
     this.userRepository = userRepository;
     this.userBadgeRepository = userBadgeRepository;
-    this.badgeMapper = badgeMapper;
   }
 
   /**
@@ -129,7 +125,7 @@ public class UserBadgeService {
               userData.put("user", new UserDto(userBadge.getUser()));
               return userData;
             })
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @Transactional
@@ -144,9 +140,7 @@ public class UserBadgeService {
     List<UserBadge> associatedUserBadges = userBadgeRepository.findByBadgeId(badgeId);
 
     // Delete each associated user_badges record
-    for (UserBadge userBadge : associatedUserBadges) {
-      userBadgeRepository.delete(userBadge);
-    }
+    userBadgeRepository.deleteAll(associatedUserBadges);
 
     // Once all associated user_badges records are deleted, delete the badge
     badgeRepository.delete(badge);
