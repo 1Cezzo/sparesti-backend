@@ -1,10 +1,9 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
-import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
-import edu.ntnu.idi.stud.team10.sparesti.util.UnauthorizedException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -12,12 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserBudgetService;
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 /** Controller for Budget entities. */
 @RestController
@@ -41,11 +38,11 @@ public class BudgetController {
    */
   @PostMapping("/budgets/add")
   @Operation(summary = "Add a budget to a user")
-  public ResponseEntity<UserDto> addBudgetToUser(
+  public ResponseEntity<BudgetDto> addBudgetToUser(
       @AuthenticationPrincipal Jwt token, @RequestBody BudgetDto budgetDTO) {
     Long userId = TokenParser.extractUserId(token);
-    UserDto updatedUserDto = userBudgetService.addBudgetToUser(userId, budgetDTO);
-    return ResponseEntity.ok(updatedUserDto);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(userBudgetService.addBudgetToUser(userId, budgetDTO));
   }
 
   /**

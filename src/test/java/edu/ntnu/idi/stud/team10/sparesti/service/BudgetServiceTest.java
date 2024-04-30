@@ -105,7 +105,7 @@ public class BudgetServiceTest {
   @Test
   public void testAddUsedAmountFromTransaction() {
     BudgetRow budgetRow = new BudgetRow();
-    budgetRow.setUsedAmount(0);
+    budgetRow.setUsedAmount(0.0);
     Transaction transaction = new Transaction();
     transaction.setAmount(100);
 

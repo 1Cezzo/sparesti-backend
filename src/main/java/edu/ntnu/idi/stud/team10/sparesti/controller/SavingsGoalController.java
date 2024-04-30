@@ -1,6 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
-import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,9 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.UserSavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.service.SavingsGoalService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 @RestController
 @RequestMapping("/api/savings-goals")

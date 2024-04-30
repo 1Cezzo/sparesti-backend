@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.BudgetMapper;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.BudgetRowMapper;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
@@ -23,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class UserBudgetServiceTest {
+class UserBudgetServiceTest {
 
   @InjectMocks private UserBudgetService userBudgetService;
 
@@ -35,14 +37,24 @@ public class UserBudgetServiceTest {
 
   @Mock private UserMapper userMapper;
 
+  @Mock private BudgetMapper budgetMapper;
+
+  @Mock private BudgetRowMapper budgetRowMapper;
+
   @BeforeEach
   public void setup() {
     when(userMapper.toDto(any(User.class))).thenReturn(new UserDto());
     when(userMapper.toEntity(any(UserDto.class))).thenReturn(new User());
+
+    when(budgetMapper.toDto(any(Budget.class))).thenReturn(new BudgetDto());
+    when(budgetMapper.toEntity(any(BudgetDto.class))).thenReturn(new Budget());
+
+    when(budgetRowMapper.toDto(any(BudgetRow.class))).thenReturn(new BudgetRowDto());
+    when(budgetRowMapper.toEntity(any(BudgetRowDto.class))).thenReturn(new BudgetRow());
   }
 
   @Test
-  public void testAddBudgetToUser() {
+  void testAddBudgetToUser() {
     // Arrange
     User user = new User();
     BudgetDto budgetDto = new BudgetDto();
@@ -58,7 +70,7 @@ public class UserBudgetServiceTest {
   }
 
   @Test
-  public void testEditBudgetRowInUserBudget() {
+  void testEditBudgetRowInUserBudget() {
     // Arrange
     User user = new User();
     Budget budget = new Budget();
@@ -79,7 +91,7 @@ public class UserBudgetServiceTest {
   }
 
   @Test
-  public void testAddBudgetRowToUserBudget() {
+  void testAddBudgetRowToUserBudget() {
     // Arrange
     User user = new User();
     Budget budget = new Budget();
@@ -98,7 +110,7 @@ public class UserBudgetServiceTest {
   }
 
   @Test
-  public void testDeleteBudgetRowFromUserBudget() {
+  void testDeleteBudgetRowFromUserBudget() {
     // Arrange
     User user = new User();
     Budget budget = new Budget();
@@ -119,7 +131,7 @@ public class UserBudgetServiceTest {
   }
 
   @Test
-  public void testDeleteBudgetFromUser() {
+  void testDeleteBudgetFromUser() {
     // Arrange
     User user = new User();
     Budget budget = new Budget();
@@ -136,7 +148,7 @@ public class UserBudgetServiceTest {
   }
 
   @Test
-  public void testGetAllBudgetsForUser() {
+  void testGetAllBudgetsForUser() {
     // Arrange
     User user = new User();
     when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));

@@ -1,6 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
-import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +15,7 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.service.BadgeService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserBadgeService;
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 

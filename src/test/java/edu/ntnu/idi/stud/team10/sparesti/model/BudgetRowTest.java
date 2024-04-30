@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.BudgetRowMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,7 +38,7 @@ public class BudgetRowTest {
     budgetRowDto.setMaxAmount(250.0);
     budgetRowDto.setCategory("Transportation");
 
-    budgetRow.updateFromDto(budgetRowDto);
+    BudgetRowMapper.INSTANCE.updateFromDto(budgetRowDto, budgetRow);
 
     assertEquals(budgetRowDto.getName(), budgetRow.getName());
     assertEquals(budgetRowDto.getMaxAmount(), budgetRow.getMaxAmount());

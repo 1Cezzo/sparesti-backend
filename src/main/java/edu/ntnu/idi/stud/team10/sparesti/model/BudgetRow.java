@@ -1,6 +1,5 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
 import jakarta.persistence.*;
 import lombok.Setter;
 
@@ -13,8 +12,8 @@ public class BudgetRow {
   private Long id;
 
   private String name;
-  private double usedAmount;
-  private double maxAmount;
+  private Double usedAmount;
+  private Double maxAmount;
   private String category;
   private String emoji;
 
@@ -83,13 +82,5 @@ public class BudgetRow {
 
   public String getEmoji() {
     return emoji;
-  }
-
-  public void updateFromDto(BudgetRowDto budgetRowDto) {
-    this.name = budgetRowDto.getName();
-    this.usedAmount = budgetRowDto.getUsedAmount();
-    this.maxAmount = budgetRowDto.getMaxAmount();
-    this.category = budgetRowDto.getCategory();
-    this.emoji = budgetRowDto.getEmoji();
   }
 }
