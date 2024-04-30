@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDto;
+import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserSavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.service.SavingsGoalService;
@@ -120,15 +121,15 @@ public class SavingsGoalController {
   /**
    * Add a savings goal to a user.
    *
-   * @param token The JWT access token.
-   * @param savingsGoalId (Long) The ID of the savings goal.
-   * @return The updated user DTO.
+   * @param userEmail The email of the user to add the savings goal to.
+   * @param savingsGoalId The ID of the savings goal to add.
    */
-  @PostMapping("/add-user")
+  @PostMapping("/add-user/{savingsGoalId}")
   @Operation(summary = "Add a savings goal to a user")
   public ResponseEntity<Void> addSavingsGoalToUser(
-      @AuthenticationPrincipal Jwt token, @RequestBody Long savingsGoalId) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+      @RequestParam("userEmail") String userEmail, @PathVariable Long savingsGoalId) {
+    UserDto user = userService.getUserByEmail(userEmail);
+    Long userId = user.getId();
     savingsGoalService.addSavingsGoalToUser(userId, savingsGoalId);
     return ResponseEntity.ok().build();
   }
@@ -151,14 +152,15 @@ public class SavingsGoalController {
   /**
    * Delete a savings goal from a user.
    *
-   * @param token The JWT access token.
+   * @param userEmail The email of the user.
    * @param savingsGoalId The ID of the savings goal.
    */
   @DeleteMapping("/{savingsGoalId}/user/delete")
   @Operation(summary = "Delete a savings goal from a user")
   public ResponseEntity<Void> deleteSavingsGoalFromUser(
-      @AuthenticationPrincipal Jwt token, @PathVariable Long savingsGoalId) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+      @RequestParam("userEmail") String userEmail, @PathVariable Long savingsGoalId) {
+    UserDto user = userService.getUserByEmail(userEmail);
+    Long userId = user.getId();
     savingsGoalService.deleteSavingsGoalFromUser(userId, savingsGoalId);
     return ResponseEntity.noContent().build();
   }

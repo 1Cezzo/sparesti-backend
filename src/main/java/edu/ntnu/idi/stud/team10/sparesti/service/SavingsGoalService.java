@@ -2,6 +2,7 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -290,17 +291,21 @@ public class SavingsGoalService {
     List<UserSavingsGoal> userSavingsGoals =
         userSavingsGoalRepository.findBySavingsGoal(savingsGoal);
 
-    return userSavingsGoals.stream()
-        .map(
-            userSavingsGoal -> {
-              User user = userSavingsGoal.getUser();
-              return new UserSavingsGoalDto(
-                  user.getId(),
-                  user.getEmail(),
-                  user.getProfilePictureUrl(),
-                  userSavingsGoal.getContributionAmount(),
-                  userSavingsGoal.getLastContributed());
-            })
+    List<UserSavingsGoalDto> savingGoals =
+        userSavingsGoals.stream()
+            .map(
+                userSavingsGoal -> {
+                  User user = userSavingsGoal.getUser();
+                  return new UserSavingsGoalDto(
+                      user.getId(),
+                      user.getEmail(),
+                      user.getProfilePictureUrl(),
+                      userSavingsGoal.getContributionAmount(),
+                      userSavingsGoal.getLastContributed());
+                })
+            .collect(Collectors.toList());
+    return savingGoals.stream()
+        .sorted(Comparator.comparingDouble(UserSavingsGoalDto::getContributionAmount).reversed())
         .collect(Collectors.toList());
   }
 }
