@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 /** Controller for handling user requests. */
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:5173")
 @Tag(name = "User", description = "Operations related to creating and deleting a user")
 public class UserController {
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,15 +23,18 @@ public class ResourceServerConfig {
   private final JwtDecoder jwtDecoder;
   private final HttpSessionRequestCache requestCache;
   private final SessionRegistry sessionRegistry;
+  private final String frontendUrl;
 
   @Autowired
   public ResourceServerConfig(
       JwtDecoder jwtDecoder,
       HttpSessionRequestCache requestCache,
-      SessionRegistry sessionRegistry) {
+      SessionRegistry sessionRegistry,
+      Environment env) {
     this.jwtDecoder = jwtDecoder;
     this.requestCache = requestCache;
     this.sessionRegistry = sessionRegistry;
+    this.frontendUrl = env.getProperty("frontend.url");
   }
 
   @Bean
@@ -82,9 +86,7 @@ public class ResourceServerConfig {
                               request.getSession().getId(), authentication.getPrincipal());
                           var cachedRequest = requestCache.getRequest(request, response);
                           String alternativeRedirect =
-                              cachedRequest == null
-                                  ? "http://localhost:5173/"
-                                  : cachedRequest.getRedirectUrl();
+                              cachedRequest == null ? frontendUrl : cachedRequest.getRedirectUrl();
                           String authorizeRequestUrl =
                               (String) request.getSession().getAttribute("ORIGINAL_REQUEST_URL");
                           response.sendRedirect(
