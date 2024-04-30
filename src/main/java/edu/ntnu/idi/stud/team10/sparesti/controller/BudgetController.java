@@ -1,5 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
+import edu.ntnu.idi.stud.team10.sparesti.util.UnauthorizedException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +43,7 @@ public class BudgetController {
   @Operation(summary = "Add a budget to a user")
   public ResponseEntity<UserDto> addBudgetToUser(
       @AuthenticationPrincipal Jwt token, @RequestBody BudgetDto budgetDTO) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     UserDto updatedUserDto = userBudgetService.addBudgetToUser(userId, budgetDTO);
     return ResponseEntity.ok(updatedUserDto);
   }
@@ -55,7 +57,7 @@ public class BudgetController {
   @GetMapping("/budgets")
   @Operation(summary = "Get all budgets for a user")
   public ResponseEntity<List<BudgetDto>> getAllBudgetsForUser(@AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     List<BudgetDto> budgets = userBudgetService.getAllBudgetsForUser(userId);
     return ResponseEntity.ok(budgets);
   }
@@ -64,7 +66,7 @@ public class BudgetController {
   @Operation(summary = "Get a budget for a user")
   public ResponseEntity<BudgetDto> getBudgetForUser(
       @AuthenticationPrincipal Jwt token, @PathVariable Long budgetId) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     BudgetDto budget = userBudgetService.getBudgetForUser(userId, budgetId);
     return ResponseEntity.ok(budget);
   }
@@ -79,7 +81,7 @@ public class BudgetController {
   @Operation(summary = "Delete a budget from a user")
   public ResponseEntity<Void> deleteBudgetFromUser(
       @AuthenticationPrincipal Jwt token, @PathVariable Long budgetId) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     userBudgetService.deleteBudgetFromUser(userId, budgetId);
     return ResponseEntity.noContent().build();
   }
@@ -98,7 +100,7 @@ public class BudgetController {
       @AuthenticationPrincipal Jwt token,
       @PathVariable Long budgetId,
       @RequestBody BudgetRowDto budgetRowDTO) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     BudgetDto updatedBudgetDto =
         userBudgetService.addBudgetRowToUserBudget(userId, budgetId, budgetRowDTO);
     return ResponseEntity.ok(updatedBudgetDto);
@@ -118,7 +120,7 @@ public class BudgetController {
       @AuthenticationPrincipal Jwt token,
       @PathVariable Long budgetId,
       @PathVariable Long budgetRowId) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     userBudgetService.deleteBudgetRowFromUserBudget(userId, budgetId, budgetRowId);
     return ResponseEntity.noContent().build();
   }
@@ -139,7 +141,7 @@ public class BudgetController {
       @PathVariable Long budgetId,
       @PathVariable Long budgetRowId,
       @RequestBody BudgetRowDto budgetRowDto) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     BudgetRowDto updatedBudgetRowDto =
         userBudgetService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
     return ResponseEntity.ok(updatedBudgetRowDto);

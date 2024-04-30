@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,7 +145,7 @@ public class SavingsGoalController {
   @Operation(summary = "Get all savings goals for a user")
   public ResponseEntity<List<SavingsGoalDto>> getAllSavingsGoalsForUser(
       @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     List<SavingsGoalDto> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
     return ResponseEntity.ok(savingsGoals);
   }

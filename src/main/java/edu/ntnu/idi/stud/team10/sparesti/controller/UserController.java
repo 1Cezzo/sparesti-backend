@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +59,7 @@ public class UserController {
   @DeleteMapping("/delete")
   @Operation(summary = "Delete a user")
   public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal Jwt token) {
-    Long id = token.getClaim("userId");
+    Long id = TokenParser.extractUserId(token);
     userService.deleteUser(id);
     return ResponseEntity.noContent().build();
   }
@@ -73,7 +74,7 @@ public class UserController {
   @Operation(summary = "Update a user")
   public ResponseEntity<UserDto> updateUser(
       @RequestBody UserDto userDTO, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim("userId");
+    Long userId = TokenParser.extractUserId(token);
     userDTO.setId(userId);
     return ResponseEntity.ok(userService.updateUser(userDTO));
   }

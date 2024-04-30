@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,8 +18,6 @@ import edu.ntnu.idi.stud.team10.sparesti.service.BadgeService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserBadgeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 /** Operations related to badges of users. */
 @RestController
@@ -91,7 +90,7 @@ public class BadgeController {
   @Operation(summary = "Get all badges for a user")
   public ResponseEntity<Set<Map<String, Object>>> getAllBadgesByUserId(
       @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     Set<Map<String, Object>> badges = userBadgeService.getAllBadgesByUserId(userId);
     return ResponseEntity.ok(badges);
   }

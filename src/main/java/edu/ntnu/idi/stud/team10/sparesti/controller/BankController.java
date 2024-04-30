@@ -1,5 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
+import edu.ntnu.idi.stud.team10.sparesti.util.UnauthorizedException;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +16,6 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.BankService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 /** Controller to mock interactions with a bank. */
 @RestController
@@ -40,7 +40,7 @@ public class BankController {
   @Operation(summary = "Create a new account")
   public ResponseEntity<AccountDto> createAccount(
       @RequestBody AccountDto accountDto, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     accountDto.setOwnerId(userId);
     AccountDto createdAccount = bankService.createAccount(accountDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
@@ -70,7 +70,7 @@ public class BankController {
   @Operation(summary = "Get account details for an account number.")
   public ResponseEntity<AccountDto> getAccountDetails(
       @PathVariable int accountNr, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     AccountDto accountDetails = bankService.getAccountDetails(accountNr, userId);
     return ResponseEntity.ok(accountDetails);
   }
@@ -84,7 +84,7 @@ public class BankController {
   @GetMapping("/account/all")
   @Operation(summary = "Get all accounts for a user.")
   public ResponseEntity<Set<AccountDto>> getAllAccounts(@AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     Set<AccountDto> accountDetails = bankService.getUserAccounts(userId);
     return ResponseEntity.ok(accountDetails);
   }
@@ -104,7 +104,7 @@ public class BankController {
       @RequestParam Integer toAccountNr,
       @RequestParam double amount,
       @AuthenticationPrincipal Jwt token) {
-    Long ownerId = token.getClaim(USER_ID_CLAIM);
+    Long ownerId = TokenParser.extractUserId(token);
     bankService.transferMoney(fromAccountNr, toAccountNr, amount, ownerId);
     return ResponseEntity.ok().body("Transfer successful");
   }
@@ -120,7 +120,7 @@ public class BankController {
   @Operation(summary = "Get all transactions by an account number")
   public ResponseEntity<Set<TransactionDto>> getAllTransactionsByAccountNr(
       @PathVariable Integer accountNr, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     return ResponseEntity.ok().body(bankService.getTransactionsByAccountNr(accountNr, userId));
   }
 

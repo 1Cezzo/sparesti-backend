@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class ChallengeController {
   @Operation(summary = "Add a challenge to a user")
   public ResponseEntity<UserDto> addChallengeToUser(
       @AuthenticationPrincipal Jwt token, @PathVariable Long challengeId) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     UserDto userDto = userChallengeService.addChallengeToUser(userId, challengeId);
     return ResponseEntity.ok(userDto);
   }
@@ -58,7 +59,7 @@ public class ChallengeController {
   @Operation(summary = "Remove a challenge from a user")
   public ResponseEntity<UserDto> removeChallengeFromUser(
       @AuthenticationPrincipal Jwt token, @PathVariable Long challengeId) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     UserDto userDto = userChallengeService.removeChallengeFromUser(userId, challengeId);
     return ResponseEntity.ok(userDto);
   }
@@ -73,7 +74,7 @@ public class ChallengeController {
   @Operation(summary = "Fetch all consumption challenges for a user")
   public ResponseEntity<List<ConsumptionChallengeDto>> fetchConsumptionChallengesForUser(
       @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     List<ConsumptionChallengeDto> consumptionChallenges =
         userChallengeService.fetchConsumptionChallengesForUser(userId);
     return ResponseEntity.ok(consumptionChallenges);
@@ -89,7 +90,7 @@ public class ChallengeController {
   @Operation(summary = "Fetch all purchase challenges for a user")
   public ResponseEntity<List<PurchaseChallengeDto>> fetchPurchaseChallengesForUser(
       @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     List<PurchaseChallengeDto> purchaseChallenges =
         userChallengeService.fetchPurchaseChallengesForUser(userId);
     return ResponseEntity.ok(purchaseChallenges);
@@ -105,7 +106,7 @@ public class ChallengeController {
   @Operation(summary = "Fetch all saving challenges for a user")
   public ResponseEntity<List<SavingChallengeDto>> fetchSavingChallengesForUser(
       @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     List<SavingChallengeDto> savingChallenges =
         userChallengeService.fetchSavingChallengesForUser(userId);
     return ResponseEntity.ok(savingChallenges);
@@ -120,9 +121,8 @@ public class ChallengeController {
   @GetMapping("/users/challenges")
   @Operation(summary = "Get all challenges for a user")
   public ResponseEntity getChallengesByUser(@AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     List challenges = userChallengeService.getSortedChallengesByUser(userId);
-
     return ResponseEntity.ok(challenges);
   }
 
@@ -136,7 +136,6 @@ public class ChallengeController {
   @Operation(summary = "Suggest an AI generated challenge to a user")
   public ChallengeDto suggestChallenge(String userEmail) {
     UserInfoDto userInfo = userInfoService.getUserInfoByEmail(userEmail);
-    System.out.println(userInfo);
     return userChallengeService.generateChatResponse(userInfo);
   }
 
@@ -150,7 +149,6 @@ public class ChallengeController {
   @Operation(summary = "Suggest a random challenge to a user")
   public ChallengeDto suggestRandomChallenge(String userEmail) {
     UserInfoDto userInfo = userInfoService.getUserInfoByEmail(userEmail);
-    System.out.println(userInfo);
     return userChallengeService.generateRandomChallenge(userInfo);
   }
 }
