@@ -43,8 +43,10 @@ public class SavingsGoalController {
    */
   @PostMapping
   @Operation(summary = "Create a new savings goal")
-  public ResponseEntity<SavingsGoal> createSavingsGoal(@RequestBody SavingsGoalDto savingsGoalDTO) {
-    SavingsGoal savingsGoal = savingsGoalService.createSavingsGoal(savingsGoalDTO);
+  public ResponseEntity<SavingsGoal> createSavingsGoal(
+      @RequestBody SavingsGoalDto savingsGoalDTO, @AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
+    SavingsGoal savingsGoal = savingsGoalService.createSavingsGoal(savingsGoalDTO, userId);
     return new ResponseEntity<>(savingsGoal, HttpStatus.CREATED);
   }
 
@@ -177,4 +179,18 @@ public class SavingsGoalController {
     List<UserSavingsGoalDto> users = savingsGoalService.getUsersBySavingsGoal(savingsGoalId);
     return ResponseEntity.ok(users);
   }
+
+  /**
+   * Check if the user has an active savings goal.
+   *
+   * @param userEmail The email of the user.
+   */
+  @GetMapping("/user/{userEmail}/active")
+  @Operation(summary = "Check if the user has an active savings goal")
+    public ResponseEntity<Boolean> hasActiveSavingsGoal(@PathVariable String userEmail) {
+        UserDto user = userService.getUserByEmail(userEmail);
+        Long userId = user.getId();
+        boolean hasActiveSavingsGoal = savingsGoalService.hasActiveSavingsGoal(userId);
+        return ResponseEntity.ok(hasActiveSavingsGoal);
+    }
 }

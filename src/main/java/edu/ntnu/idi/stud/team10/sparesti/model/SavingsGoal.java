@@ -48,4 +48,7 @@ public class SavingsGoal {
   @JsonBackReference
   @Hidden
   private List<User> users;
+
+  @Column(name = "author_id", nullable = false)
+  private Long authorId;
 }
