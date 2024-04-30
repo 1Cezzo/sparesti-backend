@@ -5,8 +5,9 @@ import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
@@ -18,6 +19,7 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 public class UserBadgeServiceTest {
 
   @Mock private BadgeRepository badgeRepository;
@@ -26,13 +28,10 @@ public class UserBadgeServiceTest {
 
   @Mock private UserBadgeRepository userBadgeRepository;
 
-  private UserBadgeService userBadgeService;
+  @InjectMocks private UserBadgeService userBadgeService;
 
   @BeforeEach
-  public void setUp() {
-    MockitoAnnotations.openMocks(this);
-    userBadgeService = new UserBadgeService(badgeRepository, userRepository, userBadgeRepository);
-  }
+  public void setUp() {}
 
   @Test
   public void testGetAllBadgesByUserId() {
