@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -60,7 +61,8 @@ public class AuthorizationServerConfig {
   private final UserService userService;
   private final BCryptPasswordEncoder passwordEncoder;
   private final SessionRegistry sessionRegistry;
-  private Logger logger = LoggerFactory.getLogger(AuthorizationServerConfig.class);
+  private final Logger logger = LoggerFactory.getLogger(AuthorizationServerConfig.class);
+  private final String frontendUrl;
 
   public static final String USER_ID_CLAIM = "userId";
 
@@ -69,11 +71,13 @@ public class AuthorizationServerConfig {
       UserInfoService userInfoService,
       UserService userService,
       BCryptPasswordEncoder passwordEncoder,
-      SessionRegistry sessionRegistry) {
+      SessionRegistry sessionRegistry,
+      Environment env) {
     this.userInfoService = userInfoService;
     this.userService = userService;
     this.passwordEncoder = passwordEncoder;
     this.sessionRegistry = sessionRegistry;
+    this.frontendUrl = env.getProperty("frontend.url");
   }
 
   /**
@@ -145,8 +149,8 @@ public class AuthorizationServerConfig {
             .clientSecret("{noop}somesecret")
             .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .redirectUri("http://localhost:5173/token")
-            .postLogoutRedirectUri("http://localhost:5173")
+            .redirectUri(frontendUrl + "/token")
+            .postLogoutRedirectUri(frontendUrl)
             .scope(OidcScopes.OPENID)
             .scope(OidcScopes.PROFILE)
             .clientSettings(
@@ -253,8 +257,7 @@ public class AuthorizationServerConfig {
         sessionId = webDetails.getSessionId();
         SessionInformation info = sessionRegistry.getSessionInformation(sessionId);
         principalName = ((User) info.getPrincipal()).getUsername();
-      } catch (Exception e) {
-        logger.error(e.getMessage());
+      } catch (Exception ignored) {
         principalName = null;
       }
 

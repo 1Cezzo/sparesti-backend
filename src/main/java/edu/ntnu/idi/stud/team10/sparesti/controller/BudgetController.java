@@ -60,10 +60,11 @@ public class BudgetController {
     return ResponseEntity.ok(budgets);
   }
 
-  @GetMapping("/{userId}/budgets/{budgetId}")
+  @GetMapping("/budgets/{budgetId}")
   @Operation(summary = "Get a budget for a user")
   public ResponseEntity<BudgetDto> getBudgetForUser(
-      @PathVariable Long userId, @PathVariable Long budgetId) {
+      @AuthenticationPrincipal Jwt token, @PathVariable Long budgetId) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
     BudgetDto budget = userBudgetService.getBudgetForUser(userId, budgetId);
     return ResponseEntity.ok(budget);
   }

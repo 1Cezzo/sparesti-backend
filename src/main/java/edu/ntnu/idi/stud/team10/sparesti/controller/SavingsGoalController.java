@@ -121,7 +121,7 @@ public class SavingsGoalController {
    * Add a savings goal to a user.
    *
    * @param token The JWT access token.
-   * @param savingsGoalDTO The savings goal to add.
+   * @param savingsGoalId (Long) The ID of the savings goal.
    * @return The updated user DTO.
    */
   @PostMapping("/add-user")

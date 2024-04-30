@@ -1,8 +1,10 @@
 package edu.ntnu.idi.stud.team10.sparesti.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +22,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+  private final String frontendUrl;
+
+  @Autowired
+  public SecurityConfig(Environment env) {
+    this.frontendUrl = env.getProperty("frontend.url");
+  }
+
   @Bean
   @Order(3)
   /** Configures the default security filter chain. */
@@ -53,7 +62,7 @@ public class SecurityConfig {
       public void addCorsMappings(CorsRegistry registry) {
         registry
             .addMapping("/**")
-            .allowedOrigins("http://localhost:5173")
+            .allowedOrigins(frontendUrl)
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
             .allowedHeaders("*");
       }
