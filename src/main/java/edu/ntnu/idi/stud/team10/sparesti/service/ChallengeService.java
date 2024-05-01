@@ -4,16 +4,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
 import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /**
@@ -25,17 +24,10 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 public abstract class ChallengeService<T extends Challenge> {
 
   private final ChallengeRepository<T> challengeRepository;
-  private final UserRepository userRepository;
 
-  public ChallengeService(
-      ChallengeRepository<T> challengeRepository, UserRepository userRepository) {
-    this.challengeRepository = challengeRepository;
-    this.userRepository = userRepository;
-  }
-
+  @Autowired
   protected ChallengeService(ChallengeRepository<T> challengeRepository) {
     this.challengeRepository = challengeRepository;
-    this.userRepository = null;
   }
 
   /**
@@ -106,14 +98,17 @@ public abstract class ChallengeService<T extends Challenge> {
       if (existingChallenge instanceof ConsumptionChallenge) {
         ConsumptionChallenge consumptionChallenge = (ConsumptionChallenge) existingChallenge;
         ConsumptionChallenge updatedConsumptionChallenge = (ConsumptionChallenge) updatedEntity;
-        consumptionChallenge.setProductCategory(updatedConsumptionChallenge.getProductCategory());
-        consumptionChallenge.setReductionPercentage(
-            updatedConsumptionChallenge.getReductionPercentage());
+        Optional.ofNullable(updatedConsumptionChallenge.getProductCategory())
+            .ifPresent(consumptionChallenge::setProductCategory);
+        Optional.ofNullable(updatedConsumptionChallenge.getReductionPercentage())
+            .ifPresent(consumptionChallenge::setReductionPercentage);
       }
 
       if (existingChallenge instanceof PurchaseChallenge) {
         PurchaseChallenge purchaseChallenge = (PurchaseChallenge) existingChallenge;
         PurchaseChallenge updatedPurchaseChallenge = (PurchaseChallenge) updatedEntity;
+        Optional.ofNullable(updatedPurchaseChallenge.getProductName())
+            .ifPresent(purchaseChallenge::setProductName);
         purchaseChallenge.setProductName(updatedPurchaseChallenge.getProductName());
       }
 

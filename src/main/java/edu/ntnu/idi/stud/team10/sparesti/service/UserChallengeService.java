@@ -1,7 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.ChallengeMapper;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.*;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
@@ -28,21 +28,21 @@ public class UserChallengeService<T extends Challenge> {
 
   private final ChallengeRepository<T> challengeRepository;
   private final UserRepository userRepository;
-  private final UserInfoService userInfoService;
   private final ChatGPTService chatGPTService;
   private final UserMapper userMapper;
+  private final ChallengeMapper challengeMapper;
 
   public UserChallengeService(
       ChallengeRepository<T> challengeRepository,
       UserRepository userRepository,
-      UserInfoService userInfoService,
       ChatGPTService chatGPTService,
-      UserMapper userMapper) {
+      UserMapper userMapper,
+      ChallengeMapper challengeMapper) {
     this.challengeRepository = challengeRepository;
     this.userRepository = userRepository;
-    this.userInfoService = userInfoService;
     this.chatGPTService = chatGPTService;
     this.userMapper = userMapper;
+    this.challengeMapper = challengeMapper;
   }
 
   /**
@@ -88,28 +88,24 @@ public class UserChallengeService<T extends Challenge> {
     allChallenges.addAll(savingChallenges);
 
     // Sort the challenges
-    Collections.sort(
-        allChallenges,
-        new Comparator<ChallengeDto>() {
-          @Override
-          public int compare(ChallengeDto a, ChallengeDto b) {
-            // First, sort by completion status
-            if (a.isCompleted() && !b.isCompleted()) {
-              return -1; // a comes before b if a is completed and b is not
-            }
-            if (!a.isCompleted() && b.isCompleted()) {
-              return 1; // b comes before a if b is completed and a is not
-            }
-
-            // If completion status is the same, sort by expiry date
-            int dateComparison = b.getExpiryDate().compareTo(a.getExpiryDate());
-            if (dateComparison != 0) {
-              return dateComparison; // If expiry dates are different, return the comparison result
-            }
-
-            // If expiry dates are the same, sort by challenge ID
-            return Long.compare(a.getId(), b.getId());
+    allChallenges.sort(
+        (a, b) -> {
+          // First, sort by completion status
+          if (a.isCompleted() && !b.isCompleted()) {
+            return -1; // a comes before b if a is completed and b is not
           }
+          if (!a.isCompleted() && b.isCompleted()) {
+            return 1; // b comes before a if b is completed and a is not
+          }
+
+          // If completion status is the same, sort by expiry date
+          int dateComparison = b.getExpiryDate().compareTo(a.getExpiryDate());
+          if (dateComparison != 0) {
+            return dateComparison; // If expiry dates are different, return the comparison result
+          }
+
+          // If expiry dates are the same, sort by challenge ID
+          return Long.compare(a.getId(), b.getId());
         });
 
     return allChallenges;
@@ -126,9 +122,10 @@ public class UserChallengeService<T extends Challenge> {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     return user.getChallenges().stream()
-        .filter(challenge -> challenge instanceof ConsumptionChallenge)
-        .map(challenge -> new ConsumptionChallengeDto((ConsumptionChallenge) challenge))
-        .collect(Collectors.toList());
+        .filter(ConsumptionChallenge.class::isInstance)
+        .map(challengeMapper::toDto)
+        .map(ConsumptionChallengeDto.class::cast)
+        .toList();
   }
 
   /**
@@ -142,9 +139,10 @@ public class UserChallengeService<T extends Challenge> {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     return user.getChallenges().stream()
-        .filter(challenge -> challenge instanceof PurchaseChallenge)
-        .map(challenge -> new PurchaseChallengeDto((PurchaseChallenge) challenge))
-        .collect(Collectors.toList());
+        .filter(PurchaseChallenge.class::isInstance)
+        .map(challengeMapper::toDto)
+        .map(PurchaseChallengeDto.class::cast)
+        .toList();
   }
 
   /**
@@ -158,9 +156,10 @@ public class UserChallengeService<T extends Challenge> {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
     return user.getChallenges().stream()
-        .filter(challenge -> challenge instanceof SavingChallenge)
-        .map(challenge -> new SavingChallengeDto((SavingChallenge) challenge))
-        .collect(Collectors.toList());
+        .filter(SavingChallenge.class::isInstance)
+        .map(challengeMapper::toDto)
+        .map(SavingChallengeDto.class::cast)
+        .toList();
   }
 
   /**

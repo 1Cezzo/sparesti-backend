@@ -98,7 +98,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     challenge1.setMediaUrl("☕");
     challenge1.setTargetAmount(100);
     challenge1.setProductCategory("kaffe");
-    challenge1.setReductionPercentage(15);
+    challenge1.setReductionPercentage(15.0);
 
     // Set challenge properties
     consumptionChallengeService.createChallenge(challenge1);
@@ -112,7 +112,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     challenge2.setMediaUrl("🧃");
     challenge2.setTargetAmount(100);
     challenge2.setProductCategory("Red Bull");
-    challenge2.setReductionPercentage(15);
+    challenge2.setReductionPercentage(15.0);
 
     consumptionChallengeService.createChallenge(challenge2);
     userChallengeService.addChallengeToUser(adminUserId, challenge2.getId());

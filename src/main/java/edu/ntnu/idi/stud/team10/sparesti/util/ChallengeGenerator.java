@@ -67,7 +67,8 @@ public class ChallengeGenerator {
         DifficultyLevel.values()[random.nextInt(DifficultyLevel.values().length)]);
     purchaseChallenge.setTimeInterval(
         TimeInterval.values()[random.nextInt(TimeInterval.values().length)]);
-    purchaseChallenge.setTargetAmount(product.getAmount() * getMultiplier(product.getFrequency()));
+    purchaseChallenge.setTargetAmount(
+        (double) (product.getAmount() * getMultiplier(product.getFrequency())));
     purchaseChallenge.setMediaUrl("🛒");
     purchaseChallenge.setProductName(product.getName());
 
@@ -75,15 +76,9 @@ public class ChallengeGenerator {
   }
 
   private static int getMultiplier(TimeInterval frequency) {
-    switch (frequency) {
-      case DAILY:
-        return 7;
-      case WEEKLY:
-        return 1;
-      case MONTHLY:
-        return 1;
-      default:
-        return 1;
-    }
+    return switch (frequency) {
+      case DAILY -> 7;
+      case WEEKLY, MONTHLY -> 1;
+    };
   }
 }

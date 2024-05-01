@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingChallengeDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.ChallengeMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.service.SavingChallengeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,10 +22,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class SavingChallengeController {
 
   private final SavingChallengeService savingChallengeService;
+  private final ChallengeMapper challengeMapper;
 
   @Autowired
-  public SavingChallengeController(SavingChallengeService savingChallengeService) {
+  public SavingChallengeController(
+      SavingChallengeService savingChallengeService, ChallengeMapper challengeMapper) {
     this.savingChallengeService = savingChallengeService;
+    this.challengeMapper = challengeMapper;
   }
 
   /**
@@ -37,7 +41,8 @@ public class SavingChallengeController {
   @Operation(summary = "Create a new saving challenge")
   public ResponseEntity<SavingChallenge> createSavingChallenge(
       @RequestBody SavingChallengeDto dto) {
-    SavingChallenge challenge = savingChallengeService.createChallenge(dto.toEntity());
+    SavingChallenge challenge =
+        savingChallengeService.createChallenge((SavingChallenge) challengeMapper.toEntity(dto));
     return new ResponseEntity<>(challenge, HttpStatus.CREATED);
   }
 

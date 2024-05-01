@@ -5,30 +5,27 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
 import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
-import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class ChallengeServiceTest {
-
-  private ChallengeRepository<Challenge> challengeRepository;
-  private UserRepository userRepository;
+@SpringBootTest
+class ChallengeServiceTest {
+  @Mock private ChallengeRepository<Challenge> challengeRepository;
   private ChallengeService<Challenge> challengeService;
 
   @BeforeEach
   public void setUp() {
-    challengeRepository = Mockito.mock(ChallengeRepository.class);
-    userRepository = Mockito.mock(UserRepository.class);
     challengeService =
-        new ChallengeService<>(challengeRepository, userRepository) {
+        new ChallengeService<>(challengeRepository) {
           @Override
           protected LocalDate calculateExpiryDate(TimeInterval timeInterval) {
             return LocalDate.now().plusDays(1);
@@ -37,7 +34,7 @@ public class ChallengeServiceTest {
   }
 
   @Test
-  public void testCreateChallenge() {
+  void testCreateChallenge() {
     Challenge challenge = new Challenge();
     when(challengeRepository.save(any())).thenReturn(challenge);
 
@@ -49,7 +46,7 @@ public class ChallengeServiceTest {
   }
 
   @Test
-  public void testUpdateChallenge() {
+  void testUpdateChallenge() {
     Challenge challenge = new Challenge();
     challenge.setId(1L);
     when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
@@ -57,7 +54,7 @@ public class ChallengeServiceTest {
     ConsumptionChallenge updatedChallenge = new ConsumptionChallenge();
     updatedChallenge.setDescription("New Description");
 
-    when(challengeRepository.save(any())).thenReturn(challenge); // Add this line
+    when(challengeRepository.save(any())).thenReturn(challenge);
 
     Challenge result = challengeService.updateChallenge(1L, updatedChallenge);
 
@@ -66,7 +63,7 @@ public class ChallengeServiceTest {
   }
 
   @Test
-  public void testAddToSavedAmount() {
+  void testAddToSavedAmount() {
     Challenge challenge = new Challenge();
     challenge.setId(1L);
     challenge.setUsedAmount(50.0);
@@ -83,6 +80,4 @@ public class ChallengeServiceTest {
     assertEquals(105.0, challenge.getUsedAmount()); // And this line
     assertTrue(challenge.isCompleted());
   }
-
-  // Add more tests for deleteChallenge, getAll, getById, addToSavedAmount
 }

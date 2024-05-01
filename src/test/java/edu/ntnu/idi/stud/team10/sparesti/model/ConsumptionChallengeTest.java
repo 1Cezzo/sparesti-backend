@@ -11,7 +11,7 @@ import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ConsumptionChallengeTest {
+class ConsumptionChallengeTest {
 
   private ConsumptionChallenge consumptionChallenge;
   private final String testDescription = "Test Description";
@@ -41,7 +41,7 @@ public class ConsumptionChallengeTest {
   }
 
   @Test
-  public void testConsumptionChallengeAttributes() {
+  void testConsumptionChallengeAttributes() {
     assertNotNull(consumptionChallenge);
     assertEquals(testDescription, consumptionChallenge.getDescription());
     assertEquals(testTargetAmount, consumptionChallenge.getTargetAmount());
@@ -54,7 +54,4 @@ public class ConsumptionChallengeTest {
     assertEquals(testProductCategory, consumptionChallenge.getProductCategory());
     assertEquals(testReductionPercentage, consumptionChallenge.getReductionPercentage());
   }
-
-  // Add more tests as needed...
-
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.PurchaseChallengeDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.ChallengeMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.service.PurchaseChallengeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,10 +22,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class PurchaseChallengeController {
 
   private final PurchaseChallengeService purchaseChallengeService;
+  private final ChallengeMapper challengeMapper;
 
   @Autowired
-  public PurchaseChallengeController(PurchaseChallengeService purchaseChallengeService) {
+  public PurchaseChallengeController(
+      PurchaseChallengeService purchaseChallengeService, ChallengeMapper challengeMapper) {
     this.purchaseChallengeService = purchaseChallengeService;
+    this.challengeMapper = challengeMapper;
   }
 
   /**
@@ -37,7 +41,8 @@ public class PurchaseChallengeController {
   @Operation(summary = "Create a new purchase challenge")
   public ResponseEntity<PurchaseChallenge> createPurchaseChallenge(
       @RequestBody PurchaseChallengeDto dto) {
-    PurchaseChallenge challenge = purchaseChallengeService.createChallenge(dto.toEntity());
+    PurchaseChallenge challenge =
+        purchaseChallengeService.createChallenge((PurchaseChallenge) challengeMapper.toEntity(dto));
     return new ResponseEntity<>(challenge, HttpStatus.CREATED);
   }
 

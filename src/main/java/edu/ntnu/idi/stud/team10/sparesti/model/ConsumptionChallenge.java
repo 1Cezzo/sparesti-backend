@@ -15,5 +15,5 @@ public class ConsumptionChallenge extends Challenge {
   private String productCategory;
 
   @Column(name = "reduction_percentage", nullable = false)
-  private double reductionPercentage;
+  private Double reductionPercentage;
 }
