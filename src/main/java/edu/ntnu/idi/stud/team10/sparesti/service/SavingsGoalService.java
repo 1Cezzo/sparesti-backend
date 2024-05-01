@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserSavingsGoalDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.SavingsGoalMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.model.UserSavingsGoal;
@@ -27,15 +28,18 @@ public class SavingsGoalService {
   private final SavingsGoalRepository savingsGoalRepository;
   private final UserRepository userRepository;
   private final UserSavingsGoalRepository userSavingsGoalRepository;
+  private final SavingsGoalMapper savingsGoalMapper;
 
   @Autowired
   public SavingsGoalService(
       SavingsGoalRepository savingsGoalRepository,
       UserRepository userRepository,
-      UserSavingsGoalRepository userSavingsGoalRepository) {
+      UserSavingsGoalRepository userSavingsGoalRepository,
+      SavingsGoalMapper savingsGoalMapper) {
     this.savingsGoalRepository = savingsGoalRepository;
     this.userRepository = userRepository;
     this.userSavingsGoalRepository = userSavingsGoalRepository;
+    this.savingsGoalMapper = savingsGoalMapper;
   }
 
   /**
@@ -46,7 +50,7 @@ public class SavingsGoalService {
    * @return the created savings goal
    */
   public SavingsGoal createSavingsGoal(SavingsGoalDto savingsGoalDTO, Long userId) {
-    SavingsGoal savingsGoal = savingsGoalDTO.toEntity();
+    SavingsGoal savingsGoal = savingsGoalMapper.toEntity(savingsGoalDTO);
     if (savingsGoalDTO.getTargetAmount() <= 0) {
       throw new IllegalArgumentException("Target amount must be greater than 0");
     }
@@ -130,7 +134,7 @@ public class SavingsGoalService {
     try {
       savingsGoalRepository.deleteById(id);
     } catch (Exception e) {
-      throw new IllegalArgumentException("Savings goal with ID " + id + " not found");
+      throw new IllegalArgumentException("Savings goal with ID " + id + " could not be deleted.");
     }
   }
 
@@ -224,23 +228,10 @@ public class SavingsGoalService {
    */
   public List<SavingsGoalDto> getAllSavingsGoalsForUser(Long userId) {
     List<UserSavingsGoal> userSavingsGoals = userSavingsGoalRepository.findByUserId(userId);
-
-    List<SavingsGoalDto> savingsGoalDtos = new ArrayList<>();
-    for (UserSavingsGoal userSavingsGoal : userSavingsGoals) {
-      SavingsGoal savingsGoal = userSavingsGoal.getSavingsGoal();
-      SavingsGoalDto savingsGoalDTO = new SavingsGoalDto();
-      savingsGoalDTO.setId(savingsGoal.getId());
-      savingsGoalDTO.setName(savingsGoal.getName());
-      savingsGoalDTO.setTargetAmount(savingsGoal.getTargetAmount());
-      savingsGoalDTO.setSavedAmount(savingsGoal.getSavedAmount());
-      savingsGoalDTO.setMediaUrl(savingsGoal.getMediaUrl());
-      savingsGoalDTO.setDeadline(savingsGoal.getDeadline());
-      savingsGoalDTO.setCompleted(savingsGoal.isCompleted());
-      savingsGoalDTO.setAuthorId(savingsGoal.getAuthorId());
-      savingsGoalDtos.add(savingsGoalDTO);
-    }
-
-    return savingsGoalDtos;
+    return userSavingsGoals.stream()
+        .map(UserSavingsGoal::getSavingsGoal)
+        .map(savingsGoalMapper::toDto)
+        .toList();
   }
 
   /**
@@ -304,10 +295,10 @@ public class SavingsGoalService {
                       userSavingsGoal.getContributionAmount(),
                       userSavingsGoal.getLastContributed());
                 })
-            .collect(Collectors.toList());
+            .toList();
     return savingGoals.stream()
         .sorted(Comparator.comparingDouble(UserSavingsGoalDto::getContributionAmount).reversed())
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /**

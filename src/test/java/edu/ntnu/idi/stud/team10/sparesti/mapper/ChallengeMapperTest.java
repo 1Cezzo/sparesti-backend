@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class ChallengeMapperTest {
-  private final ChallengeMapper challengeMapper = new ChallengeMapperImpl();
+  private final ChallengeMapper challengeMapper = ChallengeMapper.INSTANCE;
   private ConsumptionChallengeDto consumptionChallengeDto;
   private PurchaseChallengeDto purchaseChallengeDto;
   private SavingChallengeDto savingChallengeDto;
