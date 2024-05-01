@@ -20,6 +20,8 @@ import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
+
 /** Operations related to badges of users. */
 @RestController
 @RequestMapping("/api/badges")

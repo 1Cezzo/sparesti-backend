@@ -136,7 +136,7 @@ public class BankController {
   @Operation(summary = "Get last 30 days of transactions from an account number")
   public ResponseEntity<Set<TransactionDto>> getRecentTransactions(
       @PathVariable Long accountNr, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     return ResponseEntity.ok()
         .body(bankService.getRecentTransactionsByAccountNr(accountNr, userId));
   }
@@ -153,7 +153,7 @@ public class BankController {
       summary = "Get the sum spent in each category in the last 30 days for an account number")
   public ResponseEntity<Map<String, Double>> getRecentCategorySpendings(
       @PathVariable Long accountNr, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     return ResponseEntity.ok().body(bankService.getSpendingsInCategories(accountNr, userId));
   }
 }

@@ -1,5 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
+import java.util.List;
+
 import lombok.*;
 
 /** Data transfer object for User entities. */
@@ -10,7 +12,6 @@ public class UserDto {
   private Long id;
   private String password;
   private String email;
-  private Double totalSavings;
   private String profilePictureUrl;
   private Long checkingAccountNr;
   private Long savingsAccountNr;

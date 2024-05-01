@@ -44,7 +44,7 @@ public class SavingsGoalController {
   @Operation(summary = "Create a new savings goal")
   public ResponseEntity<SavingsGoal> createSavingsGoal(
       @RequestBody SavingsGoalDto savingsGoalDTO, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     SavingsGoal savingsGoal = savingsGoalService.createSavingsGoal(savingsGoalDTO, userId);
     return new ResponseEntity<>(savingsGoal, HttpStatus.CREATED);
   }
