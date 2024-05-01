@@ -179,7 +179,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
         "Medalje for ikke å handle på Bunnpris på en uke",
         "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/bunin.png\n");
     createBadge(
-        "Budget",
+        "Budsjett",
         "Medalje for å opprette et budsjett",
         "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/budget.png\n");
     createBadge(

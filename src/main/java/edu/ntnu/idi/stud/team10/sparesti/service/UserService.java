@@ -241,4 +241,16 @@ public class UserService implements UserDetailsService {
     user.setLastLogin(now);
     userRepository.save(user);
   }
+
+  /**
+   * Checks if user has profile picture
+   *
+   * @param userId (Long) The id of the user.
+   * @throws NotFoundException If the user is not found.
+   * @return (Boolean): True if the user has a profile picture, false otherwise.
+   */
+  public boolean hasProfilePicture(Long userId) {
+    User user = findUserById(userId);
+    return user.getProfilePictureUrl() != null;
+  }
 }
