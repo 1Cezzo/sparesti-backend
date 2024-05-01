@@ -16,27 +16,29 @@ public class BudgetingProductDtoTest {
     String name = "Budgeting Product 1";
     TimeInterval frequency = TimeInterval.MONTHLY;
     Integer amount = 100;
+    Double unitPrice = 20.0;
     Long userInfoId = 1L;
 
     BudgetingProductDto budgetingProduct =
-        new BudgetingProductDto(id, name, frequency, amount, userInfoId);
+        new BudgetingProductDto(id, name, frequency, amount, unitPrice, userInfoId);
 
     assertNotNull(budgetingProduct);
     assertEquals(id, budgetingProduct.getId());
     assertEquals(name, budgetingProduct.getName());
     assertEquals(frequency, budgetingProduct.getFrequency());
     assertEquals(amount, budgetingProduct.getAmount());
+    assertEquals(unitPrice, budgetingProduct.getUnitPrice());
     assertEquals(userInfoId, budgetingProduct.getUserInfoId());
   }
 
   @Test
   public void testEqualsAndHashCode() {
     BudgetingProductDto product1 =
-        new BudgetingProductDto(1L, "Budgeting Product 1", TimeInterval.MONTHLY, 100, 1L);
+        new BudgetingProductDto(1L, "Budgeting Product 1", TimeInterval.MONTHLY, 100, 20.0, 1L);
     BudgetingProductDto product2 =
-        new BudgetingProductDto(1L, "Budgeting Product 1", TimeInterval.MONTHLY, 100, 1L);
+        new BudgetingProductDto(1L, "Budgeting Product 1", TimeInterval.MONTHLY, 100, 20.0, 1L);
     BudgetingProductDto product3 =
-        new BudgetingProductDto(2L, "Budgeting Product 2", TimeInterval.WEEKLY, 50, 2L);
+        new BudgetingProductDto(2L, "Budgeting Product 2", TimeInterval.WEEKLY, 50, 20.0, 2L);
 
     assertEquals(product1, product2);
     assertNotEquals(product1, product3);
@@ -51,12 +53,14 @@ public class BudgetingProductDtoTest {
     budgetingProduct.setName("Budgeting Product 1");
     budgetingProduct.setFrequency(TimeInterval.MONTHLY);
     budgetingProduct.setAmount(100);
+    budgetingProduct.setUnitPrice(20.0);
     budgetingProduct.setUserInfoId(1L);
 
     assertEquals(1L, budgetingProduct.getId());
     assertEquals("Budgeting Product 1", budgetingProduct.getName());
     assertEquals(TimeInterval.MONTHLY, budgetingProduct.getFrequency());
     assertEquals(100, budgetingProduct.getAmount());
+    assertEquals(20.0, budgetingProduct.getUnitPrice());
     assertEquals(1L, budgetingProduct.getUserInfoId());
   }
 
@@ -66,15 +70,17 @@ public class BudgetingProductDtoTest {
     String name = "Budgeting Product 1";
     TimeInterval frequency = TimeInterval.MONTHLY;
     Integer amount = 100;
+    Double unitPrice = 20.0;
     Long userInfoId = 1L;
 
     BudgetingProductDto budgetingProduct =
-        new BudgetingProductDto(id, name, frequency, amount, userInfoId);
+        new BudgetingProductDto(id, name, frequency, amount, unitPrice, userInfoId);
 
     assertEquals(id, budgetingProduct.getId());
     assertEquals(name, budgetingProduct.getName());
     assertEquals(frequency, budgetingProduct.getFrequency());
     assertEquals(amount, budgetingProduct.getAmount());
+    assertEquals(unitPrice, budgetingProduct.getUnitPrice());
     assertEquals(userInfoId, budgetingProduct.getUserInfoId());
   }
 
@@ -84,13 +90,15 @@ public class BudgetingProductDtoTest {
     String name = "Budgeting Product 1";
     TimeInterval frequency = TimeInterval.MONTHLY;
     Integer amount = 100;
+    Double unitPrice = 20.0;
     Long userInfoId = 1L;
 
     BudgetingProductDto budgetingProduct =
-        new BudgetingProductDto(id, name, frequency, amount, userInfoId);
+        new BudgetingProductDto(id, name, frequency, amount, unitPrice, userInfoId);
 
     String expectedToString =
-        "BudgetingProductDto(id=1, name=Budgeting Product 1, frequency=MONTHLY, amount=100, userInfoId=1)";
+        "BudgetingProductDto(id=1, name=Budgeting Product 1, frequency=MONTHLY, amount=100, unitPrice=20.0, "
+            + "userInfoId=1)";
     assertEquals(expectedToString, budgetingProduct.toString());
   }
 }

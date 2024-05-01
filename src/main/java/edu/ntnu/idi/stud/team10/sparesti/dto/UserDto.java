@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.*;
@@ -13,6 +14,8 @@ public class UserDto {
   private String password;
   private String email;
   private String profilePictureUrl;
+  private Integer loginStreak;
+  private LocalDate lastLogin;
   private Long checkingAccountNr;
   private Long savingsAccountNr;
   private Double totalSavings;

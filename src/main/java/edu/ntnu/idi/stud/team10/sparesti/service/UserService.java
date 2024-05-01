@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -213,5 +214,31 @@ public class UserService implements UserDetailsService {
       throw new UnauthorizedException(
           "Account number: " + accountNr + " not found, or does not belong to the user.");
     }
+  }
+
+  /**
+   * Updates the loginstreak of a user.
+   *
+   * @param userId (Long) The id of the user.
+   */
+  public void updateLoginStreak(Long userId) {
+    User user = findUserById(userId);
+    LocalDate lastLogin = user.getLastLogin();
+    LocalDate now = LocalDate.now();
+
+    if (lastLogin == null) {
+      user.setLoginStreak(1);
+    } else if (lastLogin.isEqual(now)) {
+      if (user.getLoginStreak() == null) {
+        user.setLoginStreak(1);
+      }
+    } else if (lastLogin.plusDays(1).isEqual(now)) {
+      user.setLoginStreak(user.getLoginStreak() + 1);
+    } else {
+      user.setLoginStreak(1);
+    }
+
+    user.setLastLogin(now);
+    userRepository.save(user);
   }
 }
