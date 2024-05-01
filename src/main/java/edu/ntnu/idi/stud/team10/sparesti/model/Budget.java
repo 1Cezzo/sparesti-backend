@@ -29,6 +29,8 @@ public class Budget {
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "budget")
   private Set<BudgetRow> row = new HashSet<>();
 
+  @Column private String name;
+
   @Column private LocalDate expiryDate;
   @Column private LocalDate creationDate;
 

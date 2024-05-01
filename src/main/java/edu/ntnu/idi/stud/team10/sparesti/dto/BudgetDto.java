@@ -15,6 +15,7 @@ import lombok.Data;
 public class BudgetDto {
   private Long id;
   private Set<BudgetRow> row = new HashSet<>();
+  private String name;
   private LocalDate expiryDate;
   private LocalDate creationDate;
 
