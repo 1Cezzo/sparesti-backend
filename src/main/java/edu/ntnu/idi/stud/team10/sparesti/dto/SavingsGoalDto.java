@@ -2,7 +2,6 @@ package edu.ntnu.idi.stud.team10.sparesti.dto;
 
 import java.time.LocalDate;
 
-import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import lombok.*;
 
 @AllArgsConstructor
@@ -18,22 +17,6 @@ public class SavingsGoalDto {
   private LocalDate deadline;
   private boolean completed;
   private Long authorId;
-
-  /**
-   * Constructor for converting a SavingsGoal entity to a DTO.
-   *
-   * @param savingsGoal The SavingsGoal entity to convert.
-   */
-  public SavingsGoalDto(SavingsGoal savingsGoal) {
-    this.id = savingsGoal.getId();
-    this.name = savingsGoal.getName();
-    this.targetAmount = savingsGoal.getTargetAmount();
-    this.savedAmount = savingsGoal.getSavedAmount();
-    this.mediaUrl = savingsGoal.getMediaUrl();
-    this.deadline = savingsGoal.getDeadline();
-    this.completed = savingsGoal.isCompleted();
-    this.authorId = savingsGoal.getAuthorId();
-  }
 
   /**
    * Constructor for creating a new SavingsGoalDTO.
@@ -53,23 +36,5 @@ public class SavingsGoalDto {
     this.deadline = deadline;
     this.completed = false;
     this.authorId = authorId;
-  }
-
-  /**
-   * Converts the DTO to a SavingsGoal entity.
-   *
-   * @return (SavingsGoal) The SavingsGoal entity.
-   */
-  public SavingsGoal toEntity() {
-    SavingsGoal savingsGoal = new SavingsGoal();
-    savingsGoal.setId(this.id);
-    savingsGoal.setName(this.name);
-    savingsGoal.setTargetAmount(this.targetAmount);
-    savingsGoal.setSavedAmount(this.savedAmount);
-    savingsGoal.setMediaUrl(this.mediaUrl);
-    savingsGoal.setDeadline(this.deadline);
-    savingsGoal.setCompleted(this.completed);
-    savingsGoal.setAuthorId(this.authorId);
-    return savingsGoal;
   }
 }

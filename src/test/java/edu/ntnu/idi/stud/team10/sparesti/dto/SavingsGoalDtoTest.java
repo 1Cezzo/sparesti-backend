@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,18 +41,6 @@ public class SavingsGoalDtoTest {
     assertEquals("https://example.com/image.jpg", savingsGoalDto1.getMediaUrl());
     assertEquals(LocalDate.now().plusMonths(6), savingsGoalDto1.getDeadline());
     assertEquals(false, savingsGoalDto1.isCompleted());
-  }
-
-  @Test
-  public void testSavingsGoalDtoConversionToEntity() {
-    SavingsGoal savingsGoal = savingsGoalDto1.toEntity();
-
-    assertEquals("Test Savings Goal", savingsGoal.getName());
-    assertEquals(1000.0, savingsGoal.getTargetAmount());
-    assertEquals(500.0, savingsGoal.getSavedAmount());
-    assertEquals("https://example.com/image.jpg", savingsGoal.getMediaUrl());
-    assertEquals(LocalDate.now().plusMonths(6), savingsGoal.getDeadline());
-    assertEquals(false, savingsGoal.isCompleted());
   }
 
   @Test
