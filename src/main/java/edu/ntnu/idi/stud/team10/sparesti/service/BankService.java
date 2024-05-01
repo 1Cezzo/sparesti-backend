@@ -66,11 +66,11 @@ public class BankService {
   /**
    * Get account details.
    *
-   * @param accountNr (int) The account number to get details for.
+   * @param accountNr (Long) The account number to get details for.
    * @return A Dto with the account details.
    * @throws NotFoundException If the account is not found.
    */
-  public AccountDto getAccountDetails(int accountNr, Long userId) {
+  public AccountDto getAccountDetails(Long accountNr, Long userId) {
     Account account = findAccountByAccountNr(accountNr);
     if (!account.getOwnerId().equals(userId)) {
       throw new UnauthorizedException("User does not have access to this account");
@@ -120,11 +120,11 @@ public class BankService {
   /**
    * Find an account by account number.
    *
-   * @param accountNr (int) The account number to search for.
+   * @param accountNr (Long) The account number to search for.
    * @return (Account) The account entity.
    * @throws NotFoundException If the account is not found.
    */
-  private Account findAccountByAccountNr(int accountNr) {
+  private Account findAccountByAccountNr(Long accountNr) {
     return accountRepository
         .findByAccountNr(accountNr)
         .orElseThrow(() -> new NotFoundException("Account not found"));
@@ -139,8 +139,7 @@ public class BankService {
    * @throws IllegalArgumentException if an attempt is made to transfer a negative amount.
    */
   @Transactional
-  public void transferMoney(
-      Integer fromAccountNr, Integer toAccountNr, double amount, Long ownerId) {
+  public void transferMoney(Long fromAccountNr, Long toAccountNr, double amount, Long ownerId) {
     if (amount < 0) {
       throw new IllegalArgumentException("Cannot transfer a negative amount.");
     }
@@ -190,10 +189,10 @@ public class BankService {
   /**
    * Gets transactions from an account that happened within the last 30 days
    *
-   * @param accountNr (Integer): The account being checked
+   * @param accountNr (Long): The account being checked
    * @return Set&lt;TransactionDto&gt; of all transactions from the account in the last 30 days.
    */
-  public Set<TransactionDto> getRecentTransactionsByAccountNr(Integer accountNr, Long userId) {
+  public Set<TransactionDto> getRecentTransactionsByAccountNr(Long accountNr, Long userId) {
     LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
     Account account = findAccountByAccountNr(accountNr);
     if (!account.getOwnerId().equals(userId)) {
@@ -209,11 +208,11 @@ public class BankService {
   /**
    * Gets a list of all transactions by a singular account number
    *
-   * @param accountNr (Integer) The accountNr being checked
+   * @param accountNr (Long) The accountNr being checked
    * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt; &gt;) Set of all transactions by the
    *     account.
    */
-  public Set<TransactionDto> getTransactionsByAccountNr(Integer accountNr, Long userId) {
+  public Set<TransactionDto> getTransactionsByAccountNr(Long accountNr, Long userId) {
     Account account = findAccountByAccountNr(accountNr);
     if (!account.getOwnerId().equals(userId)) {
       throw new UnauthorizedException("User does not have access to this account");
@@ -227,18 +226,17 @@ public class BankService {
    * Gets an accounts total spendings in the various categories (in transactions) from the last 30
    * days.
    *
-   * @param accountNr (Integer) the unique number of the account.
+   * @param accountNr (Long) the unique number of the account.
    * @param userId (Long) the user's id.
    * @return (Map&lt;String, Double&gt;) Detailing a category, and how much was spent in it in the
    *     last 30 days.
    */
-  public Map<String, Double> getSpendingsInCategories(Integer accountNr, Long userId) {
+  public Map<String, Double> getSpendingsInCategories(Long accountNr, Long userId) {
     LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
     Account account = findAccountByAccountNr(accountNr);
     if (!account.getOwnerId().equals(userId)) {
       throw new UnauthorizedException("User does not have access to this account");
     }
-    // TODO: fix some minor edge-case things like when user has no transactions in past 30 days.
     Set<Transaction> transactions =
         transactionRepository.findByAccount(account).stream()
             .filter(t -> t.getDate().isAfter(LocalDate.now().minusDays(30)))
@@ -254,12 +252,12 @@ public class BankService {
    * Checks if a user can legally access an account. The user is allowed to access an account if it
    * does not exist yet.
    *
-   * @param accountNr (Integer) The account number
+   * @param accountNr (Long) The account number
    * @param userId (Long) The user id
    * @return {@code false} only if the account is registered with another userId as owned, {@code
    *     true} otherwise.
    */
-  public boolean userHasAccessToAccount(Integer accountNr, Long userId) {
+  public boolean userHasAccessToAccount(Long accountNr, Long userId) {
     Account account = accountRepository.findByAccountNr(accountNr).orElse(null);
     return account == null || account.getOwnerId().equals(userId);
   }
@@ -267,10 +265,10 @@ public class BankService {
   /**
    * Checks if an account exits.
    *
-   * @param accountNr (Integer) The account number
+   * @param accountNr (Long) The account number
    * @return {@code true} if the account exists, {@code false} otherwise.
    */
-  public boolean accountExists(Integer accountNr) {
+  public boolean accountExists(Long accountNr) {
     return accountRepository.existsByAccountNr(accountNr);
   }
 }

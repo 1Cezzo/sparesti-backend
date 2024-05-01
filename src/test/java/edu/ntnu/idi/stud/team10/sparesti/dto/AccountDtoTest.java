@@ -19,22 +19,22 @@ public class AccountDtoTest {
     accountDto1 = new AccountDto();
     accountDto1.setId(1L);
     accountDto1.setOwnerId(123L);
-    accountDto1.setAccountNr(456789);
+    accountDto1.setAccountNr(456789L);
     accountDto1.setName("Test Account");
     accountDto1.setBalance(1000.0);
 
     // Adding transactions for testing
     Set<TransactionDto> transactions = new HashSet<>();
     transactions.add(
-        new TransactionDto(1L, 100.0, "Description1", "Category1", 1, LocalDate.now()));
+        new TransactionDto(1L, 100.0, "Description1", "Category1", 1L, LocalDate.now()));
     transactions.add(
-        new TransactionDto(2L, -50.0, "Description2", "Category2", 1, LocalDate.now()));
+        new TransactionDto(2L, -50.0, "Description2", "Category2", 1L, LocalDate.now()));
     accountDto1.setTransactions(transactions);
 
     accountDto2 = new AccountDto();
     accountDto2.setId(1L);
     accountDto2.setOwnerId(123L);
-    accountDto2.setAccountNr(456789);
+    accountDto2.setAccountNr(456789L);
     accountDto2.setName("Test Account");
     accountDto2.setBalance(1000.0);
     accountDto2.setTransactions(transactions);

@@ -12,13 +12,13 @@ import jakarta.persistence.LockModeType;
 
 /** Repository for Account entities. */
 public interface AccountRepository extends JpaRepository<Account, Long> {
-  Optional<Account> findByAccountNr(int accountNr);
+  Optional<Account> findByAccountNr(Long accountNr);
 
   Set<Account> findAllByOwnerId(Long ownerId);
 
-  boolean existsByAccountNr(int accountNr);
+  boolean existsByAccountNr(Long accountNr);
 
   @Query("SELECT a FROM Account a WHERE a.accountNr = :accountNr")
   @Lock(LockModeType.PESSIMISTIC_WRITE)
-  Optional<Account> findByAccountNrWithLock(int accountNr);
+  Optional<Account> findByAccountNrWithLock(Long accountNr);
 }
