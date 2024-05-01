@@ -17,6 +17,7 @@ public class SavingsGoalDto {
   private String mediaUrl;
   private LocalDate deadline;
   private boolean completed;
+  private Long authorId;
 
   /**
    * Constructor for converting a SavingsGoal entity to a DTO.
@@ -31,6 +32,7 @@ public class SavingsGoalDto {
     this.mediaUrl = savingsGoal.getMediaUrl();
     this.deadline = savingsGoal.getDeadline();
     this.completed = savingsGoal.isCompleted();
+    this.authorId = savingsGoal.getAuthorId();
   }
 
   /**
@@ -40,14 +42,17 @@ public class SavingsGoalDto {
    * @param targetAmount The target amount of the savings goal.
    * @param mediaUrl The media URL of the savings goal.
    * @param deadline The deadline of the savings goal.
+   * @param authorId The ID of the author of the savings goal.
    */
-  public SavingsGoalDto(String name, double targetAmount, String mediaUrl, LocalDate deadline) {
+  public SavingsGoalDto(
+      String name, double targetAmount, String mediaUrl, LocalDate deadline, Long authorId) {
     this.name = name;
     this.targetAmount = targetAmount;
     this.savedAmount = 0;
     this.mediaUrl = mediaUrl;
     this.deadline = deadline;
     this.completed = false;
+    this.authorId = authorId;
   }
 
   /**
@@ -64,6 +69,7 @@ public class SavingsGoalDto {
     savingsGoal.setMediaUrl(this.mediaUrl);
     savingsGoal.setDeadline(this.deadline);
     savingsGoal.setCompleted(this.completed);
+    savingsGoal.setAuthorId(this.authorId);
     return savingsGoal;
   }
 }

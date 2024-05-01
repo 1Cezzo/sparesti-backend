@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
+import edu.ntnu.idi.stud.team10.sparesti.service.BadgeAwarder;
 import edu.ntnu.idi.stud.team10.sparesti.service.BadgeService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserBadgeService;
 import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
@@ -26,11 +27,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class BadgeController {
   private final BadgeService badgeService;
   private final UserBadgeService userBadgeService;
+  private final BadgeAwarder badgeAwarder;
 
   @Autowired
-  public BadgeController(final BadgeService badgeService, final UserBadgeService userBadgeService) {
+  public BadgeController(
+      BadgeService badgeService, UserBadgeService userBadgeService, BadgeAwarder badgeAwarder) {
     this.badgeService = badgeService;
     this.userBadgeService = userBadgeService;
+    this.badgeAwarder = badgeAwarder;
   }
 
   /**
@@ -135,5 +139,19 @@ public class BadgeController {
   public ResponseEntity<List<Map<String, Object>>> getUsersByBadge(@PathVariable Long badgeId) {
     List<Map<String, Object>> users = userBadgeService.getUsersByBadge(badgeId);
     return ResponseEntity.ok(users);
+  }
+
+  /**
+   * Awards a badge to a user.
+   *
+   * @param token the JWT token.
+   * @return 200 OK if successful.
+   */
+  @PostMapping("/check-and-award")
+  @Operation(summary = "Checks and awards badges to a user if they have met the requirements.")
+  public ResponseEntity<Badge> awardUserBadge(@AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
+    Badge badgeGiven = badgeAwarder.checkAndAwardBadges(userId);
+    return ResponseEntity.ok(badgeGiven);
   }
 }

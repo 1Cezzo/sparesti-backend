@@ -45,13 +45,14 @@ public class SavingsGoalService {
    * @throws IllegalArgumentException if the target amount is less than or equal to 0
    * @return the created savings goal
    */
-  public SavingsGoal createSavingsGoal(SavingsGoalDto savingsGoalDTO) {
+  public SavingsGoal createSavingsGoal(SavingsGoalDto savingsGoalDTO, Long userId) {
     SavingsGoal savingsGoal = savingsGoalDTO.toEntity();
     if (savingsGoalDTO.getTargetAmount() <= 0) {
       throw new IllegalArgumentException("Target amount must be greater than 0");
     }
     savingsGoal.setSavedAmount(0);
     savingsGoal.setCompleted(false);
+    savingsGoal.setAuthorId(userId);
     // Perform validation if necessary
     return savingsGoalRepository.save(savingsGoal);
   }
@@ -111,6 +112,10 @@ public class SavingsGoalService {
 
     if (savingsGoalDTO.getDeadline() != null) {
       savingsGoal.setDeadline(savingsGoalDTO.getDeadline());
+    }
+
+    if (savingsGoalDTO.getAuthorId() != null) {
+      savingsGoal.setAuthorId(savingsGoalDTO.getAuthorId());
     }
 
     LocalDateTime currentDate = LocalDateTime.now();
@@ -236,6 +241,7 @@ public class SavingsGoalService {
       savingsGoalDTO.setMediaUrl(savingsGoal.getMediaUrl());
       savingsGoalDTO.setDeadline(savingsGoal.getDeadline());
       savingsGoalDTO.setCompleted(savingsGoal.isCompleted());
+      savingsGoalDTO.setAuthorId(savingsGoal.getAuthorId());
       savingsGoalDtos.add(savingsGoalDTO);
     }
 
@@ -307,5 +313,17 @@ public class SavingsGoalService {
     return savingGoals.stream()
         .sorted(Comparator.comparingDouble(UserSavingsGoalDto::getContributionAmount).reversed())
         .collect(Collectors.toList());
+  }
+
+  /** Get active saving goal */
+  public boolean hasActiveSavingsGoal(Long userId) {
+    List<UserSavingsGoal> userSavingsGoals = userSavingsGoalRepository.findByUserId(userId);
+    for (UserSavingsGoal userSavingsGoal : userSavingsGoals) {
+      SavingsGoal savingsGoal = userSavingsGoal.getSavingsGoal();
+      if (!savingsGoal.isCompleted()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

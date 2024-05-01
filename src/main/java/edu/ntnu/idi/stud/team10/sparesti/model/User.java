@@ -27,9 +27,9 @@ public class User {
 
   @Column() private String profilePictureUrl;
 
-  @Column() private Integer checkingAccountNr;
+  @Column() private Long checkingAccountNr;
 
-  @Column() private Integer savingsAccountNr;
+  @Column() private Long savingsAccountNr;
 
   @ManyToMany
   @JoinTable(

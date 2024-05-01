@@ -12,6 +12,8 @@ public class UserDto {
   private String email;
   private Double totalSavings;
   private String profilePictureUrl;
-  private Integer checkingAccountNr;
-  private Integer savingsAccountNr;
+  private Long checkingAccountNr;
+  private Long savingsAccountNr;
+  private Double totalSavings;
+  private List<ChallengeDto> challenges;
 }

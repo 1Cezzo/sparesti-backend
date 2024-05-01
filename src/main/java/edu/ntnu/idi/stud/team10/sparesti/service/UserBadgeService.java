@@ -42,6 +42,16 @@ public class UserBadgeService {
   }
 
   /**
+   * Returns true if a User has a certain Badge, false otherwise.
+   *
+   * @param userId (Long): The User's unique ID. badgeId (Long): The Badge's unique ID.
+   */
+  @Transactional
+  public boolean hasUserBadge(Long userId, Long badgeId) {
+    return userBadgeRepository.findByUserIdAndBadgeId(userId, badgeId).isPresent();
+  }
+
+  /**
    * Returns a Set of all the badges earned by a user, as DTOs.
    *
    * @param userId (Long): The User's unique ID.

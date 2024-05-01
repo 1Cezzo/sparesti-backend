@@ -16,6 +16,6 @@ public class TransactionDto {
   private double amount;
   private String description;
   private String category;
-  private int accountNr;
+  private Long accountNr;
   private LocalDate date;
 }
