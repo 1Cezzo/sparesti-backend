@@ -339,4 +339,39 @@ public class SavingsGoalService {
         .findFirst()
         .orElseThrow(() -> new NotFoundException("No active savings goal found"));
   }
+
+  /**
+   * Checks if user has completed a savings goal.
+   *
+   * @param userId The ID of the user.
+   * @return {@code true} if the user has completed a savings goal, {@code false} otherwise.
+   */
+  public boolean hasCompletedSavingsGoal(Long userId) {
+    List<UserSavingsGoal> userSavingsGoals = userSavingsGoalRepository.findByUserId(userId);
+    for (UserSavingsGoal userSavingsGoal : userSavingsGoals) {
+      SavingsGoal savingsGoal = userSavingsGoal.getSavingsGoal();
+      if (savingsGoal.isCompleted()
+          || savingsGoal.getSavedAmount() >= savingsGoal.getTargetAmount()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Checks if the user has shared a savings goal.
+   *
+   * @param userId The ID of the user.
+   * @return {@code true} if the user has shared a savings goal, {@code false} otherwise.
+   */
+  public boolean hasSharedSavingsGoal(Long userId) {
+    List<UserSavingsGoal> userSavingsGoals = userSavingsGoalRepository.findByUserId(userId);
+    for (UserSavingsGoal userSavingsGoal : userSavingsGoals) {
+      SavingsGoal savingsGoal = userSavingsGoal.getSavingsGoal();
+      if (savingsGoal.getAuthorId() != userId) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

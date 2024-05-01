@@ -145,4 +145,14 @@ public class BudgetService {
     budget.getRow().remove(budgetRow);
     budgetRepository.save(budget);
   }
+
+  /**
+   * Checks if the user created a budget.
+   *
+   * @param userId the ID of the user
+   * @return true if the user has created a budget, false otherwise
+   */
+  public boolean hasCreatedBudget(Long userId) {
+    return budgetRepository.findByUserId(userId).size() > 0;
+  }
 }
