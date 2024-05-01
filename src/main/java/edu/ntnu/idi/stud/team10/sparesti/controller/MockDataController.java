@@ -34,7 +34,7 @@ public class MockDataController {
   @PutMapping("/transactions/generate")
   @Operation(summary = "Generate an amount of random mock purchases for an account")
   public ResponseEntity<?> generateMockTransactions(
-      @RequestParam Integer accountNr, @RequestParam(defaultValue = "10") int count) {
+      @RequestParam Long accountNr, @RequestParam(defaultValue = "10") int count) {
     mockDataService.storeRandomMockTransactions(accountNr, count);
     return ResponseEntity.ok(
         "Successfully generated " + count + " random transactions for account " + accountNr);

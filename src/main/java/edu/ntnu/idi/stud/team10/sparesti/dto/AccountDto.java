@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class AccountDto {
   @Hidden private Long id;
   private Long ownerId;
-  private int accountNr;
+  private Long accountNr;
   private String name;
   private double balance;
 

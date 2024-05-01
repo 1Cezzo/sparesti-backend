@@ -193,11 +193,11 @@ public class UserService implements UserDetailsService {
   /**
    * Ensures that a mock account exists, and belongs to the user.
    *
-   * @param accountNr (Integer) The account number to validate.
+   * @param accountNr (Long) The account number to validate.
    * @param userId (Long) The id of the user.
    * @throws UnauthorizedException If the account does not exist or does not belong to the user.
    */
-  private void validateMockAccount(Integer accountNr, Long userId) {
+  private void validateMockAccount(Long accountNr, Long userId) {
     if (bankService.userHasAccessToAccount(accountNr, userId)) {
       if (!bankService.accountExists(accountNr)) {
         AccountDto account = new AccountDto();

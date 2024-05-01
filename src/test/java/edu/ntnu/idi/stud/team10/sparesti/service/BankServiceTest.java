@@ -61,13 +61,13 @@ class BankServiceTest {
     Account account = new Account();
     account.setOwnerId(1L);
     AccountDto accountDto = new AccountDto();
-    when(accountRepository.findByAccountNr(anyInt())).thenReturn(java.util.Optional.of(account));
+    when(accountRepository.findByAccountNr(anyLong())).thenReturn(java.util.Optional.of(account));
     when(accountMapper.toDto(any())).thenReturn(accountDto);
 
-    AccountDto result = bankService.getAccountDetails(1, 1L);
+    AccountDto result = bankService.getAccountDetails(1L, 1L);
 
     assertNotNull(result);
-    verify(accountRepository, times(1)).findByAccountNr(1);
+    verify(accountRepository, times(1)).findByAccountNr(1L);
     verify(accountMapper, times(1)).toDto(account);
   }
 
@@ -103,10 +103,10 @@ class BankServiceTest {
   @Test
   void testAddTransaction() {
     TransactionDto transactionDto = new TransactionDto();
-    transactionDto.setAccountNr(1);
+    transactionDto.setAccountNr(1L);
     transactionDto.setAmount(100);
     Account account = new Account();
-    when(accountRepository.findByAccountNrWithLock(anyInt()))
+    when(accountRepository.findByAccountNrWithLock(anyLong()))
         .thenReturn(java.util.Optional.of(account));
     when(transactionMapper.toEntity(any())).thenReturn(new Transaction());
 

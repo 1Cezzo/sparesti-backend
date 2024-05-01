@@ -20,8 +20,8 @@ public class UserTest {
     user.setEmail("test@example.com");
     user.setTotalSavings(1000.0);
     user.setProfilePictureUrl("https://example.com/profile.jpg");
-    user.setCheckingAccountNr(123456);
-    user.setSavingsAccountNr(789012);
+    user.setCheckingAccountNr(123456L);
+    user.setSavingsAccountNr(789012L);
     user.setChallenges(new ArrayList<>());
     user.setEarnedBadges(new HashSet<>());
   }

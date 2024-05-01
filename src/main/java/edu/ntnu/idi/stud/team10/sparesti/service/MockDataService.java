@@ -35,7 +35,7 @@ public class MockDataService {
    * @param accountNr number of the account (who the transaction is coming from)
    * @return a randomly generated transaction
    */
-  public TransactionDto generateRandomPurchase(Integer accountNr) {
+  public TransactionDto generateRandomPurchase(Long accountNr) {
     double amount = ThreadLocalRandom.current().nextDouble(-500, -20);
     String category = CATEGORIES.get(RANDOM.nextInt(CATEGORIES.size()));
     List<String> descriptions = CATEGORY_DESCRIPTIONS.get(category);
@@ -55,7 +55,7 @@ public class MockDataService {
    *
    * @return a random LocalDate that is maximum 30 days ago from current time.
    */
-  private static final LocalDate randomRecentDate() {
+  private static LocalDate randomRecentDate() {
     int daysAgo = ThreadLocalRandom.current().nextInt(30); // Random number of days up to 30
     return LocalDate.now().minusDays(daysAgo);
   }
@@ -86,9 +86,9 @@ public class MockDataService {
   /**
    * Creates and saves a random amount of transactions.
    *
-   * @param accountNr (Integer) the account number making the fake transaction(s).
+   * @param accountNr (Long) the account number making the fake transaction(s).
    */
-  public void storeRandomMockTransactions(Integer accountNr, int amount) {
+  public void storeRandomMockTransactions(Long accountNr, int amount) {
     for (int i = 0; i < amount; i++) {
       bankService.addTransaction(generateRandomPurchase(accountNr));
     }
@@ -120,7 +120,7 @@ public class MockDataService {
     return ThreadLocalRandom.current().nextInt(100000, 999999);
   }
 
-  private void initFakeAccount(Integer accountNr) {
+  private void initFakeAccount(Long accountNr) {
     TransactionDto transactionDto = new TransactionDto();
     transactionDto.setAccountNr(accountNr);
     transactionDto.setDate(LocalDate.now().minusDays(31));

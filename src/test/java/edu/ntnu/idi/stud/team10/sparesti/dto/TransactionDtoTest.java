@@ -13,7 +13,7 @@ public class TransactionDtoTest {
   public void setUp() {
     transactionDto = new TransactionDto();
     transactionDto.setAmount(100.0);
-    transactionDto.setAccountNr(123456);
+    transactionDto.setAccountNr(123456L);
   }
 
   @Test
