@@ -2,6 +2,7 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -192,9 +193,12 @@ public class BankService {
    * @param accountNr (Integer): The account being checked
    * @return Set&lt;TransactionDto&gt; of all transactions from the account in the last 30 days.
    */
-  public Set<TransactionDto> getRecentTransactionsByAccountNr(Integer accountNr) {
+  public Set<TransactionDto> getRecentTransactionsByAccountNr(Integer accountNr, Long userId) {
     LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
     Account account = findAccountByAccountNr(accountNr);
+    if (!account.getOwnerId().equals(userId)) {
+      throw new UnauthorizedException("User does not have access to this account");
+    }
 
     return account.getTransactions().stream()
         .filter(t -> !t.getDate().isBefore(thirtyDaysAgo))
@@ -217,6 +221,33 @@ public class BankService {
     return account.getTransactions().stream()
         .map(transactionMapper::toDto)
         .collect(Collectors.toSet());
+  }
+
+  /**
+   * Gets an accounts total spendings in the various categories (in transactions) from the last 30
+   * days.
+   *
+   * @param accountNr (Integer) the unique number of the account.
+   * @param userId (Long) the user's id.
+   * @return (Map&lt;String, Double&gt;) Detailing a category, and how much was spent in it in the
+   *     last 30 days.
+   */
+  public Map<String, Double> getSpendingsInCategories(Integer accountNr, Long userId) {
+    LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+    Account account = findAccountByAccountNr(accountNr);
+    if (!account.getOwnerId().equals(userId)) {
+      throw new UnauthorizedException("User does not have access to this account");
+    }
+    // TODO: fix some minor edge-case things like when user has no transactions in past 30 days.
+    Set<Transaction> transactions =
+        transactionRepository.findByAccount(account).stream()
+            .filter(t -> t.getDate().isAfter(LocalDate.now().minusDays(30)))
+            .collect(Collectors.toSet());
+
+    return transactions.stream()
+        .collect(
+            Collectors.groupingBy(
+                Transaction::getCategory, Collectors.summingDouble(Transaction::getAmount)));
   }
 
   /**

@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,10 +125,36 @@ public class BankController {
     return ResponseEntity.ok().body(bankService.getTransactionsByAccountNr(accountNr, userId));
   }
 
+  /**
+   * Get the last 30 days of transactions from an account, using its number.
+   *
+   * @param accountNr (Integer) the accounts unique number in the bank.
+   * @param token (Jwt) the JWT token
+   * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt;&gt;): a set including the last 30 days of
+   *     transactions for the account.
+   */
   @GetMapping("/transactions/recent/{accountNr}")
   @Operation(summary = "Get last 30 days of transactions from an account number")
   public ResponseEntity<Set<TransactionDto>> getRecentTransactions(
-      @PathVariable Integer accountNr) {
-    return ResponseEntity.ok().body(bankService.getRecentTransactionsByAccountNr(accountNr));
+      @PathVariable Integer accountNr, @AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
+    return ResponseEntity.ok()
+        .body(bankService.getRecentTransactionsByAccountNr(accountNr, userId));
+  }
+
+  /**
+   * Gets an account's total spendings in various categories from the last 30 days.
+   *
+   * @param accountNr (Integer) the accounts unique number in the bank.
+   * @param token (Jwt) the JWT token.
+   * @return (Map&lt;String Double&gt;)
+   */
+  @GetMapping("/transactions/recent/categories/{accountNr}")
+  @Operation(
+      summary = "Get the sum spent in each category in the last 30 days for an account number")
+  public ResponseEntity<Map<String, Double>> getRecentCategorySpendings(
+      @PathVariable Integer accountNr, @AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim(USER_ID_CLAIM);
+    return ResponseEntity.ok().body(bankService.getSpendingsInCategories(accountNr, userId));
   }
 }
