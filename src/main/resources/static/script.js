@@ -15,15 +15,6 @@ function checkForLoginErrors() {
     }
 }
 
-function displayLoginErrorMessage(errorCode) {
-    const errorMessageDiv = document.getElementById('login-error-message');
-    console.log("Error message: " + errorCode)
-    const message = mapErrorToMessage(errorCode);
-    console.log("Error message: " + errorCode)
-    errorMessageDiv.textContent = message;
-    errorMessageDiv.style.display = 'block';
-}
-
 function mapErrorToMessage(errorCode) {
     const errorMessages = {
         'invalid_credentials': 'Feil epost eller passord.',
