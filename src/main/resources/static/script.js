@@ -15,16 +15,6 @@ function checkForLoginErrors() {
     }
 }
 
-function mapErrorToMessage(errorCode) {
-    const errorMessages = {
-        'invalid_credentials': 'Feil epost eller passord.',
-        'account_locked': 'Kontoen din har blitt låst.',
-        'session_expired': 'Din økt har utløpt, vennligst logg inn på nytt.',
-        'default': 'En ukjent feil oppstod. Vennligst prøv igjen.'
-    };
-    return errorMessages[errorCode] || errorMessages['default'];
-}
-
 // Toggle visibility between login and signup forms
 function toggleForm() {
     const signupContainer = document.getElementById('signup-container');
