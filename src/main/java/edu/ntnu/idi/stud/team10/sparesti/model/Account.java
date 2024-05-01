@@ -28,7 +28,7 @@ public class Account {
   private Long ownerId;
 
   @Column(nullable = false, unique = true)
-  private int accountNr;
+  private Long accountNr;
 
   @Column(nullable = false)
   private String name;
@@ -64,7 +64,7 @@ public class Account {
       return false;
     }
     Account account = (Account) o;
-    return accountNr == account.accountNr
+    return Objects.equals(accountNr, account.accountNr)
         && Double.compare(balance, account.balance) == 0
         && Objects.equals(id, account.id)
         && Objects.equals(ownerId, account.ownerId)

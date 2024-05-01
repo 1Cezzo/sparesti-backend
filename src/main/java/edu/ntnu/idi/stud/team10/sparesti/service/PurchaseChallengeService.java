@@ -6,15 +6,19 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.PurchaseChallengeDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.ChallengeMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.PurchaseChallengeRepository;
 
 /** Service for Purchase Challenge entities. */
 @Service
 public class PurchaseChallengeService extends ChallengeService<PurchaseChallenge> {
+  private final ChallengeMapper challengeMapper;
 
-  public PurchaseChallengeService(PurchaseChallengeRepository purchaseChallengeRepository) {
+  public PurchaseChallengeService(
+      PurchaseChallengeRepository purchaseChallengeRepository, ChallengeMapper challengeMapper) {
     super(purchaseChallengeRepository);
+    this.challengeMapper = challengeMapper;
   }
 
   /**
@@ -37,7 +41,8 @@ public class PurchaseChallengeService extends ChallengeService<PurchaseChallenge
    */
   public PurchaseChallenge updatePurchaseChallenge(
       Long id, PurchaseChallengeDto purchaseChallengeDTO) {
-    PurchaseChallenge updatedEntity = purchaseChallengeDTO.toEntity();
+    PurchaseChallenge updatedEntity =
+        (PurchaseChallenge) challengeMapper.toEntity(purchaseChallengeDTO);
     return super.updateChallenge(id, updatedEntity);
   }
 
@@ -75,6 +80,7 @@ public class PurchaseChallengeService extends ChallengeService<PurchaseChallenge
    * @param id the id of the purchase challenge.
    * @param amount the amount to add.
    */
+  @Override
   public void addToSavedAmount(Long id, double amount) {
     super.addToSavedAmount(id, amount);
   }

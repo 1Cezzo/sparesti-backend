@@ -6,60 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import edu.ntnu.idi.stud.team10.sparesti.enums.DifficultyLevel;
 import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
-import edu.ntnu.idi.stud.team10.sparesti.model.Challenge;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ChallengeDtoTest {
-
-  @Test
-  public void shouldConvertToEntityWithSameValues() {
-    ChallengeDto challengeDto = new ChallengeDto();
-    challengeDto.setDescription("Test Challenge");
-    challengeDto.setTargetAmount(1000.0);
-    challengeDto.setUsedAmount(500.0);
-    challengeDto.setMediaUrl("https://example.com/image.jpg");
-    challengeDto.setTimeInterval(TimeInterval.MONTHLY);
-    challengeDto.setDifficultyLevel(DifficultyLevel.MEDIUM);
-    challengeDto.setExpiryDate(LocalDate.now().plusMonths(1));
-    challengeDto.setCompleted(false);
-
-    Challenge challenge = challengeDto.toEntity();
-
-    assertEquals(challengeDto.getDescription(), challenge.getDescription());
-    assertEquals(challengeDto.getTargetAmount(), challenge.getTargetAmount());
-    assertEquals(challengeDto.getUsedAmount(), challenge.getUsedAmount());
-    assertEquals(challengeDto.getMediaUrl(), challenge.getMediaUrl());
-    assertEquals(challengeDto.getTimeInterval(), challenge.getTimeInterval());
-    assertEquals(challengeDto.getDifficultyLevel(), challenge.getDifficultyLevel());
-    assertEquals(challengeDto.getExpiryDate(), challenge.getExpiryDate());
-    assertEquals(challengeDto.isCompleted(), challenge.isCompleted());
-  }
-
-  @Test
-  public void shouldCreateEntityWithNullValuesWhenDtoFieldsAreNull() {
-    ChallengeDto challengeDto = new ChallengeDto();
-    challengeDto.setDescription(null);
-    challengeDto.setTargetAmount(0.0);
-    challengeDto.setUsedAmount(0.0);
-    challengeDto.setMediaUrl(null);
-    challengeDto.setTimeInterval(null);
-    challengeDto.setDifficultyLevel(null);
-    challengeDto.setExpiryDate(null);
-    challengeDto.setCompleted(false);
-
-    Challenge challenge = challengeDto.toEntity();
-
-    assertNull(challenge.getDescription());
-    assertEquals(0.0, challenge.getTargetAmount());
-    assertEquals(0.0, challenge.getUsedAmount());
-    assertNull(challenge.getMediaUrl());
-    assertNull(challenge.getTimeInterval());
-    assertNull(challenge.getDifficultyLevel());
-    assertNull(challenge.getExpiryDate());
-    assertFalse(challenge.isCompleted());
-  }
-
   @Test
   public void shouldReturnTrueWhenComparingSameInstance() {
     ChallengeDto challengeDto = new ChallengeDto();

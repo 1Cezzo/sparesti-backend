@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.ConsumptionChallengeDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.ChallengeMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ConsumptionChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
@@ -13,10 +14,13 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 /** Service for Consumption Challenge entities. */
 @Service
 public class ConsumptionChallengeService extends ChallengeService<ConsumptionChallenge> {
+  private final ChallengeMapper challengeMapper;
 
   public ConsumptionChallengeService(
-      ConsumptionChallengeRepository consumptionChallengeRepository) {
+      ConsumptionChallengeRepository consumptionChallengeRepository,
+      ChallengeMapper challengeMapper) {
     super(consumptionChallengeRepository);
+    this.challengeMapper = challengeMapper;
   }
 
   /**
@@ -39,7 +43,8 @@ public class ConsumptionChallengeService extends ChallengeService<ConsumptionCha
    */
   public ConsumptionChallenge updateConsumptionChallenge(
       Long id, ConsumptionChallengeDto consumptionChallengeDTO) {
-    ConsumptionChallenge updatedEntity = consumptionChallengeDTO.toEntity();
+    ConsumptionChallenge updatedEntity =
+        (ConsumptionChallenge) challengeMapper.toEntity(consumptionChallengeDTO);
     return super.updateChallenge(id, updatedEntity);
   }
 
@@ -80,6 +85,7 @@ public class ConsumptionChallengeService extends ChallengeService<ConsumptionCha
    * @throws IllegalArgumentException if the amount is negative.
    * @throws NotFoundException if the consumption challenge does not exist.
    */
+  @Override
   public void addToSavedAmount(Long id, double amount) {
     super.addToSavedAmount(id, amount);
   }

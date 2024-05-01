@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingChallengeDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.ChallengeMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
@@ -13,9 +14,12 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 /** Service for Saving Challenge entities. */
 @Service
 public class SavingChallengeService extends ChallengeService<SavingChallenge> {
+  private final ChallengeMapper challengeMapper;
 
-  public SavingChallengeService(SavingChallengeRepository savingChallengeRepository) {
+  public SavingChallengeService(
+      SavingChallengeRepository savingChallengeRepository, ChallengeMapper challengeMapper) {
     super(savingChallengeRepository);
+    this.challengeMapper = challengeMapper;
   }
 
   /**
@@ -37,7 +41,7 @@ public class SavingChallengeService extends ChallengeService<SavingChallenge> {
    * @return the updated saving challenge.
    */
   public SavingChallenge updateSavingChallenge(Long id, SavingChallengeDto savingChallengeDTO) {
-    SavingChallenge updatedEntity = savingChallengeDTO.toEntity();
+    SavingChallenge updatedEntity = (SavingChallenge) challengeMapper.toEntity(savingChallengeDTO);
     return super.updateChallenge(id, updatedEntity);
   }
 
@@ -77,6 +81,7 @@ public class SavingChallengeService extends ChallengeService<SavingChallenge> {
    * @throws IllegalArgumentException if the amount is negative.
    * @throws NotFoundException if the saving challenge is not found.
    */
+  @Override
   public void addToSavedAmount(Long id, double amount) {
     super.addToSavedAmount(id, amount);
   }

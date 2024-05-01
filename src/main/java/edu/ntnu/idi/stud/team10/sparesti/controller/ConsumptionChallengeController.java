@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.ConsumptionChallengeDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.ChallengeMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.service.ConsumptionChallengeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,10 +24,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ConsumptionChallengeController {
 
   private final ConsumptionChallengeService consumptionChallengeService;
+  private final ChallengeMapper challengeMapper;
 
   @Autowired
-  public ConsumptionChallengeController(ConsumptionChallengeService consumptionChallengeService) {
+  public ConsumptionChallengeController(
+      ConsumptionChallengeService consumptionChallengeService, ChallengeMapper challengeMapper) {
     this.consumptionChallengeService = consumptionChallengeService;
+    this.challengeMapper = challengeMapper;
   }
 
   /**
@@ -39,7 +43,9 @@ public class ConsumptionChallengeController {
   @Operation(summary = "Create a new consumption challenge")
   public ResponseEntity<ConsumptionChallenge> createConsumptionChallenge(
       @RequestBody ConsumptionChallengeDto dto) {
-    ConsumptionChallenge challenge = consumptionChallengeService.createChallenge(dto.toEntity());
+    ConsumptionChallenge challenge =
+        consumptionChallengeService.createChallenge(
+            (ConsumptionChallenge) challengeMapper.toEntity(dto));
     return new ResponseEntity<>(challenge, HttpStatus.CREATED);
   }
 

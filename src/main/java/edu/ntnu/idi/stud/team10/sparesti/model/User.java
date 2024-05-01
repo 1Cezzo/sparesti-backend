@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,9 +34,9 @@ public class User {
 
   @Column() private String profilePictureUrl;
 
-  @Column() private Integer checkingAccountNr;
+  @Column() private Long checkingAccountNr;
 
-  @Column() private Integer savingsAccountNr;
+  @Column() private Long savingsAccountNr;
 
   @ManyToMany
   @JoinTable(
@@ -61,19 +60,6 @@ public class User {
   private Set<Badge> earnedBadges;
 
   private String role;
-
-  /**
-   * Constructor for converting UserDto to User.
-   *
-   * @param dto (UserDto) A Dto representing the user.
-   */
-  public User(UserDto dto) {
-    this.id = dto.getId();
-    this.password = dto.getPassword();
-    this.email = dto.getEmail();
-    this.profilePictureUrl = dto.getProfilePictureUrl();
-    this.totalSavings = dto.getTotalSavings();
-  }
 
   /**
    * Add a savings goal to the user.

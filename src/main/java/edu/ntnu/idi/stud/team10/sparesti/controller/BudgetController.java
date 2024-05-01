@@ -3,6 +3,7 @@ package edu.ntnu.idi.stud.team10.sparesti.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -10,12 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserBudgetService;
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 /** Controller for Budget entities. */
 @RestController
@@ -39,11 +38,11 @@ public class BudgetController {
    */
   @PostMapping("/budgets/add")
   @Operation(summary = "Add a budget to a user")
-  public ResponseEntity<UserDto> addBudgetToUser(
+  public ResponseEntity<BudgetDto> addBudgetToUser(
       @AuthenticationPrincipal Jwt token, @RequestBody BudgetDto budgetDTO) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
-    UserDto updatedUserDto = userBudgetService.addBudgetToUser(userId, budgetDTO);
-    return ResponseEntity.ok(updatedUserDto);
+    Long userId = TokenParser.extractUserId(token);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(userBudgetService.addBudgetToUser(userId, budgetDTO));
   }
 
   /**
@@ -55,7 +54,7 @@ public class BudgetController {
   @GetMapping("/budgets")
   @Operation(summary = "Get all budgets for a user")
   public ResponseEntity<List<BudgetDto>> getAllBudgetsForUser(@AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     List<BudgetDto> budgets = userBudgetService.getAllBudgetsForUser(userId);
     return ResponseEntity.ok(budgets);
   }
@@ -64,7 +63,7 @@ public class BudgetController {
   @Operation(summary = "Get a budget for a user")
   public ResponseEntity<BudgetDto> getBudgetForUser(
       @AuthenticationPrincipal Jwt token, @PathVariable Long budgetId) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     BudgetDto budget = userBudgetService.getBudgetForUser(userId, budgetId);
     return ResponseEntity.ok(budget);
   }
@@ -79,7 +78,7 @@ public class BudgetController {
   @Operation(summary = "Delete a budget from a user")
   public ResponseEntity<Void> deleteBudgetFromUser(
       @AuthenticationPrincipal Jwt token, @PathVariable Long budgetId) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     userBudgetService.deleteBudgetFromUser(userId, budgetId);
     return ResponseEntity.noContent().build();
   }
@@ -98,7 +97,7 @@ public class BudgetController {
       @AuthenticationPrincipal Jwt token,
       @PathVariable Long budgetId,
       @RequestBody BudgetRowDto budgetRowDTO) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     BudgetDto updatedBudgetDto =
         userBudgetService.addBudgetRowToUserBudget(userId, budgetId, budgetRowDTO);
     return ResponseEntity.ok(updatedBudgetDto);
@@ -118,7 +117,7 @@ public class BudgetController {
       @AuthenticationPrincipal Jwt token,
       @PathVariable Long budgetId,
       @PathVariable Long budgetRowId) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     userBudgetService.deleteBudgetRowFromUserBudget(userId, budgetId, budgetRowId);
     return ResponseEntity.noContent().build();
   }
@@ -139,7 +138,7 @@ public class BudgetController {
       @PathVariable Long budgetId,
       @PathVariable Long budgetRowId,
       @RequestBody BudgetRowDto budgetRowDto) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     BudgetRowDto updatedBudgetRowDto =
         userBudgetService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
     return ResponseEntity.ok(updatedBudgetRowDto);

@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserInfoService;
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 @RestController
 @RequestMapping("/api/user-info")
@@ -31,7 +30,7 @@ public class UserInfoController {
   @Operation(summary = "Create user info")
   public ResponseEntity<UserInfoDto> createUserInfo(
       @AuthenticationPrincipal Jwt token, @RequestBody UserInfoDto userInfoDto) {
-    userInfoDto.setUserId(token.getClaim(USER_ID_CLAIM));
+    userInfoDto.setUserId(TokenParser.extractUserId(token));
     return ResponseEntity.ok(userInfoService.createUserInfo(userInfoDto));
   }
 
@@ -39,7 +38,7 @@ public class UserInfoController {
   @Operation(summary = "Update user info")
   public ResponseEntity<UserInfoDto> updateUserInfo(
       @AuthenticationPrincipal Jwt token, @RequestBody UserInfoDto userInfoDto) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     return ResponseEntity.ok(userInfoService.updateUserInfo(userId, userInfoDto));
   }
 }

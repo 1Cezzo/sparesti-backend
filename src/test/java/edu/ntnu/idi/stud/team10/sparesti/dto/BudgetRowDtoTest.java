@@ -3,6 +3,7 @@ package edu.ntnu.idi.stud.team10.sparesti.dto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import edu.ntnu.idi.stud.team10.sparesti.mapper.BudgetRowMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +38,7 @@ public class BudgetRowDtoTest {
 
   @Test
   public void testBudgetRowDtoConversionToEntity() {
-    BudgetRow budgetRow = budgetRowDto1.toEntity();
+    BudgetRow budgetRow = BudgetRowMapper.INSTANCE.toEntity(budgetRowDto1);
 
     assertEquals(1L, budgetRow.getId());
     assertEquals("Test Category", budgetRow.getName());
@@ -47,13 +48,13 @@ public class BudgetRowDtoTest {
 
   @Test
   public void testEquals() {
-    assertTrue(budgetRowDto1.equals(budgetRowDto2));
+    assertEquals(budgetRowDto1, budgetRowDto2);
   }
 
   @Test
   public void testNotEquals() {
     budgetRowDto2.setMaxAmount(1000.0);
-    assertFalse(budgetRowDto1.equals(budgetRowDto2));
+    assertNotEquals(budgetRowDto1, budgetRowDto2);
   }
 
   @Test

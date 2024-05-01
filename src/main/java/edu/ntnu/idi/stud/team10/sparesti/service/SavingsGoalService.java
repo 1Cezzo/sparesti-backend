@@ -57,11 +57,6 @@ public class SavingsGoalService {
     return savingsGoalRepository.save(savingsGoal);
   }
 
-  /** Retrieves all SavingsGoal entities. */
-  public List<SavingsGoal> getAllSavingsGoals() {
-    return savingsGoalRepository.findAll();
-  }
-
   /**
    * Retrieves a SavingsGoal entity by its ID.
    *
@@ -318,8 +313,8 @@ public class SavingsGoalService {
   /**
    * Checks if a user has an active savings goal.
    *
-   * @param userId The ID of the user.
-   * @return True if the user has an active savings goal, false otherwise.
+   * @param userId the users Id.
+   * @return {@code true} if the user has an active savings goal, {@code false} otherwise.
    */
   public boolean hasActiveSavingsGoal(Long userId) {
     List<UserSavingsGoal> userSavingsGoals = userSavingsGoalRepository.findByUserId(userId);
@@ -330,5 +325,18 @@ public class SavingsGoalService {
       }
     }
     return false;
+  }
+
+  /**
+   * Gets the current savings goal for a user.
+   *
+   * @param userId The ID of the user.
+   * @return The current savings goal DTO.
+   */
+  public SavingsGoalDto getCurrentSavingsGoal(Long userId) {
+    return getAllSavingsGoalsForUser(userId).stream()
+        .filter(savingsGoalDto -> !savingsGoalDto.isCompleted())
+        .findFirst()
+        .orElseThrow(() -> new NotFoundException("No active savings goal found"));
   }
 }

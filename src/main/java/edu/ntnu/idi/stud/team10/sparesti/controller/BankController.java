@@ -13,10 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import edu.ntnu.idi.stud.team10.sparesti.dto.AccountDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.BankService;
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 /** Controller to mock interactions with a bank. */
 @RestController
@@ -41,7 +40,7 @@ public class BankController {
   @Operation(summary = "Create a new account")
   public ResponseEntity<AccountDto> createAccount(
       @RequestBody AccountDto accountDto, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     accountDto.setOwnerId(userId);
     AccountDto createdAccount = bankService.createAccount(accountDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
@@ -63,15 +62,15 @@ public class BankController {
   /**
    * Get account details for an account number.
    *
-   * @param accountNr (int) The account number
+   * @param accountNr (Long) The account number
    * @param token (Jwt) The JWT token
    * @return (ResponseEntity<AccountDto>) The account details
    */
   @GetMapping("/account/details/{accountNr}")
   @Operation(summary = "Get account details for an account number.")
   public ResponseEntity<AccountDto> getAccountDetails(
-      @PathVariable int accountNr, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+      @PathVariable Long accountNr, @AuthenticationPrincipal Jwt token) {
+    Long userId = TokenParser.extractUserId(token);
     AccountDto accountDetails = bankService.getAccountDetails(accountNr, userId);
     return ResponseEntity.ok(accountDetails);
   }
@@ -85,7 +84,7 @@ public class BankController {
   @GetMapping("/account/all")
   @Operation(summary = "Get all accounts for a user.")
   public ResponseEntity<Set<AccountDto>> getAllAccounts(@AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     Set<AccountDto> accountDetails = bankService.getUserAccounts(userId);
     return ResponseEntity.ok(accountDetails);
   }
@@ -101,11 +100,11 @@ public class BankController {
   @PutMapping("/account/transfer")
   @Operation(summary = "Transfer money from one account to another")
   public ResponseEntity<String> transferMoney(
-      @RequestParam Integer fromAccountNr,
-      @RequestParam Integer toAccountNr,
+      @RequestParam Long fromAccountNr,
+      @RequestParam Long toAccountNr,
       @RequestParam double amount,
       @AuthenticationPrincipal Jwt token) {
-    Long ownerId = token.getClaim(USER_ID_CLAIM);
+    Long ownerId = TokenParser.extractUserId(token);
     bankService.transferMoney(fromAccountNr, toAccountNr, amount, ownerId);
     return ResponseEntity.ok().body("Transfer successful");
   }
@@ -113,22 +112,22 @@ public class BankController {
   /**
    * Gets a list of all transactions by a singular account number
    *
-   * @param accountNr (Integer) The accountNr
+   * @param accountNr (Long) The accountNr
    * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt; &gt;) Set of all transactions by the
    *     account.
    */
   @GetMapping("/transactions/{accountNr}")
   @Operation(summary = "Get all transactions by an account number")
   public ResponseEntity<Set<TransactionDto>> getAllTransactionsByAccountNr(
-      @PathVariable Integer accountNr, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+      @PathVariable Long accountNr, @AuthenticationPrincipal Jwt token) {
+    Long userId = TokenParser.extractUserId(token);
     return ResponseEntity.ok().body(bankService.getTransactionsByAccountNr(accountNr, userId));
   }
 
   /**
    * Get the last 30 days of transactions from an account, using its number.
    *
-   * @param accountNr (Integer) the accounts unique number in the bank.
+   * @param accountNr (Long) the accounts unique number in the bank.
    * @param token (Jwt) the JWT token
    * @return (ResponseEntity&lt;Set&lt;TransactionDto&gt;&gt;): a set including the last 30 days of
    *     transactions for the account.
@@ -136,8 +135,8 @@ public class BankController {
   @GetMapping("/transactions/recent/{accountNr}")
   @Operation(summary = "Get last 30 days of transactions from an account number")
   public ResponseEntity<Set<TransactionDto>> getRecentTransactions(
-      @PathVariable Integer accountNr, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+      @PathVariable Long accountNr, @AuthenticationPrincipal Jwt token) {
+    Long userId = TokenParser.extractUserId(token);
     return ResponseEntity.ok()
         .body(bankService.getRecentTransactionsByAccountNr(accountNr, userId));
   }
@@ -145,7 +144,7 @@ public class BankController {
   /**
    * Gets an account's total spendings in various categories from the last 30 days.
    *
-   * @param accountNr (Integer) the accounts unique number in the bank.
+   * @param accountNr (Long) the accounts unique number in the bank.
    * @param token (Jwt) the JWT token.
    * @return (Map&lt;String Double&gt;)
    */
@@ -153,8 +152,8 @@ public class BankController {
   @Operation(
       summary = "Get the sum spent in each category in the last 30 days for an account number")
   public ResponseEntity<Map<String, Double>> getRecentCategorySpendings(
-      @PathVariable Integer accountNr, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+      @PathVariable Long accountNr, @AuthenticationPrincipal Jwt token) {
+    Long userId = TokenParser.extractUserId(token);
     return ResponseEntity.ok().body(bankService.getSpendingsInCategories(accountNr, userId));
   }
 }

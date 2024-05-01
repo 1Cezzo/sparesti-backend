@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.BudgetRowMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
 
@@ -14,10 +15,13 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
 @Service
 public class BudgetRowService {
   private final BudgetRowRepository budgetRowRepository;
+  private final BudgetRowMapper budgetRowMapper;
 
   @Autowired
-  public BudgetRowService(BudgetRowRepository budgetRowRepository) {
+  public BudgetRowService(
+      BudgetRowRepository budgetRowRepository, BudgetRowMapper budgetRowMapper) {
     this.budgetRowRepository = budgetRowRepository;
+    this.budgetRowMapper = budgetRowMapper;
   }
 
   /**
@@ -27,7 +31,7 @@ public class BudgetRowService {
    * @return the created budget row
    */
   public BudgetRow createBudgetRow(BudgetRowDto budgetRowDto) {
-    BudgetRow budgetRow = budgetRowDto.toEntity();
+    BudgetRow budgetRow = budgetRowMapper.toEntity(budgetRowDto);
     return budgetRowRepository.save(budgetRow);
   }
 

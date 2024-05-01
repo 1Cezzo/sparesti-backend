@@ -1,14 +1,15 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.BudgetMapper;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.BudgetRowMapper;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
@@ -26,14 +27,26 @@ public class UserBudgetService {
 
   private final BudgetRowRepository budgetRowRepository;
 
+  private final UserMapper userMapper;
+
+  private final BudgetMapper budgetMapper;
+
+  private final BudgetRowMapper budgetRowMapper;
+
   @Autowired
   public UserBudgetService(
       UserRepository userRepository,
       BudgetRepository budgetRepository,
-      BudgetRowRepository budgetRowRepository) {
+      BudgetRowRepository budgetRowRepository,
+      UserMapper userMapper,
+      BudgetMapper budgetMapper,
+      BudgetRowMapper budgetRowMapper) {
     this.userRepository = userRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
+    this.userMapper = userMapper;
+    this.budgetMapper = budgetMapper;
+    this.budgetRowMapper = budgetRowMapper;
   }
 
   /**
@@ -43,16 +56,18 @@ public class UserBudgetService {
    * @param budgetDto the budget to add.
    * @return the updated user.
    */
-  public UserDto addBudgetToUser(Long userId, BudgetDto budgetDto) {
+  public BudgetDto addBudgetToUser(Long userId, BudgetDto budgetDto) {
     User user =
         userRepository
             .findById(userId)
             .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
-    Budget budget = budgetDto.toEntity();
+    Budget budget = budgetMapper.toEntity(budgetDto);
     budget.setUser(user);
-    budgetRepository.save(budget);
-    return new UserDto(user);
+    if (budget.getRow() != null) {
+      budget.getRow().forEach(row -> row.setBudget(budget));
+    }
+    return budgetMapper.toDto(budgetRepository.save(budget));
   }
 
   /**
@@ -67,9 +82,7 @@ public class UserBudgetService {
             .findById(userId)
             .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
-    return budgetRepository.findByUser(user).stream()
-        .map(BudgetDto::new)
-        .collect(Collectors.toList());
+    return budgetRepository.findByUser(user).stream().map(budgetMapper::toDto).toList();
   }
 
   /**
@@ -94,7 +107,7 @@ public class UserBudgetService {
       throw new IllegalArgumentException("The budget does not belong to the user");
     }
 
-    return new BudgetDto(budget);
+    return budgetMapper.toDto(budget);
   }
 
   /**
@@ -140,12 +153,12 @@ public class UserBudgetService {
       throw new IllegalArgumentException("The budget does not belong to the user");
     }
 
-    BudgetRow budgetRow = budgetRowDto.toEntity();
+    BudgetRow budgetRow = budgetRowMapper.toEntity(budgetRowDto);
     budgetRow.setBudget(budget);
     budget.getRow().add(budgetRow);
     budgetRepository.save(budget);
 
-    return new BudgetDto(budget);
+    return budgetMapper.toDto(budget);
   }
 
   /**
@@ -212,9 +225,9 @@ public class UserBudgetService {
                 () -> new NotFoundException("BudgetRow with ID " + budgetRowId + " not found"));
 
     // Update the budget row with the new data
-    budgetRow.updateFromDto(budgetRowDto);
+    budgetRowMapper.updateFromDto(budgetRowDto, budgetRow);
     budgetRowRepository.save(budgetRow);
 
-    return new BudgetRowDto(budgetRow);
+    return budgetRowMapper.toDto(budgetRow);
   }
 }
