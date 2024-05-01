@@ -64,7 +64,9 @@ public class UserBudgetService {
 
     Budget budget = budgetMapper.toEntity(budgetDto);
     budget.setUser(user);
-    budget.getRow().forEach(row -> row.setBudget(budget));
+    if (budget.getRow() != null){
+      budget.getRow().forEach(row -> row.setBudget(budget));
+    }
     return budgetMapper.toDto(budgetRepository.save(budget));
   }
 
