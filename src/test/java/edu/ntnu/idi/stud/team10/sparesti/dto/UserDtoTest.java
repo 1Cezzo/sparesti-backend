@@ -33,14 +33,11 @@ public class UserDtoTest {
     testSavingsGoals = new ArrayList<>();
     testChallenges = new ArrayList<>();
     // Add test savings goals and challenges as needed
-    userDto.setChallenges(testChallenges);
     userDto2 = new UserDto();
     userDto2.setId(testId);
     userDto2.setPassword(testPassword);
     userDto2.setEmail(testEmail);
     userDto2.setProfilePictureUrl(testProfilePictureUrl);
-    userDto2.setChallenges(testChallenges);
-    userDto2.setChallenges(testChallenges);
 
     user = new User();
     user.setId(1L);
@@ -54,7 +51,6 @@ public class UserDtoTest {
     assertEquals(testPassword, userDto.getPassword());
     assertEquals(testEmail, userDto.getEmail());
     assertEquals(testProfilePictureUrl, userDto.getProfilePictureUrl());
-    assertEquals(testChallenges, userDto.getChallenges());
   }
 
   @Test
@@ -86,15 +82,4 @@ public class UserDtoTest {
   public void testHashCode() {
     assertEquals(userDto.hashCode(), userDto2.hashCode());
   }
-
-  @Test
-  public void testUserDtoConstructor() {
-    UserDto mappedUserDto = new UserDto(user);
-    assertNotNull(mappedUserDto);
-    assertEquals(user.getId(), mappedUserDto.getId());
-    assertEquals(user.getEmail(), mappedUserDto.getEmail());
-  }
-
-  // Add more tests as needed...
-
 }

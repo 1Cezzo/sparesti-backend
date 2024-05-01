@@ -7,10 +7,13 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.ChallengeMapper;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.*;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
@@ -20,7 +23,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-public class UserChallengeServiceTest {
+@SpringBootTest
+class UserChallengeServiceTest {
 
   @Mock private ChallengeRepository<Challenge> challengeRepository;
 
@@ -30,18 +34,20 @@ public class UserChallengeServiceTest {
 
   @Mock private ChatGPTService chatGPTService;
 
-  private UserChallengeService<Challenge> userChallengeService;
+  @Mock private UserMapper userMapper;
+
+  @Mock private ChallengeMapper challengeMapper;
+
+  @InjectMocks private UserChallengeService<Challenge> userChallengeService;
 
   @BeforeEach
   public void setUp() {
-    MockitoAnnotations.openMocks(this);
-    userChallengeService =
-        new UserChallengeService<>(
-            challengeRepository, userRepository, userInfoService, chatGPTService);
+    when(userMapper.toDto(any(User.class))).thenReturn(new UserDto());
+    when(userMapper.toEntity(any(UserDto.class))).thenReturn(new User());
   }
 
   @Test
-  public void testAddChallengeToUser() {
+  void testAddChallengeToUser() {
     User user = new User();
     user.setChallenges(new ArrayList<>()); // Add this line
     Challenge challenge = new Challenge();
@@ -56,7 +62,7 @@ public class UserChallengeServiceTest {
   }
 
   @Test
-  public void testRemoveChallengeFromUser() {
+  void testRemoveChallengeFromUser() {
     User user = new User();
     user.setChallenges(new ArrayList<>()); // Add this line
     Challenge challenge = new Challenge();
@@ -72,7 +78,7 @@ public class UserChallengeServiceTest {
   }
 
   @Test
-  public void testGetSortedChallengesByUser() {
+  void testGetSortedChallengesByUser() {
     User user = new User();
     user.setChallenges(new ArrayList<>());
 
@@ -96,13 +102,19 @@ public class UserChallengeServiceTest {
     user.addChallenge(sameExpiryDateChallenge);
 
     when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+    when(challengeMapper.toDto(completedChallenge))
+        .thenReturn(ChallengeMapper.INSTANCE.toDto(completedChallenge));
+    when(challengeMapper.toDto(notCompletedChallenge))
+        .thenReturn(ChallengeMapper.INSTANCE.toDto(notCompletedChallenge));
+    when(challengeMapper.toDto(sameExpiryDateChallenge))
+        .thenReturn(ChallengeMapper.INSTANCE.toDto(sameExpiryDateChallenge));
 
     List<ChallengeDto> result = userChallengeService.getSortedChallengesByUser(1L);
 
     assertNotNull(result);
     assertEquals(3, result.size());
-    assertTrue(result.get(0) instanceof ConsumptionChallengeDto);
-    assertTrue(result.get(1) instanceof PurchaseChallengeDto);
-    assertTrue(result.get(2) instanceof SavingChallengeDto);
+    assertInstanceOf(ConsumptionChallengeDto.class, result.get(0));
+    assertInstanceOf(PurchaseChallengeDto.class, result.get(1));
+    assertInstanceOf(SavingChallengeDto.class, result.get(2));
   }
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -58,7 +59,7 @@ public class UserController {
   @DeleteMapping("/delete")
   @Operation(summary = "Delete a user")
   public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal Jwt token) {
-    Long id = token.getClaim("userId");
+    Long id = TokenParser.extractUserId(token);
     userService.deleteUser(id);
     return ResponseEntity.noContent().build();
   }
@@ -73,7 +74,7 @@ public class UserController {
   @Operation(summary = "Update a user")
   public ResponseEntity<UserDto> updateUser(
       @RequestBody UserDto userDTO, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim("userId");
+    Long userId = TokenParser.extractUserId(token);
     userDTO.setId(userId);
     return ResponseEntity.ok(userService.updateUser(userDTO));
   }

@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.BadgeMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
+import edu.ntnu.idi.stud.team10.sparesti.model.UserBadge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.UserBadgeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
@@ -18,11 +21,19 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 public class BadgeService {
   private final BadgeRepository badgeRepository;
   private final UserRepository userRepository;
+  private final BadgeMapper badgeMapper;
+  private final UserBadgeRepository userBadgeRepository;
 
   @Autowired
-  public BadgeService(BadgeRepository badgeRepository, UserRepository userRepository) {
+  public BadgeService(
+      BadgeRepository badgeRepository,
+      UserRepository userRepository,
+      BadgeMapper badgeMapper,
+      UserBadgeRepository userBadgeRepository) {
     this.badgeRepository = badgeRepository;
     this.userRepository = userRepository;
+    this.badgeMapper = badgeMapper;
+    this.userBadgeRepository = userBadgeRepository;
   }
 
   /**
@@ -32,8 +43,8 @@ public class BadgeService {
    * @return the created Badge
    */
   public BadgeDto createBadge(BadgeDto badgeDto) {
-    badgeRepository.save(badgeDto.toEntity()); // unique id - should not need validation?
-    return badgeDto;
+    Badge stored = badgeRepository.save(badgeMapper.toEntity(badgeDto));
+    return badgeMapper.toDto(stored);
   }
 
   /**
@@ -47,9 +58,8 @@ public class BadgeService {
         .findById(id)
         .ifPresentOrElse(
             badge -> {
-              badge.getUsers().forEach(user -> user.getEarnedBadges().remove(badge));
-              userRepository.saveAll(badge.getUsers());
-              badgeRepository.delete(badge);
+              List<UserBadge> userBadges = userBadgeRepository.findByBadgeId(id);
+              userBadgeRepository.deleteAll(userBadges);
             },
             () -> {
               throw new NotFoundException("Badge with id " + id + " not found");
@@ -88,7 +98,7 @@ public class BadgeService {
         badgeRepository
             .findById(id)
             .orElseThrow(() -> new NotFoundException("Badge of id " + id + " not found"));
-    return new BadgeDto(badge);
+    return badgeMapper.toDto(badge);
   }
 
   /**
@@ -103,7 +113,7 @@ public class BadgeService {
         badgeRepository
             .findByName(name)
             .orElseThrow(() -> new NotFoundException("Badge of name " + name + " not found"));
-    return new BadgeDto(badge);
+    return badgeMapper.toDto(badge);
   }
 
   /**
@@ -122,7 +132,7 @@ public class BadgeService {
       badge.setDescription(badgeDto.getDescription());
       badge.setImageUrl(badgeDto.getImageUrl());
       badgeRepository.save(badge);
-      return new BadgeDto(badge);
+      return badgeMapper.toDto(badge);
     } else {
       throw new NotFoundException("Badge with id " + id + " not found...");
     }

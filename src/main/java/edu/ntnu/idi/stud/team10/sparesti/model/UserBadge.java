@@ -25,6 +25,4 @@ public class UserBadge {
 
   @Column(name = "date_earned")
   private LocalDateTime dateEarned;
-
-  // Constructors, getters, and setters
 }

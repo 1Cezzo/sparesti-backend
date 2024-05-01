@@ -1,43 +1,49 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.BadgeMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BadgeRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.UserBadgeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 public class BadgeServiceTest {
 
   @Mock private BadgeRepository badgeRepository;
 
   @Mock private UserRepository userRepository;
 
-  private BadgeService badgeService;
+  @Mock private BadgeMapper badgeMapper;
+
+  @Mock private UserBadgeRepository userBadgeRepository;
+
+  @InjectMocks private BadgeService badgeService;
 
   @BeforeEach
   public void setUp() {
-    MockitoAnnotations.openMocks(this);
-    badgeService = new BadgeService(badgeRepository, userRepository);
+    when(badgeMapper.toDto(any())).thenReturn(new BadgeDto());
+    when(badgeMapper.toEntity(any())).thenReturn(new Badge());
   }
 
   @Test
   public void testCreateBadge() {
-    BadgeDto badgeDto = mock(BadgeDto.class); // Create a mock BadgeDto
+    BadgeDto badgeDto = new BadgeDto();
     Badge badge = new Badge();
-    when(badgeDto.toEntity()).thenReturn(badge);
     when(badgeRepository.save(any(Badge.class))).thenReturn(badge);
 
     BadgeDto result = badgeService.createBadge(badgeDto);
@@ -49,13 +55,12 @@ public class BadgeServiceTest {
   @Test
   public void testDeleteBadgeById() {
     Badge badge = new Badge();
-    badge.setUsers(new HashSet<>());
+    badge.setId(1L);
     when(badgeRepository.findById(any())).thenReturn(Optional.of(badge));
 
     assertDoesNotThrow(() -> badgeService.deleteBadgeById(1L));
-    verify(badgeRepository, times(1)).findById(1L);
-    verify(userRepository, times(1)).saveAll(badge.getUsers());
-    verify(badgeRepository, times(1)).delete(badge);
+    verify(userBadgeRepository, times(1)).findByBadgeId(1L);
+    verify(userBadgeRepository, times(1)).deleteAll(any());
   }
 
   @Test
@@ -82,7 +87,6 @@ public class BadgeServiceTest {
   public void testGetBadgeById() {
     Badge badge = new Badge();
     when(badgeRepository.findById(any())).thenReturn(Optional.of(badge));
-
     BadgeDto result = badgeService.getBadgeById(1L);
 
     assertNotNull(result);

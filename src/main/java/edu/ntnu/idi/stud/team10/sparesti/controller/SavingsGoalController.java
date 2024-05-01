@@ -15,10 +15,9 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.UserSavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.service.SavingsGoalService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig.USER_ID_CLAIM;
 
 @RestController
 @RequestMapping("/api/savings-goals")
@@ -45,7 +44,7 @@ public class SavingsGoalController {
   @Operation(summary = "Create a new savings goal")
   public ResponseEntity<SavingsGoal> createSavingsGoal(
       @RequestBody SavingsGoalDto savingsGoalDTO, @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     SavingsGoal savingsGoal = savingsGoalService.createSavingsGoal(savingsGoalDTO, userId);
     return new ResponseEntity<>(savingsGoal, HttpStatus.CREATED);
   }
@@ -146,7 +145,7 @@ public class SavingsGoalController {
   @Operation(summary = "Get all savings goals for a user")
   public ResponseEntity<List<SavingsGoalDto>> getAllSavingsGoalsForUser(
       @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     List<SavingsGoalDto> savingsGoals = savingsGoalService.getAllSavingsGoalsForUser(userId);
     return ResponseEntity.ok(savingsGoals);
   }

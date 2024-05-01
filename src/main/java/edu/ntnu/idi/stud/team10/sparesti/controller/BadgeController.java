@@ -16,6 +16,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 import edu.ntnu.idi.stud.team10.sparesti.service.BadgeAwarder;
 import edu.ntnu.idi.stud.team10.sparesti.service.BadgeService;
 import edu.ntnu.idi.stud.team10.sparesti.service.UserBadgeService;
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -95,7 +96,7 @@ public class BadgeController {
   @Operation(summary = "Get all badges for a user")
   public ResponseEntity<Set<Map<String, Object>>> getAllBadgesByUserId(
       @AuthenticationPrincipal Jwt token) {
-    Long userId = token.getClaim(USER_ID_CLAIM);
+    Long userId = TokenParser.extractUserId(token);
     Set<Map<String, Object>> badges = userBadgeService.getAllBadgesByUserId(userId);
     return ResponseEntity.ok(badges);
   }
