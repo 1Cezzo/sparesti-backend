@@ -31,5 +31,8 @@ public class BudgetingProduct {
   @Column(nullable = false)
   private Integer amount;
 
+  @Column(nullable = false)
+  private Double unitPrice;
+
   @ManyToOne private UserInfo userInfo;
 }

@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,8 @@ public class UserDto {
   private String password;
   private String email;
   private String profilePictureUrl;
+  private Integer loginStreak;
+  private LocalDate lastLogin;
   private Integer checkingAccountNr;
   private Integer savingsAccountNr;
   private Double totalSavings;
@@ -29,6 +32,8 @@ public class UserDto {
     this.id = user.getId();
     this.email = user.getEmail();
     this.profilePictureUrl = user.getProfilePictureUrl();
+    this.loginStreak = user.getLoginStreak();
+    this.lastLogin = user.getLastLogin();
     this.checkingAccountNr = user.getCheckingAccountNr();
     this.savingsAccountNr = user.getSavingsAccountNr();
     this.totalSavings = user.getTotalSavings();

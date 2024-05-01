@@ -77,4 +77,16 @@ public class UserController {
     userDTO.setId(userId);
     return ResponseEntity.ok(userService.updateUser(userDTO));
   }
+
+  /**
+   * Update login streak.
+   *
+   * @param token the JWT access token.
+   */
+  @PostMapping("/update-login-streak")
+  @Operation(summary = "Update login streak")
+  public void updateLoginStreak(@AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim("userId");
+    userService.updateLoginStreak(userId);
+  }
 }

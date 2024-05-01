@@ -13,5 +13,6 @@ public class BudgetingProductDto {
   private String name;
   private TimeInterval frequency;
   private Integer amount;
+  private Double unitPrice;
   private Long userInfoId;
 }

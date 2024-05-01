@@ -15,6 +15,7 @@ public class BudgetingProductTest {
   private final Long testId = 1L;
   private final String testName = "Test Product";
   private final TimeInterval testFrequency = TimeInterval.MONTHLY;
+  private final Double testUnitPrice = 20.0;
   private final Integer testAmount = 100;
   private UserInfo testUserInfo;
 
@@ -24,6 +25,7 @@ public class BudgetingProductTest {
     budgetingProduct.setId(testId);
     budgetingProduct.setName(testName);
     budgetingProduct.setFrequency(testFrequency);
+    budgetingProduct.setUnitPrice(testUnitPrice);
     budgetingProduct.setAmount(testAmount);
     testUserInfo = new UserInfo();
     budgetingProduct.setUserInfo(testUserInfo);
@@ -35,6 +37,7 @@ public class BudgetingProductTest {
     assertEquals(testId, budgetingProduct.getId());
     assertEquals(testName, budgetingProduct.getName());
     assertEquals(testFrequency, budgetingProduct.getFrequency());
+    assertEquals(testUnitPrice, budgetingProduct.getUnitPrice());
     assertEquals(testAmount, budgetingProduct.getAmount());
     assertEquals(testUserInfo, budgetingProduct.getUserInfo());
   }
@@ -42,11 +45,13 @@ public class BudgetingProductTest {
   @Test
   public void testEqualsAndHashCode() {
     BudgetingProduct product1 =
-        new BudgetingProduct(testId, testName, testFrequency, testAmount, testUserInfo);
+        new BudgetingProduct(
+            testId, testName, testFrequency, testAmount, testUnitPrice, testUserInfo);
     BudgetingProduct product2 =
-        new BudgetingProduct(testId, testName, testFrequency, testAmount, testUserInfo);
+        new BudgetingProduct(
+            testId, testName, testFrequency, testAmount, testUnitPrice, testUserInfo);
     BudgetingProduct product3 =
-        new BudgetingProduct(2L, "Another Product", TimeInterval.WEEKLY, 50, new UserInfo());
+        new BudgetingProduct(2L, "Another Product", TimeInterval.WEEKLY, 50, 20.0, new UserInfo());
 
     assertEquals(product1, product2);
     assertNotEquals(product1, product3);
@@ -57,7 +62,8 @@ public class BudgetingProductTest {
   @Test
   public void testToString() {
     String expectedToString =
-        "BudgetingProduct(id=1, name=Test Product, frequency=MONTHLY, amount=100, userInfo="
+        "BudgetingProduct(id=1, name=Test Product, frequency=MONTHLY, amount=100, unitPrice=20.0, "
+            + "userInfo="
             + testUserInfo.toString()
             + ")";
     assertEquals(expectedToString, budgetingProduct.toString());
@@ -69,6 +75,7 @@ public class BudgetingProductTest {
     assertEquals(testName, budgetingProduct.getName());
     assertEquals(testFrequency, budgetingProduct.getFrequency());
     assertEquals(testAmount, budgetingProduct.getAmount());
+    assertEquals(testUnitPrice, budgetingProduct.getUnitPrice());
     assertEquals(testUserInfo, budgetingProduct.getUserInfo());
   }
 }

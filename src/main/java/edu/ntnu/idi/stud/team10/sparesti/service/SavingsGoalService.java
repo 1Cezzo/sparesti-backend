@@ -315,7 +315,12 @@ public class SavingsGoalService {
         .collect(Collectors.toList());
   }
 
-  /** Get active saving goal */
+  /**
+   * Checks if a user has an active savings goal.
+   *
+   * @param userId The ID of the user.
+   * @return True if the user has an active savings goal, false otherwise.
+   */
   public boolean hasActiveSavingsGoal(Long userId) {
     List<UserSavingsGoal> userSavingsGoals = userSavingsGoalRepository.findByUserId(userId);
     for (UserSavingsGoal userSavingsGoal : userSavingsGoals) {

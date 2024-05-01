@@ -287,4 +287,28 @@ public class UserChallengeService<T extends Challenge> {
     ChallengeGenerator challengeGenerator = new ChallengeGenerator();
     return challengeGenerator.randomChallengeGenerator(userInfo);
   }
+
+  /**
+   * Checks if the user has N number of challenges.
+   *
+   * @param userId the id of the user.
+   * @param numberOfChallenges the number of challenges to check for.
+   */
+  public boolean hasNumberOfCompletedChallenges(Long userId, int numberOfChallenges) {
+    User user =
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+
+    List<ChallengeDto> challenges = getSortedChallengesByUser(userId);
+    int completedChallenges = 0;
+
+    for (ChallengeDto challenge : challenges) {
+      Challenge challengeEntity = challenge.toEntity();
+      if (challengeEntity.isCompleted()
+          && (challengeEntity.getTargetAmount() >= challengeEntity.getUsedAmount())) {
+        completedChallenges++;
+      }
+    }
+
+    return completedChallenges >= numberOfChallenges;
+  }
 }

@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -23,6 +24,12 @@ public class User {
 
   @Column(unique = true)
   private String email;
+
+  @Column(nullable = true)
+  private Integer loginStreak;
+
+  @Column(nullable = true)
+  private LocalDate lastLogin;
 
   @Column private Double totalSavings;
 
