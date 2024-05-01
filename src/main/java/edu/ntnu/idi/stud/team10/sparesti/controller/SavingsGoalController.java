@@ -49,16 +49,12 @@ public class SavingsGoalController {
     return new ResponseEntity<>(savingsGoal, HttpStatus.CREATED);
   }
 
-  /**
-   * Retrieve all savings goals.
-   *
-   * @return a list of all savings goals
-   */
-  @GetMapping
-  @Operation(summary = "Get all savings goals")
-  public ResponseEntity<List<SavingsGoal>> getAllSavingsGoals() {
-    List<SavingsGoal> savingsGoals = savingsGoalService.getAllSavingsGoals();
-    return ResponseEntity.ok(savingsGoals);
+  @GetMapping("/current")
+  @Operation(summary = "Get the current saving goal for the user")
+  public ResponseEntity<SavingsGoalDto> getCurrentSavingsGoal(@AuthenticationPrincipal Jwt token) {
+    Long userId = TokenParser.extractUserId(token);
+    SavingsGoalDto savingsGoal = savingsGoalService.getCurrentSavingsGoal(userId);
+    return ResponseEntity.ok(savingsGoal);
   }
 
   /**
