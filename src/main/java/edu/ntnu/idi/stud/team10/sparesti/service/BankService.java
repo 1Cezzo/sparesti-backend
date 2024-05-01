@@ -24,7 +24,8 @@ import jakarta.transaction.Transactional;
 
 /** Service for bank operations. */
 @Service
-public class BankService {
+public class
+BankService {
   private final AccountRepository accountRepository;
   private final TransactionRepository transactionRepository;
   private final AccountMapper accountMapper;

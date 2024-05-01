@@ -124,11 +124,11 @@ button:hover {
 }
 
 .piggy-bank-image img {
-    max-width: 70%;
+    max-width: 60%;
     height: auto;
     position: absolute;
     top: -2vw;
-    left: -13vw;
+    left: -15vw;
     z-index: -1;
 }
 

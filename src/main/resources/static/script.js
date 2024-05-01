@@ -4,7 +4,35 @@ document.addEventListener("DOMContentLoaded", () => {
     updateImageSource();
     setupFormSubmissions();
     setupModals();
+    checkForLoginErrors();
 });
+
+function checkForLoginErrors() {
+    let urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.has('error')) {
+        let errorMessage = document.getElementById('login-error-message');
+        errorMessage.style.display = 'block';
+    }
+}
+
+function displayLoginErrorMessage(errorCode) {
+    const errorMessageDiv = document.getElementById('login-error-message');
+    console.log("Error message: " + errorCode)
+    const message = mapErrorToMessage(errorCode);
+    console.log("Error message: " + errorCode)
+    errorMessageDiv.textContent = message;
+    errorMessageDiv.style.display = 'block';
+}
+
+function mapErrorToMessage(errorCode) {
+    const errorMessages = {
+        'invalid_credentials': 'Feil epost eller passord.',
+        'account_locked': 'Kontoen din har blitt låst.',
+        'session_expired': 'Din økt har utløpt, vennligst logg inn på nytt.',
+        'default': 'En ukjent feil oppstod. Vennligst prøv igjen.'
+    };
+    return errorMessages[errorCode] || errorMessages['default'];
+}
 
 // Toggle visibility between login and signup forms
 function toggleForm() {
@@ -83,6 +111,18 @@ function closeForgotPasswordModal() {
 
 async function submitSignUp(event) {
     event.preventDefault();
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('signup-password');
+
+    // Validate inputs: basic example, you might want to add more sophisticated validation
+    if (!emailInput.value) {
+        displayErrorMessage('signup-container', 'Vennligst skriv inn en gyldig epostadresse.');
+        return;
+    }
+    if (passwordInput.value.length < 6) {
+        displayErrorMessage('signup-container', 'Passordet må være minst 6 tegn langt.');
+        return;
+    }
     const res = await fetch('/api/users/create', {
         method: 'POST',
         headers: {
@@ -97,13 +137,17 @@ async function submitSignUp(event) {
         toggleForm();
     } else {
         // Attempt to read the JSON response to get more detailed error messages
-        try {
-            const data = await res.json(); // Assuming the server sends a JSON response with an error message field
-            const errorMessage = data.message || 'Denne eposten er allerede ';
-            displayErrorMessage('signup-container', errorMessage); // Display a specific error message if available
-        } catch (error) {
-            // If parsing the JSON fails or no message is included, display a generic error
-            displayErrorMessage('signup-container', 'An error occurred during signup. Please try again.');
+        if (res.status === 401) {
+            displayErrorMessage('signup-container', 'Epost er allerede i bruk.');
+        } else {
+            try {
+                const data = await res.json(); // Assuming the server sends a JSON response with an error message field
+                const errorMessage = data.message || 'Det oppstod en feil under registreringen. Vennligst prøv igjen.';
+                displayErrorMessage('signup-container', errorMessage); // Display a specific error message if available
+            } catch (error) {
+                // If parsing the JSON fails or no message is included, display a generic error
+                displayErrorMessage('signup-container', 'Det oppstod en feil under registreringen. Vennligst prøv igjen.');
+            }
         }
     }
     return false; // Prevent the default form submission
