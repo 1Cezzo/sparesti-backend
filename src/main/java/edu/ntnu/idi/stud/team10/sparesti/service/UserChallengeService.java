@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
@@ -31,21 +32,18 @@ public class UserChallengeService<T extends Challenge> {
   private final ChatGPTService chatGPTService;
   private final UserMapper userMapper;
   private final ChallengeMapper challengeMapper;
-  private final ChallengeService challengeService;
 
   public UserChallengeService(
       ChallengeRepository<T> challengeRepository,
       UserRepository userRepository,
       ChatGPTService chatGPTService,
       UserMapper userMapper,
-      ChallengeMapper challengeMapper,
-      ChallengeService challengeService) {
+      ChallengeMapper challengeMapper) {
     this.challengeRepository = challengeRepository;
     this.userRepository = userRepository;
     this.chatGPTService = chatGPTService;
     this.userMapper = userMapper;
     this.challengeMapper = challengeMapper;
-    this.challengeService = challengeService;
   }
 
   /**
@@ -343,13 +341,17 @@ public class UserChallengeService<T extends Challenge> {
             .findById(challengeId)
             .orElseThrow(() -> new NotFoundException("Challenge not found"));
 
-    if (challenge.getTargetAmount() <= challenge.getUsedAmount()) {
+    if (challenge.getExpiryDate().isBefore(ChronoLocalDate.from(new Date().toInstant()))) {
+      return false;
+    }
+
+    if (challenge.getTargetAmount() >= challenge.getUsedAmount()) {
       challenge.setCompleted(true);
       challengeRepository.save(challenge);
       return true;
     } else {
       removeChallengeFromUser(userId, challengeId);
-      challengeService.deleteChallenge(challengeId);
+      challengeRepository.delete(challenge);
       return false;
     }
   }

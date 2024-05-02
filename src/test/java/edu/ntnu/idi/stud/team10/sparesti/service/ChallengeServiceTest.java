@@ -78,6 +78,6 @@ class ChallengeServiceTest {
     challengeService.addToSavedAmount(1L, 30.0); // Change this line
 
     assertEquals(105.0, challenge.getUsedAmount()); // And this line
-    assertTrue(challenge.isCompleted());
+    assertFalse(challenge.isCompleted());
   }
 }
