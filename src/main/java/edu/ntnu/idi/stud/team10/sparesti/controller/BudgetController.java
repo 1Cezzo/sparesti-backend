@@ -1,6 +1,7 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -142,5 +143,13 @@ public class BudgetController {
     BudgetRowDto updatedBudgetRowDto =
         userBudgetService.editBudgetRowInUserBudget(userId, budgetId, budgetRowId, budgetRowDto);
     return ResponseEntity.ok(updatedBudgetRowDto);
+  }
+
+  @GetMapping("/budgets/getnew")
+  @Operation(summary = "Get the newest budget")
+  public ResponseEntity<BudgetDto> getNewestBudget(@AuthenticationPrincipal Jwt token) {
+    Long userId = TokenParser.extractUserId(token);
+    Optional<BudgetDto> budget = userBudgetService.getNewestBudget(userId);
+    return budget.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.ok(null));
   }
 }

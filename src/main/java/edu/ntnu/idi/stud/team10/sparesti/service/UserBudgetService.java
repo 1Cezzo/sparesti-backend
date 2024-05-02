@@ -1,6 +1,8 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -229,5 +231,27 @@ public class UserBudgetService {
     budgetRowRepository.save(budgetRow);
 
     return budgetRowMapper.toDto(budgetRow);
+  }
+
+  /**
+   * Retrieves the newest Budget entity for a user, will return an empty Optional if no budgets are
+   *
+   * @param userId The ID of the user
+   */
+  public Optional<BudgetDto> getNewestBudget(Long userId) {
+    List<Budget> budgets = budgetRepository.findByUserId(userId);
+    if (budgets.isEmpty()) {
+      return Optional.empty();
+    }
+    Budget newestBudget = budgets.get(0);
+    for (Budget budget : budgets) {
+      if (budget.getCreationDate().isAfter(newestBudget.getCreationDate())) {
+        newestBudget = budget;
+      }
+    }
+    if (newestBudget.getExpiryDate().isBefore(LocalDate.now())) {
+      return Optional.empty();
+    }
+    return Optional.of(budgetMapper.toDto(newestBudget));
   }
 }
