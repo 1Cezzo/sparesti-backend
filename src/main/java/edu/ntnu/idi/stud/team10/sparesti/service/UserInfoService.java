@@ -1,14 +1,17 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.UserInfoMapper;
+import edu.ntnu.idi.stud.team10.sparesti.model.BudgetingProduct;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.model.UserInfo;
+import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetingProductRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserInfoRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ConflictException;
@@ -21,6 +24,7 @@ public class UserInfoService {
   private final UserRepository userRepository;
   private final UserInfoRepository userInfoRepository;
   private final UserInfoMapper userInfoMapper;
+  private final BudgetingProductRepository budgetingProductRepository;
 
   /**
    * Constructor for UserInfoService. Dependency injection is handled by Spring.
@@ -28,15 +32,18 @@ public class UserInfoService {
    * @param userRepository (UserRepository) Repository for User.
    * @param userInfoRepository (UserInfoRepository) Repository for UserInfo.
    * @param userInfoMapper (UserInfoMapper) Mapper for UserInfo.
+   * @param budgetingProductRepository (BudgetingProductRepository) Repository for BudgetingProduct.
    */
   @Autowired
   public UserInfoService(
       UserRepository userRepository,
       UserInfoRepository userInfoRepository,
-      UserInfoMapper userInfoMapper) {
+      UserInfoMapper userInfoMapper,
+      BudgetingProductRepository budgetingProductRepository) {
     this.userRepository = userRepository;
     this.userInfoRepository = userInfoRepository;
     this.userInfoMapper = userInfoMapper;
+    this.budgetingProductRepository = budgetingProductRepository;
   }
 
   /**
@@ -55,12 +62,17 @@ public class UserInfoService {
       throw new ConflictException("Display name is taken.");
     }
     UserInfo userInfo = userInfoMapper.toEntity(userInfoDto);
-    userInfo
-        .getBudgetingProducts()
-        .forEach(budgetingProduct -> budgetingProduct.setUserInfo(userInfo));
     User user = findUserById(userInfoDto.getUserId());
     userInfo.setUser(user);
-    return userInfoMapper.toDto(userInfoRepository.save(userInfo));
+    Set<BudgetingProduct> budgetingProducts = userInfo.getBudgetingProducts();
+    userInfo.setBudgetingProducts(null);
+    UserInfoDto savedUserInfo = userInfoMapper.toDto(userInfoRepository.save(userInfo));
+    budgetingProducts.forEach(
+        budgetingProduct -> {
+          budgetingProduct.setUserInfo(userInfo);
+          budgetingProductRepository.save(budgetingProduct);
+        });
+    return savedUserInfo;
   }
 
   /**
@@ -121,7 +133,15 @@ public class UserInfoService {
         userInfoRepository
             .findByUserId(userId)
             .orElseThrow(() -> new NotFoundException("User info not found"));
+    Optional.ofNullable(userInfoDto.getBudgetingProducts())
+        .ifPresent(dtos -> budgetingProductRepository.deleteAll(info.getBudgetingProducts()));
     userInfoMapper.updateFromDto(userInfoDto, info);
+    Optional.ofNullable(info.getBudgetingProducts())
+        .ifPresent(
+            budgetingProducts -> {
+              budgetingProducts.forEach(budgetingProduct -> budgetingProduct.setUserInfo(info));
+              budgetingProductRepository.saveAll(budgetingProducts);
+            });
     return userInfoMapper.toDto(userInfoRepository.save(info));
   }
 
