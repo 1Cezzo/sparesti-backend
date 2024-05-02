@@ -101,17 +101,18 @@ public class SavingsGoalController {
   /**
    * Update saved amount of a savings goal.
    *
-   * @param user_id The ID of the savings goal.
-   * @param savings_goal_id The ID of the savings goal.
+   * @param token The JWT access token.
+   * @param savingsGoalId The ID of the savings goal.
    * @param savedAmount The new saved amount.
    */
-  @PutMapping("/user/{user_id}/saving_goal/{savings_goal_id}/update-saved-amount")
+  @PutMapping("/user/saving_goal/{savingsGoalId}/update-saved-amount")
   @Operation(summary = "Update the saved amount of a savings goal")
   public ResponseEntity<Void> updateSavedAmount(
-      @PathVariable Long user_id,
-      @PathVariable Long savings_goal_id,
+      @AuthenticationPrincipal Jwt token,
+      @PathVariable Long savingsGoalId,
       @RequestParam double savedAmount) {
-    savingsGoalService.updateSavedAmount(user_id, savings_goal_id, savedAmount);
+    Long userId = TokenParser.extractUserId(token);
+    savingsGoalService.updateSavedAmount(userId, savingsGoalId, savedAmount);
     return ResponseEntity.ok().build();
   }
 
