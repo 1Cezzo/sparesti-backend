@@ -18,6 +18,4 @@ public interface UserSavingsGoalRepository
   List<UserSavingsGoal> findByUserId(Long userId);
 
   List<UserSavingsGoal> findBySavingsGoal(SavingsGoal savingsGoal);
-
-  List<SavingsGoal> findSavingsGoalByAuthorId(Long authorId);
 }

@@ -372,7 +372,7 @@ public class SavingsGoalService {
    * @return {@code true} if the user has created a savings goal, {@code false} otherwise.
    */
   public boolean hasCreatedSavingsGoal(Long userId) {
-    List<SavingsGoal> savingsGoals = userSavingsGoalRepository.findSavingsGoalByAuthorId(userId);
+    List<SavingsGoal> savingsGoals = savingsGoalRepository.findSavingsGoalByAuthorId(userId);
     return !savingsGoals.isEmpty();
   }
 }
