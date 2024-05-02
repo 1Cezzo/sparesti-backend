@@ -131,93 +131,93 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
       return;
     }
     createBadge(
-            "Sparesti",
-            "Godt jobbet for å ha spart innenfor månedtlig budsjett!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/badge_pig_cropped.png");
+        "Sparesti",
+        "Godt jobbet for å ha spart innenfor månedtlig budsjett!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/badge_pig_cropped.png");
     createBadge(
-            "Red Bull",
-            "Wow du har spart 100 kr på Red Bull denne uken!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/badge_cropped_red_bull.png");
+        "Red Bull",
+        "Wow du har spart 100 kr på Red Bull denne uken!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/badge_cropped_red_bull.png");
     createBadge(
-            "Kaffe",
-            "Supert! Du har spart 150 kr på kaffe denne uken!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/badge_cropped_coffee.png");
+        "Kaffe",
+        "Supert! Du har spart 150 kr på kaffe denne uken!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/badge_cropped_coffee.png");
     createBadge(
-            "På god vei!",
-            "Du er online!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/0-challenges.png\n");
+        "På god vei!",
+        "Du er online!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/0-challenges.png\n");
     createBadge(
-            "3 Utfordringer!",
-            "Du har fullført 3 utfordringer!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/3-challenges.png\n");
+        "3 Utfordringer!",
+        "Du har fullført 3 utfordringer!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/3-challenges.png\n");
     createBadge(
-            "10 Utfordringer!",
-            "Du har fullført 10 utfordringer!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/10-challenges.png\n");
+        "10 Utfordringer!",
+        "Du har fullført 10 utfordringer!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/10-challenges.png\n");
     createBadge(
-            "15 Utfordringer!",
-            "Du har fullført 15 utfordringer!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/15-challenges.png\n");
+        "15 Utfordringer!",
+        "Du har fullført 15 utfordringer!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/15-challenges.png\n");
     createBadge(
-            "Bank ID",
-            "Sikkerhetførst!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/bank_id.png\n");
+        "Bank ID",
+        "Sikkerhetførst!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/bank_id.png\n");
     createBadge(
-            "Kiwi",
-            "Kiwi-mesteren! Du har spart 400 kr på ukeshandel hos Kiwi!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/kiwi.png\n");
+        "Kiwi",
+        "Kiwi-mesteren! Du har spart 400 kr på ukeshandel hos Kiwi!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/kiwi.png\n");
     createBadge(
-            "Rema 1001",
-            "Du elsker Rema! Du har spart 300 kr på ukeshandel hos Rema 1001!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/rema_1001.png\n");
+        "Rema 1001",
+        "Du elsker Rema! Du har spart 300 kr på ukeshandel hos Rema 1001!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/rema_1001.png\n");
     createBadge(
-            "Spar",
-            "Spar, du har gjort en god deal! Du har spart 350 kr på ukeshandel hos Spar!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/spar.png\n");
+        "Spar",
+        "Spar, du har gjort en god deal! Du har spart 350 kr på ukeshandel hos Spar!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/spar.png\n");
     createBadge(
-            "Bunin",
-            "Bunnpris! Du har spart 500 kr på ukeshandel hos Bunin!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/bunin.png\n");
+        "Bunin",
+        "Bunnpris! Du har spart 500 kr på ukeshandel hos Bunin!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/bunin.png\n");
     createBadge(
-            "Budsjett",
-            "Dæven, du har stålkontroll på budsjettet!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/budget.png\n");
+        "Budsjett",
+        "Dæven, du har stålkontroll på budsjettet!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/budget.png\n");
     createBadge(
-            "Månedtlig utfordring",
-            "Kjempet bra! Du har fullført en månedtlig utfordring!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/calendar.png\n");
+        "Månedtlig utfordring",
+        "Kjempet bra! Du har fullført en månedtlig utfordring!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/calendar.png\n");
     createBadge(
-            "Klær",
-            "Godt jobbet! Du har spart 400 kr på klær denne måneden!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/clothes.png\n");
+        "Klær",
+        "Godt jobbet! Du har spart 400 kr på klær denne måneden!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/clothes.png\n");
     createBadge(
-            "Sparemål oppnådd",
-            "Du er best! Du har fullført et sparemål!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/completing_saving_goal.png\n");
+        "Sparemål oppnådd",
+        "Du er best! Du har fullført et sparemål!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/completing_saving_goal.png\n");
     createBadge(
-            "Profilbilde",
-            "Du ser bra ut! Du har endret profilbildet ditt!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/profile_picture.png\n");
+        "Profilbilde",
+        "Du ser bra ut! Du har endret profilbildet ditt!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/profile_picture.png\n");
     createBadge(
-            "Dagligvare handel",
-            "Fortsett sånn! Du har spart 300 kr på dagligvarehandel denne uken!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/shopping_cart.png\n");
+        "Dagligvare handel",
+        "Fortsett sånn! Du har spart 300 kr på dagligvarehandel denne uken!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/shopping_cart.png\n");
     createBadge(
-            "Luftballong klikkeren!",
-            "Trenger du tips til å spare penger?",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/red_airballoon.png\n");
+        "Luftballong klikkeren!",
+        "Trenger du tips til å spare penger?",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/red_airballoon.png\n");
     createBadge(
-            "Delt sparemål",
-            "Sharing is caring! Du har delt et sparemål med andre brukere!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/shared_goal.png\n");
+        "Delt sparemål",
+        "Sharing is caring! Du har delt et sparemål med andre brukere!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/shared_goal.png\n");
     createBadge(
-            "Husk å betal regninga!",
-            "Du har kontroll! Du har lagt til en regning i appen!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/receipt.png\n");
+        "Husk å betal regninga!",
+        "Du har kontroll! Du har lagt til en regning i appen!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/receipt.png\n");
     createBadge(
-            "Transport",
-            "Grønt miljø! Du har spart 200 kr på transport denne måneden!",
-            "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/transportation.png\n");
+        "Transport",
+        "Grønt miljø! Du har spart 200 kr på transport denne måneden!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/transportation.png\n");
     createBadge(
         "Sparemål nybegynner",
         "Du laget et sparemål!",
