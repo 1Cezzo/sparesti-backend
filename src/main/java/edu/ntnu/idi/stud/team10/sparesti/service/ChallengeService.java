@@ -98,6 +98,7 @@ public abstract class ChallengeService<T extends Challenge> {
       if (existingChallenge instanceof ConsumptionChallenge) {
         ConsumptionChallenge consumptionChallenge = (ConsumptionChallenge) existingChallenge;
         ConsumptionChallenge updatedConsumptionChallenge = (ConsumptionChallenge) updatedEntity;
+
         Optional.ofNullable(updatedConsumptionChallenge.getProductCategory())
             .ifPresent(consumptionChallenge::setProductCategory);
         Optional.ofNullable(updatedConsumptionChallenge.getReductionPercentage())
@@ -107,9 +108,12 @@ public abstract class ChallengeService<T extends Challenge> {
       if (existingChallenge instanceof PurchaseChallenge) {
         PurchaseChallenge purchaseChallenge = (PurchaseChallenge) existingChallenge;
         PurchaseChallenge updatedPurchaseChallenge = (PurchaseChallenge) updatedEntity;
+
         Optional.ofNullable(updatedPurchaseChallenge.getProductName())
             .ifPresent(purchaseChallenge::setProductName);
         purchaseChallenge.setProductName(updatedPurchaseChallenge.getProductName());
+        Optional.ofNullable(updatedPurchaseChallenge.getProductPrice())
+            .ifPresent(purchaseChallenge::setProductPrice);
       }
 
       // Save the updated challenge
@@ -170,7 +174,6 @@ public abstract class ChallengeService<T extends Challenge> {
     if (optionalChallenge.isPresent()) {
       T challenge = optionalChallenge.get();
       challenge.setUsedAmount(challenge.getUsedAmount() + amount);
-      challenge.setCompleted(challenge.getUsedAmount() > challenge.getTargetAmount());
       challengeRepository.save(challenge);
     } else {
       throw new NotFoundException("Challenge not found");

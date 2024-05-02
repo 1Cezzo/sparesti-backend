@@ -31,18 +31,21 @@ public class UserChallengeService<T extends Challenge> {
   private final ChatGPTService chatGPTService;
   private final UserMapper userMapper;
   private final ChallengeMapper challengeMapper;
+  private final ChallengeService challengeService;
 
   public UserChallengeService(
       ChallengeRepository<T> challengeRepository,
       UserRepository userRepository,
       ChatGPTService chatGPTService,
       UserMapper userMapper,
-      ChallengeMapper challengeMapper) {
+      ChallengeMapper challengeMapper,
+      ChallengeService challengeService) {
     this.challengeRepository = challengeRepository;
     this.userRepository = userRepository;
     this.chatGPTService = chatGPTService;
     this.userMapper = userMapper;
     this.challengeMapper = challengeMapper;
+    this.challengeService = challengeService;
   }
 
   /**
@@ -109,6 +112,17 @@ public class UserChallengeService<T extends Challenge> {
         });
 
     return allChallenges;
+  }
+
+  /**
+   * Get active sorted challenges
+   *
+   * @param userId the id of the user.
+   * @return a list of active sorted challenges.
+   */
+  public List<ChallengeDto> getActiveSortedChallengesByUser(Long userId) {
+    List<ChallengeDto> allChallenges = getSortedChallengesByUser(userId);
+    return allChallenges.stream().filter(challenge -> !challenge.isCompleted()).toList();
   }
 
   /**
@@ -244,7 +258,8 @@ public class UserChallengeService<T extends Challenge> {
             + "1. Saving Challenge:\n"
             + "   - Kun feltene nevnt ovenfor.\n"
             + "2. Purchase Challenge:\n"
-            + "   - Product Name\n\n"
+            + "   - Product Name:\n\n"
+            + " - Product Price:"
             + "Gi realistiske utfordringer! Ikke glem å inkludere emoji for å gjøre det morsomt!\n\n"
             + "Gi realistiske verdier for utfordringene, med tanke på varighet (Time interval), "
             + "Target amount og vanskelighetsgrad.\n "
@@ -261,7 +276,7 @@ public class UserChallengeService<T extends Challenge> {
             + "velger purchase challenge. Ta for deg ETT produkt om gangen når du lager en  "
             + "utfordring!, prøv å "
             + "lag forskjellige utfordringer & bruk forskjellig utfordringstype, og husk hver gang "
-            + "realistiske verdier mtp. varighet, vanskelighetsgrad og målbeløp.");
+            + "realistiske verdier mtp. varighet, vanskelighetsgrad og målbeløp. Varier mellom Saving Challenge og Purchase Challenge for hver gang du lager en ny utfordring :)");
     messages[2] = assistantMessage;
 
     // Send messages to the ChatGPT API and get completion
@@ -313,5 +328,29 @@ public class UserChallengeService<T extends Challenge> {
     }
 
     return completedChallenges >= numberOfChallenges;
+  }
+
+  /**
+   * Update completed based on whether the target has been reached or not.
+   *
+   * @param challengeId the id of the challenge.
+   * @param userId the id of the user.
+   * @throws NotFoundException if the challenge is not found.
+   */
+  public boolean updateCompleted(Long challengeId, Long userId) {
+    T challenge =
+        challengeRepository
+            .findById(challengeId)
+            .orElseThrow(() -> new NotFoundException("Challenge not found"));
+
+    if (challenge.getTargetAmount() <= challenge.getUsedAmount()) {
+      challenge.setCompleted(true);
+      challengeRepository.save(challenge);
+      return true;
+    } else {
+      removeChallengeFromUser(userId, challengeId);
+      challengeService.deleteChallenge(challengeId);
+      return false;
+    }
   }
 }
