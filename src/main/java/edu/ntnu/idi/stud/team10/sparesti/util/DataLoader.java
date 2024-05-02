@@ -218,6 +218,14 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
         "Transport",
         "Medalje for å spare 600 kr på transport i måneden",
         "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/transportation.png\n");
+    createBadge(
+        "Sparemål nybegynner",
+        "Du laget et sparemål!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/create_saving_goal.png\n");
+    createBadge(
+        "Utfordrings nybegynner",
+        "Du laget en utfordring!",
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/create_challenge.png\n");
   }
 
   private void createSavingTips() {

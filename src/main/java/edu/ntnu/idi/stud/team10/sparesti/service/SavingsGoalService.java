@@ -357,10 +357,22 @@ public class SavingsGoalService {
     List<UserSavingsGoal> userSavingsGoals = userSavingsGoalRepository.findByUserId(userId);
     for (UserSavingsGoal userSavingsGoal : userSavingsGoals) {
       SavingsGoal savingsGoal = userSavingsGoal.getSavingsGoal();
-      if (savingsGoal.getAuthorId() != userId) {
+      // if the user is the author and the saving goal has more than one user, return true.
+      if (savingsGoal.getAuthorId() == userId || savingsGoal.getUsers().size() > 1) {
         return true;
       }
     }
     return false;
+  }
+
+  /**
+   * Checks if the user has created a savings goal.
+   *
+   * @param userId The ID of the user.
+   * @return {@code true} if the user has created a savings goal, {@code false} otherwise.
+   */
+  public boolean hasCreatedSavingsGoal(Long userId) {
+    List<SavingsGoal> savingsGoals = userSavingsGoalRepository.findSavingsGoalByAuthorId(userId);
+    return !savingsGoals.isEmpty();
   }
 }

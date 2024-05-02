@@ -63,9 +63,9 @@ public class BadgeAwarder {
       return fifteenChallengesBadge;
     }
 
-    Badge savingsGoalBadge = checkAndAwardSavingsGoalBadge(userId);
-    if (savingsGoalBadge != null) {
-      return savingsGoalBadge;
+    Badge savingsGoalCompletedBadge = checkAndAwardCompletedSavingsGoalBadge(userId);
+    if (savingsGoalCompletedBadge != null) {
+      return savingsGoalCompletedBadge;
     }
 
     Badge sharedSavingsGoalBadge = checkAndAwardSharedSavingsGoalBadge(userId);
@@ -81,6 +81,16 @@ public class BadgeAwarder {
     Badge budgetBadge = checkAndAwardBudgetBadge(userId);
     if (budgetBadge != null) {
       return budgetBadge;
+    }
+
+    Badge savingsGoalBadge = checkAndAwardSavingsGoalBadge(userId);
+    if (savingsGoalBadge != null) {
+      return savingsGoalBadge;
+    }
+
+    Badge challengeCreationBadge = checkAndAwardChallengeCreationBadge(userId);
+    if (challengeCreationBadge != null) {
+      return challengeCreationBadge;
     }
 
     return null;
@@ -138,7 +148,7 @@ public class BadgeAwarder {
    * @return (Badge): The badge that the user has earned, or null if no badge has been earned.
    */
   @Transactional
-  public Badge checkAndAwardSavingsGoalBadge(Long userId) {
+  public Badge checkAndAwardCompletedSavingsGoalBadge(Long userId) {
     Badge badge =
         badgeRepository
             .findByName("Sparemål oppnådd")
@@ -227,6 +237,49 @@ public class BadgeAwarder {
     }
 
     if (budgetService.hasCreatedBudget(userId)) {
+      return badge;
+    }
+
+    return null;
+  }
+
+  /**
+   * Awards a badge to a user if they have created a savings goal.
+   *
+   * @param userId (Long): The User's unique ID.
+   * @throws NotFoundException If the badge with the name 'Sparemål' is not found.
+   * @return (Badge): The badge that the user has earned, or null if no badge has been earned.
+   */
+  @Transactional
+  public Badge checkAndAwardSavingsGoalBadge(Long userId) {
+    Badge badge = badgeRepository.findByName("Sparemål nybegynner").orElse(null);
+
+    if (badge == null || userBadgeService.hasUserBadge(userId, badge.getId())) {
+      return null;
+    }
+
+    if (savingsGoalService.hasCreatedSavingsGoal(userId)) {
+      return badge;
+    }
+
+    return null;
+  }
+
+  /**
+   * Awards a badge to a user if he has created a challenge.
+   *
+   * @param userId (Long): The User's unique ID.
+   * @return (Badge): The badge that the user has earned, or null if no badge has been earned.
+   */
+  @Transactional
+  public Badge checkAndAwardChallengeCreationBadge(Long userId) {
+    Badge badge = badgeRepository.findByName("Utfordrings nybegynner").orElse(null);
+
+    if (badge == null || userBadgeService.hasUserBadge(userId, badge.getId())) {
+      return null;
+    }
+
+    if (!userChallengeService.getSortedChallengesByUser(userId).isEmpty()) {
       return badge;
     }
 
