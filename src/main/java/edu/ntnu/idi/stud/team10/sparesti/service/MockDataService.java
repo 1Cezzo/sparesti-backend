@@ -81,8 +81,7 @@ public class MockDataService {
           "Statnett",
           List.of("Strømregning"),
           "HydroNorge",
-          List.of("Vannregning")
-          );
+          List.of("Vannregning"));
 
   private static final List<String> CATEGORIES = List.copyOf(CATEGORY_DESCRIPTIONS.keySet());
   private static final Random RANDOM = new Random();
