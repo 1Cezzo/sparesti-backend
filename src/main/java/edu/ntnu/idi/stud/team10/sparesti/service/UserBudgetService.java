@@ -235,6 +235,7 @@ public class UserBudgetService {
 
   /**
    * Retrieves the newest Budget entity for a user, will return an empty Optional if no budgets are
+   *
    * @param userId The ID of the user
    */
   public Optional<BudgetDto> getNewestBudget(Long userId) {
