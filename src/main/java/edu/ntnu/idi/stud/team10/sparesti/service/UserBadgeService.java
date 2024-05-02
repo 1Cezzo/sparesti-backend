@@ -136,6 +136,7 @@ public class UserBadgeService {
             userBadge -> {
               Map<String, Object> userData = new HashMap<>();
               userData.put("user", userMapper.toDto(userBadge.getUser()));
+              userData.put("dateEarned", userBadge.getDateEarned());
               return userData;
             })
         .toList();
