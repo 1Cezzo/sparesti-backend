@@ -62,22 +62,26 @@ public class MockDataService {
 
   private static final Map<String, List<String>> CATEGORY_DESCRIPTIONS =
       Map.of(
-          "Dagligvarer",
-          List.of("Supermarkedkjøp", "Dagligvarebutikk", "Bakeri", "Slakter"),
-          "Underholdning",
-          List.of("Kinobilletter", "Konsertbilletter", "Abonnement på strømmetjeneste"),
-          "Nyttetjenester",
-          List.of(
-              "Betaling av strømregning",
-              "Betaling av vannregning",
-              "Betaling av internettregning"),
-          "Spisesteder",
-          List.of("Restaurant", "Kafé", "Hurtigmat"),
-          "Transport",
-          List.of("Bensinstasjon", "Offentlig transportbillett", "Taxi"),
-          "Klær",
-          List.of("Klærforretning", "Nettbutikk for klær", "Skobutikk")
-          // ... flere kategorier og beskrivelser
+          "Rema 1000 Moholt",
+          List.of("dagligvare"),
+          "Bunnpris Tyholt",
+          List.of("dagligvare"),
+          "Coop Obs Tiller",
+          List.of("Dagligvare"),
+          "Prinsen Kinosenter",
+          List.of("Billett", "Snacks"),
+          "Frati",
+          List.of(""),
+          "H&M",
+          List.of("Utgift", "klær"),
+          "AtB",
+          List.of("Billett"),
+          "Steam",
+          List.of("PalWorld", "GTA6", "Skyrim"),
+          "Statnett",
+          List.of("Strømregning"),
+          "HydroNorge",
+          List.of("Vannregning")
           );
 
   private static final List<String> CATEGORIES = List.copyOf(CATEGORY_DESCRIPTIONS.keySet());
