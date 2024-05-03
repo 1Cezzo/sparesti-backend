@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -169,7 +170,7 @@ public class SavingsGoalService {
       updatedSavingsGoal.setSavedAmount(updatedSavingsGoal.getSavedAmount() + savedAmount);
       LocalDateTime currentDate = LocalDateTime.now();
       updatedSavingsGoal.setCompleted(
-          updatedSavingsGoal.getSavedAmount() > updatedSavingsGoal.getTargetAmount()
+          updatedSavingsGoal.getSavedAmount() >= updatedSavingsGoal.getTargetAmount()
               || currentDate.isAfter(updatedSavingsGoal.getDeadline().atStartOfDay()));
       savingsGoalRepository.save(updatedSavingsGoal);
     } else {
@@ -302,17 +303,20 @@ public class SavingsGoalService {
   /**
    * Checks if a user has an active savings goal.
    *
-   * @param userId the users Id.
+   * @param userId the user's id.
    * @return {@code true} if the user has an active savings goal, {@code false} otherwise.
    */
   public boolean hasActiveSavingsGoal(Long userId) {
     List<UserSavingsGoal> userSavingsGoals = userSavingsGoalRepository.findByUserId(userId);
+    LocalDate today = LocalDate.now();
+
     for (UserSavingsGoal userSavingsGoal : userSavingsGoals) {
       SavingsGoal savingsGoal = userSavingsGoal.getSavingsGoal();
-      if (!savingsGoal.isCompleted()) {
+      if (savingsGoal.getDeadline().isAfter(today) && !savingsGoal.isCompleted()) {
         return true;
       }
     }
+
     return false;
   }
 
@@ -323,8 +327,13 @@ public class SavingsGoalService {
    * @return The current savings goal DTO.
    */
   public SavingsGoalDto getCurrentSavingsGoal(Long userId) {
-    return getAllSavingsGoalsForUser(userId).stream()
-        .filter(savingsGoalDto -> !savingsGoalDto.isCompleted())
+    List<SavingsGoalDto> savingsGoals = getAllSavingsGoalsForUser(userId);
+    LocalDate today = LocalDate.now();
+
+    return savingsGoals.stream()
+        .filter(
+            savingsGoalDto ->
+                savingsGoalDto.getDeadline().isAfter(today) && !savingsGoalDto.isCompleted())
         .findFirst()
         .orElseThrow(() -> new NotFoundException("No active savings goal found"));
   }
@@ -358,7 +367,7 @@ public class SavingsGoalService {
     for (UserSavingsGoal userSavingsGoal : userSavingsGoals) {
       SavingsGoal savingsGoal = userSavingsGoal.getSavingsGoal();
       // if the user is the author and the saving goal has more than one user, return true.
-      if (savingsGoal.getAuthorId() == userId || savingsGoal.getUsers().size() > 1) {
+      if (savingsGoal.getAuthorId() == userId && savingsGoal.getUsers().size() > 1) {
         return true;
       }
     }

@@ -9,4 +9,5 @@ import lombok.*;
 @AllArgsConstructor
 public class PurchaseChallengeDto extends ChallengeDto {
   private String productName;
+  private double productPrice;
 }

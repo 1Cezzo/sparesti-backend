@@ -13,4 +13,7 @@ import lombok.*;
 public class PurchaseChallenge extends Challenge {
   @Column(name = "product_name", nullable = false)
   private String productName;
+
+  @Column(name = "product_price", nullable = false)
+  private double productPrice;
 }
