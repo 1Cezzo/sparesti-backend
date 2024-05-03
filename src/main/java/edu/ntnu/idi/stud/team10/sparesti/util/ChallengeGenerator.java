@@ -48,7 +48,7 @@ public class ChallengeGenerator {
    * @param random The random number generator.
    * @return A random saving challenge.
    */
-  private SavingChallengeDto generateRandomSavingChallenge(UserInfoDto userInfo, Random random) {
+  public SavingChallengeDto generateRandomSavingChallenge(UserInfoDto userInfo, Random random) {
     // Get the occupation status of the user
     OccupationStatus occupationStatus = userInfo.getOccupationStatus();
     ChallengeTemplates templates = new ChallengeTemplates();
@@ -81,8 +81,7 @@ public class ChallengeGenerator {
    * @param random The random number generator.
    * @return A random purchase challenge.
    */
-  private PurchaseChallengeDto generateRandomPurchaseChallenge(
-      UserInfoDto userInfo, Random random) {
+  public PurchaseChallengeDto generateRandomPurchaseChallenge(UserInfoDto userInfo, Random random) {
     // Randomly select a budgeting product for the purchase challenge
     Set<BudgetingProductDto> budgetingProducts = userInfo.getBudgetingProducts();
     List<BudgetingProductDto> productList = new ArrayList<>(budgetingProducts);
@@ -110,7 +109,7 @@ public class ChallengeGenerator {
    * @param frequency The frequency of the budgeting product.
    * @return The multiplier for the target amount.
    */
-  private static int getMultiplier(TimeInterval frequency) {
+  public static int getMultiplier(TimeInterval frequency) {
     return switch (frequency) {
       case DAILY -> 7;
       case WEEKLY, MONTHLY -> 1;

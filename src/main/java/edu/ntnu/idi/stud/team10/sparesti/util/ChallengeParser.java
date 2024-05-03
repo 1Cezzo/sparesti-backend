@@ -31,7 +31,7 @@ public class ChallengeParser {
    * @param textResponse The text response.
    * @return The parsed saving challenge.
    */
-  private static SavingChallengeDto parseSavingChallenge(String textResponse) {
+  public static SavingChallengeDto parseSavingChallenge(String textResponse) {
     SavingChallengeDto savingChallengeDTO = new SavingChallengeDto();
     String[] lines = textResponse.split("\n");
 
@@ -96,7 +96,7 @@ public class ChallengeParser {
    * @param textResponse The text response.
    * @return The parsed purchase challenge.
    */
-  private static PurchaseChallengeDto parsePurchaseChallenge(String textResponse) {
+  public static PurchaseChallengeDto parsePurchaseChallenge(String textResponse) {
     PurchaseChallengeDto purchaseChallengeDTO = new PurchaseChallengeDto();
     String[] lines = textResponse.split("\n");
 
