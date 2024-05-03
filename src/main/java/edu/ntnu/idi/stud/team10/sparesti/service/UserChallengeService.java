@@ -373,11 +373,10 @@ public class UserChallengeService<T extends Challenge> {
       ChallengeDto challengeDto = optionalChallenge.get();
       double amountToAdd = calculateAmountToAdd(challengeDto);
 
-      // Check if the challenge has expired and if the challenge isnt a saving challenge with
-      // completed amount
+      // Check if the challenge has expired and if the challenge isnt completed in terms of saved
+      // amount
       if (challengeDto.getExpiryDate().isAfter(LocalDate.now())
-          && !(challengeDto instanceof SavingChallengeDto
-              && challengeDto.getUsedAmount() == challengeDto.getTargetAmount())) {
+          && !(Objects.equals(challengeDto.getUsedAmount(), challengeDto.getTargetAmount()))) {
         return false;
       }
 

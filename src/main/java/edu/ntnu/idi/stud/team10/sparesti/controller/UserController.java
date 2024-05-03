@@ -90,4 +90,17 @@ public class UserController {
     Long userId = token.getClaim("userId");
     userService.updateLoginStreak(userId);
   }
+
+  /**
+   * Get login streak.
+   *
+   * @param token the JWT access token.
+   * @return the login streak
+   */
+  @GetMapping("/login-streak")
+  @Operation(summary = "Get login streak")
+  public ResponseEntity<Integer> getLoginStreak(@AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim("userId");
+    return ResponseEntity.ok(userService.getLoginStreak(userId));
+  }
 }
