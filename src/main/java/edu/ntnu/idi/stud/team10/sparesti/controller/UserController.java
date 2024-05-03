@@ -29,13 +29,14 @@ public class UserController {
   /**
    * Get a user by username.
    *
-   * @param username the username of the user
+   * @param token the JWT access token.
    * @return the user with the given username
    */
-  @GetMapping("/{username}")
+  @GetMapping()
   @Operation(summary = "Access the user data")
-  public UserDto getUserByUsername(@PathVariable String username) {
-    return userService.getUserByEmail(username);
+  public UserDto getUserByUsername(@AuthenticationPrincipal Jwt token) {
+    Long userId = TokenParser.extractUserId(token);
+    return userService.getUserById(userId);
   }
 
   /**
@@ -89,5 +90,18 @@ public class UserController {
   public void updateLoginStreak(@AuthenticationPrincipal Jwt token) {
     Long userId = token.getClaim("userId");
     userService.updateLoginStreak(userId);
+  }
+
+  /**
+   * Get login streak.
+   *
+   * @param token the JWT access token.
+   * @return the login streak
+   */
+  @GetMapping("/login-streak")
+  @Operation(summary = "Get login streak")
+  public ResponseEntity<Integer> getLoginStreak(@AuthenticationPrincipal Jwt token) {
+    Long userId = token.getClaim("userId");
+    return ResponseEntity.ok(userService.getLoginStreak(userId));
   }
 }

@@ -225,7 +225,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     createBadge(
         "Utfordrings nybegynner",
         "Du laget en utfordring!",
-        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/create_challenge.png\n");
+        "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/created_challenge.png\n");
   }
 
   private void createSavingTips() {
