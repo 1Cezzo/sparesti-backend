@@ -3,6 +3,7 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,11 @@ import edu.ntnu.idi.stud.team10.sparesti.mapper.BudgetRowMapper;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
+import edu.ntnu.idi.stud.team10.sparesti.model.TransactionBudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.TransactionBudgetRowRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
@@ -34,6 +37,7 @@ public class UserBudgetService {
   private final BudgetMapper budgetMapper;
 
   private final BudgetRowMapper budgetRowMapper;
+  private TransactionBudgetRowRepository transactionBudgetRowRepository;
 
   @Autowired
   public UserBudgetService(
@@ -42,13 +46,15 @@ public class UserBudgetService {
       BudgetRowRepository budgetRowRepository,
       UserMapper userMapper,
       BudgetMapper budgetMapper,
-      BudgetRowMapper budgetRowMapper) {
+      BudgetRowMapper budgetRowMapper,
+      TransactionBudgetRowRepository transactionBudgetRowRepository) {
     this.userRepository = userRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
     this.userMapper = userMapper;
     this.budgetMapper = budgetMapper;
     this.budgetRowMapper = budgetRowMapper;
+    this.transactionBudgetRowRepository = transactionBudgetRowRepository;
   }
 
   /**
@@ -128,6 +134,16 @@ public class UserBudgetService {
         budgetRepository
             .findById(budgetId)
             .orElseThrow(() -> new NotFoundException("Budget with ID " + budgetId + " not found"));
+
+    Set<BudgetRow> budgetRows = budget.getRow();
+
+    for (BudgetRow budgetRow : budgetRows) {
+      // Retrieve and delete all TransactionBudgetRow entities that reference this BudgetRow
+      List<TransactionBudgetRow> transactionBudgetRows =
+          transactionBudgetRowRepository.findByBudgetRow(budgetRow);
+      transactionBudgetRowRepository.deleteAll(transactionBudgetRows);
+      budgetRowRepository.delete(budgetRow);
+    }
 
     budgetRepository.delete(budget);
   }
