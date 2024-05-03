@@ -118,9 +118,25 @@ public class ChallengeController {
    */
   @GetMapping("/users/challenges")
   @Operation(summary = "Get all challenges for a user")
-  public ResponseEntity getChallengesByUser(@AuthenticationPrincipal Jwt token) {
+  public ResponseEntity<List<ChallengeDto>> getChallengesByUser(
+      @AuthenticationPrincipal Jwt token) {
     Long userId = TokenParser.extractUserId(token);
     List challenges = userChallengeService.getSortedChallengesByUser(userId);
+    return ResponseEntity.ok(challenges);
+  }
+
+  /**
+   * Get active challenges for a user.
+   *
+   * @param token the JWT token.
+   * @return a list of the active challenges.
+   */
+  @GetMapping("/users/active-challenges")
+  @Operation(summary = "Get active challenges for a user")
+  public ResponseEntity<List<ChallengeDto>> getActiveChallengesByUser(
+      @AuthenticationPrincipal Jwt token) {
+    Long userId = TokenParser.extractUserId(token);
+    List challenges = userChallengeService.getActiveSortedChallengesByUser(userId);
     return ResponseEntity.ok(challenges);
   }
 
@@ -148,5 +164,20 @@ public class ChallengeController {
   public ChallengeDto suggestRandomChallenge(String userEmail) {
     UserInfoDto userInfo = userInfoService.getUserInfoByEmail(userEmail);
     return userChallengeService.generateRandomChallenge(userInfo);
+  }
+
+  /**
+   * Update completed value of a challenge.
+   *
+   * @param token the JWT token.
+   * @param challengeId the id of the challenge.
+   */
+  @PutMapping("/users/challenges/{challengeId}")
+  @Operation(summary = "Update completed value of a challenge")
+  public ResponseEntity<Boolean> updateCompletedValueOfChallenge(
+      @AuthenticationPrincipal Jwt token, @PathVariable Long challengeId) {
+    Long userId = TokenParser.extractUserId(token);
+    boolean completed = userChallengeService.updateCompleted(userId, challengeId);
+    return ResponseEntity.ok(completed);
   }
 }

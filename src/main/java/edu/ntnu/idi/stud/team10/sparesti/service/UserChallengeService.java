@@ -1,5 +1,6 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.ChallengeMapper;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.SavingsGoalMapper;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.*;
 import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
@@ -31,18 +33,24 @@ public class UserChallengeService<T extends Challenge> {
   private final ChatGPTService chatGPTService;
   private final UserMapper userMapper;
   private final ChallengeMapper challengeMapper;
+  private final SavingsGoalService savingsGoalService;
+  private final SavingsGoalMapper savingsGoalMapper;
 
   public UserChallengeService(
       ChallengeRepository<T> challengeRepository,
       UserRepository userRepository,
       ChatGPTService chatGPTService,
       UserMapper userMapper,
-      ChallengeMapper challengeMapper) {
+      ChallengeMapper challengeMapper,
+      SavingsGoalMapper savingsGoalMapper,
+      SavingsGoalService savingsGoalService) {
     this.challengeRepository = challengeRepository;
     this.userRepository = userRepository;
     this.chatGPTService = chatGPTService;
     this.userMapper = userMapper;
     this.challengeMapper = challengeMapper;
+    this.savingsGoalService = savingsGoalService;
+    this.savingsGoalMapper = savingsGoalMapper;
   }
 
   /**
@@ -63,6 +71,9 @@ public class UserChallengeService<T extends Challenge> {
 
     user.removeChallenge(challengeToRemove);
     userRepository.save(user);
+
+    challengeToRemove.getUsers().remove(user);
+    challengeRepository.save(challengeToRemove);
 
     return userMapper.toDto(user);
   }
@@ -109,6 +120,17 @@ public class UserChallengeService<T extends Challenge> {
         });
 
     return allChallenges;
+  }
+
+  /**
+   * Get active sorted challenges
+   *
+   * @param userId the id of the user.
+   * @return a list of active sorted challenges.
+   */
+  public List<ChallengeDto> getActiveSortedChallengesByUser(Long userId) {
+    List<ChallengeDto> allChallenges = getSortedChallengesByUser(userId);
+    return allChallenges.stream().filter(challenge -> !challenge.isCompleted()).toList();
   }
 
   /**
@@ -244,7 +266,8 @@ public class UserChallengeService<T extends Challenge> {
             + "1. Saving Challenge:\n"
             + "   - Kun feltene nevnt ovenfor.\n"
             + "2. Purchase Challenge:\n"
-            + "   - Product Name\n\n"
+            + "   - Product Name:\n\n"
+            + " - Product Price:"
             + "Gi realistiske utfordringer! Ikke glem å inkludere emoji for å gjøre det morsomt!\n\n"
             + "Gi realistiske verdier for utfordringene, med tanke på varighet (Time interval), "
             + "Target amount og vanskelighetsgrad.\n "
@@ -261,7 +284,15 @@ public class UserChallengeService<T extends Challenge> {
             + "velger purchase challenge. Ta for deg ETT produkt om gangen når du lager en  "
             + "utfordring!, prøv å "
             + "lag forskjellige utfordringer & bruk forskjellig utfordringstype, og husk hver gang "
-            + "realistiske verdier mtp. varighet, vanskelighetsgrad og målbeløp.");
+            + "realistiske verdier mtp. varighet, vanskelighetsgrad og målbeløp. Varier mellom Saving Challenge og Purchase Challenge for hver gang du lager en ny utfordring :)"
+            + "Target amount kan ikke være 0! Må være høyere enn 0, gi et rimelig tall med tanke "
+            + "på utfordringen. Ikke bruk samme produkt hver gang! Ikke bruk samme utfordringstype"
+            + "hver gang! Så ikke lag to saving challenges etter hverandre, eller to purchase "
+            + "challenges etter hverandre, eller to kaffe-utfordringer etter hverandre. Varier! "
+            + ":) Det må være en korrelasjon mellom utfordringen og brukerens informasjon. "
+            + "Det må også være sammenheng mellom beskrivelse, tittel, målbeløp og TimeInterval!"
+            + "Så ikke si 'Reduser daglig kaffe', hvis utfordringen er WEEKLY for eksempel. "
+            + "IKKE BRUK SAMME PRODUKT HVER GANG! IKKE BRUK SAMME UTFORDRINGSTYPE HVER GANG!");
     messages[2] = assistantMessage;
 
     // Send messages to the ChatGPT API and get completion
@@ -313,5 +344,82 @@ public class UserChallengeService<T extends Challenge> {
     }
 
     return completedChallenges >= numberOfChallenges;
+  }
+
+  /**
+   * Update completed based on whether the target has been reached or not.
+   *
+   * @param challengeId the id of the challenge.
+   * @param userId the id of the user.
+   * @throws NotFoundException if the challenge is not found.
+   */
+  public boolean updateCompleted(Long userId, Long challengeId) {
+    double amountToAdd = 0;
+    // Retrieve the user entity
+    User user =
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+
+    // Get active sorted challenges for the user
+    List<ChallengeDto> activeChallenges = getSortedChallengesByUser(userId);
+
+    // Find the challenge instance by its ID in the active challenges list
+    Optional<ChallengeDto> optionalChallenge =
+        activeChallenges.stream()
+            .filter(challenge -> challenge.getId().equals(challengeId))
+            .findFirst();
+
+    // Check if the challenge with the given ID exists
+    if (optionalChallenge.isPresent()) {
+      ChallengeDto challengeDto = optionalChallenge.get();
+      System.out.println(challengeDto);
+
+      if (challengeDto instanceof PurchaseChallengeDto) {
+        PurchaseChallengeDto purchaseChallengeDto = (PurchaseChallengeDto) challengeDto;
+        System.out.println(purchaseChallengeDto);
+        System.out.println(purchaseChallengeDto.getProductPrice());
+        System.out.println(
+            purchaseChallengeDto.getTargetAmount() - purchaseChallengeDto.getUsedAmount());
+        amountToAdd =
+            (purchaseChallengeDto.getTargetAmount() - purchaseChallengeDto.getUsedAmount())
+                * purchaseChallengeDto.getProductPrice();
+        System.out.println("Amount to add: " + amountToAdd);
+        System.out.println("purchase challenge");
+        System.out.println(purchaseChallengeDto.getProductPrice());
+      } else {
+        amountToAdd = challengeDto.getTargetAmount() - challengeDto.getUsedAmount();
+      }
+
+      // Check if the challenge has expired
+      if (challengeDto.getExpiryDate().isAfter(LocalDate.now())) {
+        return false;
+        // Check if the target amount has been reached
+      } else if (challengeDto.getTargetAmount() >= challengeDto.getUsedAmount()) {
+        challengeDto.setCompleted(true);
+
+        // If target amount has been reached, add remaining to savings goal.
+        try {
+          SavingsGoalDto currentSavingsGoalDto = savingsGoalService.getCurrentSavingsGoal(userId);
+          Long savingGoalId = currentSavingsGoalDto.getId();
+
+          System.out.println("Amount to add: " + amountToAdd);
+          System.out.println("Saving goal ID: " + savingGoalId);
+          savingsGoalService.updateSavedAmount(userId, savingGoalId, amountToAdd);
+        } catch (NotFoundException e) {
+          e.printStackTrace();
+        }
+
+        removeChallengeFromUser(userId, challengeId);
+        challengeRepository.deleteById(challengeId);
+        userRepository.save(user);
+        return true;
+      } else {
+        challengeDto.setCompleted(false);
+        removeChallengeFromUser(userId, challengeId);
+        challengeRepository.deleteById(challengeId);
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 }
