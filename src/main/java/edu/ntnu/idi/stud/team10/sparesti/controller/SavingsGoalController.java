@@ -189,4 +189,17 @@ public class SavingsGoalController {
     boolean hasActiveSavingsGoal = savingsGoalService.hasActiveSavingsGoal(userId);
     return ResponseEntity.ok(hasActiveSavingsGoal);
   }
+
+  /**
+   * Completes the users current saving goal.
+   *
+   * @param token The JWT access token.
+   */
+  @PatchMapping("/complete")
+  @Operation(summary = "Completes the users current savings goal")
+  public ResponseEntity<Void> markSavingsGoalAsCompleted(@AuthenticationPrincipal Jwt token) {
+    Long userId = TokenParser.extractUserId(token);
+    savingsGoalService.completeCurrentSavingsGoal(userId);
+    return ResponseEntity.ok().build();
+  }
 }

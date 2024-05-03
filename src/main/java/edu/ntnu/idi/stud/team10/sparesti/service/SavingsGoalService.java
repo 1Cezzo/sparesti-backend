@@ -170,8 +170,7 @@ public class SavingsGoalService {
       updatedSavingsGoal.setSavedAmount(updatedSavingsGoal.getSavedAmount() + savedAmount);
       LocalDateTime currentDate = LocalDateTime.now();
       updatedSavingsGoal.setCompleted(
-          updatedSavingsGoal.getSavedAmount() >= updatedSavingsGoal.getTargetAmount()
-              || currentDate.isAfter(updatedSavingsGoal.getDeadline().atStartOfDay()));
+          currentDate.isAfter(updatedSavingsGoal.getDeadline().atStartOfDay()));
       savingsGoalRepository.save(updatedSavingsGoal);
     } else {
       throw new IllegalArgumentException(
@@ -226,6 +225,9 @@ public class SavingsGoalService {
    * @throws NotFoundException If the user does not exist.
    */
   public List<SavingsGoalDto> getAllSavingsGoalsForUser(Long userId) {
+    userRepository
+        .findById(userId)
+        .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
     List<UserSavingsGoal> userSavingsGoals = userSavingsGoalRepository.findByUserId(userId);
     return userSavingsGoals.stream()
         .map(UserSavingsGoal::getSavingsGoal)
@@ -383,5 +385,26 @@ public class SavingsGoalService {
   public boolean hasCreatedSavingsGoal(Long userId) {
     List<SavingsGoal> savingsGoals = savingsGoalRepository.findSavingsGoalByAuthorId(userId);
     return !savingsGoals.isEmpty();
+  }
+
+  /**
+   * Completes the users current savings goal if the target amount has been reached.
+   *
+   * @param userId The ID of the user.
+   * @throws NotFoundException if the savings goal or user is not found.
+   * @throws IllegalArgumentException if the target amount has not been reached.
+   */
+  public void completeCurrentSavingsGoal(Long userId) {
+    SavingsGoalDto current = getCurrentSavingsGoal(userId);
+    SavingsGoal currentGoal =
+        savingsGoalRepository
+            .findById(current.getId())
+            .orElseThrow(() -> new NotFoundException("Savings goal not found"));
+    if (currentGoal.getSavedAmount() >= currentGoal.getTargetAmount()) {
+      currentGoal.setCompleted(true);
+      savingsGoalRepository.save(currentGoal);
+    } else {
+      throw new IllegalArgumentException("Target amount has not been reached.");
+    }
   }
 }
