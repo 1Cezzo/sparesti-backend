@@ -16,11 +16,12 @@ class UserSavingsGoalTest {
   private UserSavingsGoal userSavingsGoal;
   private User user;
   private SavingsGoal savingsGoal;
+  private final LocalDateTime time = LocalDateTime.now();
 
   @BeforeEach
   public void setUp() {
     userSavingsGoal = new UserSavingsGoal();
-    userSavingsGoal.setLastContributed(LocalDateTime.now());
+    userSavingsGoal.setLastContributed(time);
     userSavingsGoal.setContributionAmount(500.0);
     user = new User();
     user.setId(1L);
@@ -91,7 +92,7 @@ class UserSavingsGoalTest {
     @BeforeEach
     void setUp() {
       anotherUserSavingsGoal = new UserSavingsGoal();
-      anotherUserSavingsGoal.setLastContributed(LocalDateTime.now());
+      anotherUserSavingsGoal.setLastContributed(time);
       anotherUserSavingsGoal.setContributionAmount(500.0);
       User anotherUser = new User();
       anotherUser.setId(1L);
