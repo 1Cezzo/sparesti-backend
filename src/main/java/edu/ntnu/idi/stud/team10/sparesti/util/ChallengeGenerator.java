@@ -46,7 +46,8 @@ public class ChallengeGenerator {
         DifficultyLevel.values()[random.nextInt(DifficultyLevel.values().length)]);
     savingChallenge.setTimeInterval(
         TimeInterval.values()[random.nextInt(TimeInterval.values().length)]);
-    savingChallenge.setTargetAmount(Math.floor(random.nextDouble() * 1000)); // Random amount between 0 and 1000
+    savingChallenge.setTargetAmount(
+        Math.floor(random.nextDouble() * 1000)); // Random amount between 0 and 1000
     savingChallenge.setMediaUrl("🏦");
 
     return savingChallenge;
