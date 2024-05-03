@@ -20,7 +20,7 @@ public class TransactionBudgetRow {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @OneToOne private BudgetRow budgetRow;
+  @ManyToOne private BudgetRow budgetRow;
   @OneToMany private Set<Transaction> transactions = new HashSet<>();
 
   public void setId(Long id) {
