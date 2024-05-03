@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class UserBadgeDtoTest {
   private UserBadgeDto userBadgeDto;
+  private final LocalDateTime time = LocalDateTime.now();
 
   @BeforeEach
   public void setUp() {
@@ -22,7 +23,7 @@ class UserBadgeDtoTest {
     userBadgeDto.setId(1L);
     userBadgeDto.setUserId(2L);
     userBadgeDto.setBadgeId(3L);
-    userBadgeDto.setDateEarned(LocalDateTime.now());
+    userBadgeDto.setDateEarned(time);
   }
 
   @Nested
@@ -63,7 +64,7 @@ class UserBadgeDtoTest {
       anotherUserBadgeDto.setId(1L);
       anotherUserBadgeDto.setUserId(2L);
       anotherUserBadgeDto.setBadgeId(3L);
-      anotherUserBadgeDto.setDateEarned(LocalDateTime.now());
+      anotherUserBadgeDto.setDateEarned(time);
     }
 
     @Test
