@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import edu.ntnu.idi.stud.team10.sparesti.model.TransactionBudgetRow;
-import edu.ntnu.idi.stud.team10.sparesti.repository.TransactionBudgetRowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +15,11 @@ import edu.ntnu.idi.stud.team10.sparesti.mapper.BudgetRowMapper;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.Budget;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
+import edu.ntnu.idi.stud.team10.sparesti.model.TransactionBudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.TransactionBudgetRowRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
@@ -38,7 +38,6 @@ public class UserBudgetService {
 
   private final BudgetRowMapper budgetRowMapper;
   private TransactionBudgetRowRepository transactionBudgetRowRepository;
-
 
   @Autowired
   public UserBudgetService(
@@ -140,12 +139,13 @@ public class UserBudgetService {
 
     for (BudgetRow budgetRow : budgetRows) {
       // Retrieve and delete all TransactionBudgetRow entities that reference this BudgetRow
-      List<TransactionBudgetRow> transactionBudgetRows = transactionBudgetRowRepository.findByBudgetRow(budgetRow);
+      List<TransactionBudgetRow> transactionBudgetRows =
+          transactionBudgetRowRepository.findByBudgetRow(budgetRow);
       transactionBudgetRowRepository.deleteAll(transactionBudgetRows);
       budgetRowRepository.delete(budgetRow);
     }
 
-      budgetRepository.delete(budget);
+    budgetRepository.delete(budget);
   }
 
   /**

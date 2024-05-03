@@ -5,9 +5,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
-import edu.ntnu.idi.stud.team10.sparesti.service.BudgetRowService;
-import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,9 +16,12 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionBudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionDto;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.BudgetRowMapper;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.TransactionMapper;
+import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.bank.TransactionRepository;
+import edu.ntnu.idi.stud.team10.sparesti.service.BudgetRowService;
 import edu.ntnu.idi.stud.team10.sparesti.service.TransactionBudgetRowService;
+import edu.ntnu.idi.stud.team10.sparesti.util.TokenParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -39,11 +39,12 @@ public class TransactionBudgetRowController {
 
   @Autowired
   public TransactionBudgetRowController(
-          TransactionBudgetRowService transactionBudgetRowService,
-          BudgetRowMapper budgetRowMapper,
-          TransactionMapper transactionMapper,
-          BudgetRowRepository budgetRowRepository,
-          TransactionRepository transactionRepository, BudgetRowService budgetRowService) {
+      TransactionBudgetRowService transactionBudgetRowService,
+      BudgetRowMapper budgetRowMapper,
+      TransactionMapper transactionMapper,
+      BudgetRowRepository budgetRowRepository,
+      TransactionRepository transactionRepository,
+      BudgetRowService budgetRowService) {
     this.transactionBudgetRowService = transactionBudgetRowService;
     this.budgetRowMapper = budgetRowMapper;
     this.transactionMapper = transactionMapper;
@@ -55,11 +56,11 @@ public class TransactionBudgetRowController {
   @PostMapping("/add/{budgetRowId}/{transactionId}")
   @Operation(summary = "Add a transaction to a budget row")
   public ResponseEntity<TransactionBudgetRowDto> addTransactionToBudgetRow(
-          @PathVariable Long budgetRowId, @PathVariable Long transactionId) {
+      @PathVariable Long budgetRowId, @PathVariable Long transactionId) {
     Optional<BudgetRowDto> budgetRowOptional =
-            budgetRowRepository.findById(budgetRowId).map(budgetRowMapper::toDto);
+        budgetRowRepository.findById(budgetRowId).map(budgetRowMapper::toDto);
     Optional<TransactionDto> transactionOptional =
-            transactionRepository.findById(transactionId).map(transactionMapper::toDto);
+        transactionRepository.findById(transactionId).map(transactionMapper::toDto);
     if (budgetRowOptional.isPresent() && transactionOptional.isPresent()) {
       TransactionBudgetRowDto transactionBudgetRowDto = new TransactionBudgetRowDto();
       transactionBudgetRowDto.setBudgetRow(budgetRowOptional.get());
@@ -68,10 +69,9 @@ public class TransactionBudgetRowController {
       // Retrieve the BudgetRow entity from the BudgetRowDto
       BudgetRow budgetRow = budgetRowMapper.toEntity(budgetRowOptional.get());
 
-
-
       // Add the absolute value of the transaction amount to the usedAmount of the BudgetRow
-      budgetRow.setUsedAmount(budgetRow.getUsedAmount() + Math.abs(transactionOptional.get().getAmount()));
+      budgetRow.setUsedAmount(
+          budgetRow.getUsedAmount() + Math.abs(transactionOptional.get().getAmount()));
 
       BudgetRowService.updateBudgetRow(budgetRow.getId(), budgetRowMapper.toDto(budgetRow));
 
@@ -84,7 +84,8 @@ public class TransactionBudgetRowController {
 
   @GetMapping("/transactions-not-in-budget-row")
   @Operation(summary = "Get transactions not in a budget row")
-  public ResponseEntity<Set<TransactionDto>> getTransactionsNotInBudgetRow(@AuthenticationPrincipal Jwt token) {
+  public ResponseEntity<Set<TransactionDto>> getTransactionsNotInBudgetRow(
+      @AuthenticationPrincipal Jwt token) {
     Long userId = TokenParser.extractUserId(token);
     Set<TransactionDto> transactionDtos =
         transactionBudgetRowService.getTransactionsNotInBudgetRow(userId).stream()
