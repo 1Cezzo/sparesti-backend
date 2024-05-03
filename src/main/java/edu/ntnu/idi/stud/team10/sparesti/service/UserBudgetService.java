@@ -3,7 +3,10 @@ package edu.ntnu.idi.stud.team10.sparesti.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import edu.ntnu.idi.stud.team10.sparesti.model.TransactionBudgetRow;
+import edu.ntnu.idi.stud.team10.sparesti.repository.TransactionBudgetRowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +37,8 @@ public class UserBudgetService {
   private final BudgetMapper budgetMapper;
 
   private final BudgetRowMapper budgetRowMapper;
+  private TransactionBudgetRowRepository transactionBudgetRowRepository;
+
 
   @Autowired
   public UserBudgetService(
@@ -42,13 +47,15 @@ public class UserBudgetService {
       BudgetRowRepository budgetRowRepository,
       UserMapper userMapper,
       BudgetMapper budgetMapper,
-      BudgetRowMapper budgetRowMapper) {
+      BudgetRowMapper budgetRowMapper,
+      TransactionBudgetRowRepository transactionBudgetRowRepository) {
     this.userRepository = userRepository;
     this.budgetRepository = budgetRepository;
     this.budgetRowRepository = budgetRowRepository;
     this.userMapper = userMapper;
     this.budgetMapper = budgetMapper;
     this.budgetRowMapper = budgetRowMapper;
+    this.transactionBudgetRowRepository = transactionBudgetRowRepository;
   }
 
   /**
@@ -129,7 +136,16 @@ public class UserBudgetService {
             .findById(budgetId)
             .orElseThrow(() -> new NotFoundException("Budget with ID " + budgetId + " not found"));
 
-    budgetRepository.delete(budget);
+    Set<BudgetRow> budgetRows = budget.getRow();
+
+    for (BudgetRow budgetRow : budgetRows) {
+      // Retrieve and delete all TransactionBudgetRow entities that reference this BudgetRow
+      List<TransactionBudgetRow> transactionBudgetRows = transactionBudgetRowRepository.findByBudgetRow(budgetRow);
+      transactionBudgetRowRepository.deleteAll(transactionBudgetRows);
+      budgetRowRepository.delete(budgetRow);
+    }
+
+      budgetRepository.delete(budget);
   }
 
   /**

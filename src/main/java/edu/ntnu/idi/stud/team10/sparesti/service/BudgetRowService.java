@@ -14,7 +14,7 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.BudgetRowRepository;
 /** Service for Budget Row entities. */
 @Service
 public class BudgetRowService {
-  private final BudgetRowRepository budgetRowRepository;
+  private static BudgetRowRepository budgetRowRepository;
   private final BudgetRowMapper budgetRowMapper;
 
   @Autowired
@@ -57,7 +57,7 @@ public class BudgetRowService {
    * @param budgetRowDto the DTO representing the budget row to update
    * @return the updated budget row
    */
-  public BudgetRow updateBudgetRow(Long id, BudgetRowDto budgetRowDto) {
+  public static BudgetRow updateBudgetRow(Long id, BudgetRowDto budgetRowDto) {
     Optional<BudgetRow> optionalBudgetRow = budgetRowRepository.findById(id);
     if (optionalBudgetRow.isPresent()) {
       BudgetRow budgetRow = optionalBudgetRow.get();
