@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /** The PasswordResetTokenTest class is a test class that tests the PasswordResetToken class. */
 class PasswordResetTokenTest {
   private final LocalDateTime expirationDateTime = LocalDateTime.now();
+
   /**
    * This method tests the constructor and the getters of the PasswordResetToken class. It verifies
    * that the constructor sets the correct values and that the getters return the correct values.
