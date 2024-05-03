@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** The PasswordResetTokenTest class is a test class that tests the PasswordResetToken class. */
 class PasswordResetTokenTest {
+  private final LocalDateTime expirationDateTime = LocalDateTime.now();
   /**
    * This method tests the constructor and the getters of the PasswordResetToken class. It verifies
    * that the constructor sets the correct values and that the getters return the correct values.
@@ -19,7 +21,6 @@ class PasswordResetTokenTest {
     Long id = 1L;
     String token = "abc123";
     String email = "test@example.com";
-    LocalDateTime expirationDateTime = LocalDateTime.now();
 
     // Act
     PasswordResetToken passwordResetToken =
@@ -45,7 +46,6 @@ class PasswordResetTokenTest {
     Long id = 1L;
     String token = "abc123";
     String email = "test@example.com";
-    LocalDateTime expirationDateTime = LocalDateTime.now();
 
     // Act
     passwordResetToken.setId(id);
@@ -71,7 +71,7 @@ class PasswordResetTokenTest {
     passwordResetToken.setId(1L);
     passwordResetToken.setToken("abc");
     passwordResetToken.setEmail("john-doe@gmail.com");
-    passwordResetToken.setExpirationDateTime(LocalDateTime.now());
+    passwordResetToken.setExpirationDateTime(expirationDateTime);
 
     String expected =
         "PasswordResetToken(id=1, token=abc, email=john-doe@gmail.com, expirationDateTime="
@@ -104,11 +104,11 @@ class PasswordResetTokenTest {
 
     // Act
     boolean actual = passwordResetToken1.equals(passwordResetToken2);
-    boolean isNull = passwordResetToken1.equals(null);
+    boolean isNull = false;
 
     // Assert
-    assertEquals(true, actual);
-    assertEquals(passwordResetToken1.canEqual(passwordResetToken2), true);
+    assertTrue(actual);
+    assertTrue(passwordResetToken1.canEqual(passwordResetToken2));
     assertEquals(passwordResetToken1.canEqual(null), isNull);
   }
 
@@ -135,6 +135,6 @@ class PasswordResetTokenTest {
 
     // Assert
     assertEquals(hashCode1, hashCode2);
-    assertEquals(passwordResetToken1.canEqual(passwordResetToken2), true);
+    assertTrue(passwordResetToken1.canEqual(passwordResetToken2));
   }
 }
