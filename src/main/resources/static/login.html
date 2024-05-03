@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpareSti</title>
+    <link rel="stylesheet" href="./stylesheet.css">
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="authentication-wrapper">
+        <div class="piggy-bank-image">
+            <img id="piggy-bank-image" src="" alt="piggy-bank on a walk" />
+        </div>
+        <div class="authentication-container">
+            <div class="static-content">
+                <p>Velkommen til Sparesti <br>Applikasjonen som gjør lommeboken din lykkeligere.<br>Gratis å bruke, penger tilbake garanti.</p>
+            </div>
+            <div class="dynamic-content">
+                <div class="login-container" id="login-container">
+                    <h1>Logg inn</h1>
+                    <p>Logg på kontoen din</p>
+                    <form method="post" action="/login">
+                        <div>
+                            <div class="input-wrapper">
+                                <input type="email" id="username" name="username" placeholder="Skriv inn Email"/>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-wrapper">
+                                <input type="password" id="password" name="password" placeholder="Passord"/>
+                                <div class="error-message" id="login-error-message" style="display: none" >
+                                    <p>Feil epost eller passord</p>
+                                </div>
+                            </div>
+                            <div class="forgot-password-button">
+                                <button type="button" id="forgot-password" class="forgot-password-btn">Glemt passord?</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="form-button">Logg inn</button>
+                    </form>
+                    <div class="sign-up-link">
+                        <p>Har ikke bruker? <button id="signup-link">Registrer deg</button></p>
+                    </div>
+                </div>
+                <div class="signup-container hidden" id="signup-container">
+                    <h1>Registrer deg</h1>
+                    <p>Lag din bruker</p>
+                    <form id="signup-form">
+                        <div>
+                            <div class="input-wrapper">
+                                <input type="email" id="email" name="email" placeholder="Skriv inn din Email"/>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-wrapper">
+                                <input type="password" id="signup-password" name="password" placeholder="Passord"/>
+                            </div>
+                            <div class="error-message"></div>
+                        </div>
+                        <button id="signup-submit" type="submit" class="form-button">Registrer deg</button>
+                    </form>
+                    <div class="login-link">
+                        <p>Har allerede en bruker? <button id="login-link">Logg inn</button></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="forgot-password-modal" class="modal hidden">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <h2>Nullstille passord</h2>
+                <p>Vennligst skriv inn emailen din for å motta en lenke for tilbakestilling av passord.</p>
+                <input type="email" class="input-email" placeholder="Skriv inn din email" id="reset-email">
+                <div class="button-group">
+                    <button class="cancel-btn" onclick="closeForgotPasswordModal()">Avbryt</button>
+                    <button class="confirm-reset-btn" onclick="sendResetLink()">Send nullstill link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
