@@ -8,6 +8,16 @@ services:
         - password=test
     environment:
       - KEYSTORE_PASSWORD=test
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_EMAIL=${SMTP_EMAIL}
+      - SMTP_HOST=${SMTP_HOST}
+      - ENDPOINT_URL=${ENDPOINT_URL}
+      - ACCESS_KEY=${ACCESS_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - BUCKET_NAME=${BUCKET_NAME}
+      - CHAT_API_KEY=${CHAT_API_KEY}
+      - CHAT_API_URL=${CHAT_API_URL}
+
     ports:
       - "8443:8443"
     depends_on:

@@ -1,5 +1,8 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +17,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
-import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
+import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
+import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
+import edu.ntnu.idi.stud.team10.sparesti.service.BadgeAwarder;
+import edu.ntnu.idi.stud.team10.sparesti.service.BadgeService;
+import edu.ntnu.idi.stud.team10.sparesti.service.UserBadgeService;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -24,11 +30,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(BadgeController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class UserControllerTest {
+public class BadgeControllerTest {
   @Autowired MockMvc mockMvc;
-  @MockBean UserService userService;
+  @MockBean BadgeService badgeService;
+  @MockBean UserBadgeService userBadgeService;
+  @MockBean BadgeAwarder badgeAwarder;
   private Jwt token;
 
   @BeforeEach
@@ -39,73 +47,102 @@ public class UserControllerTest {
   }
 
   @Test
-  void getUserByUsername() throws Exception {
-    UserDto userDto = new UserDto();
-    when(userService.getUserById(1L)).thenReturn(userDto);
+  void getAllBadges() throws Exception {
+    when(badgeService.getAllBadges()).thenReturn(new ArrayList<>());
     mockMvc
         .perform(
-            get("/api/users")
+            get("/api/badges")
                 .header("Authorization", "Bearer" + token.getTokenValue())
                 .secure(true))
         .andExpect(status().isOk());
   }
 
   @Test
-  void createUser() throws Exception {
-    UserDto userDto = new UserDto();
-    when(userService.addUser(userDto)).thenReturn(userDto);
+  void createBadge() throws Exception {
+    BadgeDto dto = new BadgeDto();
+    when(badgeService.createBadge(dto)).thenReturn(new BadgeDto());
     mockMvc
         .perform(
-            post("/api/users/create")
+            post("/api/badges/create")
                 .header("Authorization", "Bearer" + token.getTokenValue())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(userDto))
+                .content(asJsonString(dto))
                 .secure(true))
         .andExpect(status().isCreated());
   }
 
   @Test
-  void deleteUser() throws Exception {
-    doNothing().when(userService).deleteUser(1L);
+  void getBadgeRarity() throws Exception {
+    when(badgeService.findBadgeRarity(1L)).thenReturn(0.5);
     mockMvc
         .perform(
-            delete("/api/users/delete")
+            get("/api/badges/rarity/1")
+                .header("Authorization", "Bearer" + token.getTokenValue())
+                .secure(true))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void getBadgeInfo() throws Exception {
+    when(badgeService.getBadgeById(1L)).thenReturn(new BadgeDto());
+    mockMvc
+        .perform(
+            get("/api/badges/1")
+                .header("Authorization", "Bearer" + token.getTokenValue())
+                .secure(true))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void getAllBadgesByUserId() throws Exception {
+    when(userBadgeService.getAllBadgesByUserId(1L)).thenReturn(new HashSet<>());
+    mockMvc
+        .perform(
+            get("/api/badges/user")
+                .header("Authorization", "Bearer" + token.getTokenValue())
+                .secure(true))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void giveUserBadge() throws Exception {
+    doNothing().when(userBadgeService).giveUserBadge(1L, 1L);
+    mockMvc
+        .perform(
+            post("/api/badges/1/give/1")
+                .header("Authorization", "Bearer" + token.getTokenValue())
+                .secure(true))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void removeUserBadge() throws Exception {
+    doNothing().when(userBadgeService).removeUserBadge(1L, 1L);
+    mockMvc
+        .perform(
+            delete("/api/badges/1/remove/1")
                 .header("Authorization", "Bearer" + token.getTokenValue())
                 .secure(true))
         .andExpect(status().isNoContent());
   }
 
   @Test
-  void updateUser() throws Exception {
-    UserDto userDto = new UserDto();
-    when(userService.updateUser(userDto)).thenReturn(userDto);
+  void getUsersByBadge() throws Exception {
+    when(userBadgeService.getUsersByBadge(1L)).thenReturn(new ArrayList<>());
     mockMvc
         .perform(
-            post("/api/users/update")
-                .header("Authorization", "Bearer" + token.getTokenValue())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(userDto))
-                .secure(true))
-        .andExpect(status().isOk());
-  }
-
-  @Test
-  void updateLoginStreak() throws Exception {
-    doNothing().when(userService).updateLoginStreak(1L);
-    mockMvc
-        .perform(
-            post("/api/users/update-login-streak")
+            get("/api/badges/badge/1/users")
                 .header("Authorization", "Bearer" + token.getTokenValue())
                 .secure(true))
         .andExpect(status().isOk());
   }
 
   @Test
-  void getLoginStreak() throws Exception {
-    when(userService.getLoginStreak(1L)).thenReturn(1);
+  void awardUserBadge() throws Exception {
+    when(badgeAwarder.checkAndAwardBadges(1L)).thenReturn(new Badge());
     mockMvc
         .perform(
-            get("/api/users/login-streak")
+            post("/api/badges/check-and-award")
                 .header("Authorization", "Bearer" + token.getTokenValue())
                 .secure(true))
         .andExpect(status().isOk());

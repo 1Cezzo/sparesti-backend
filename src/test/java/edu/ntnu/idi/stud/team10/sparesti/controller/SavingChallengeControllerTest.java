@@ -1,5 +1,9 @@
 package edu.ntnu.idi.stud.team10.sparesti.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +18,26 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
-import edu.ntnu.idi.stud.team10.sparesti.service.UserService;
+import edu.ntnu.idi.stud.team10.sparesti.dto.SavingChallengeDto;
+import edu.ntnu.idi.stud.team10.sparesti.mapper.ChallengeMapper;
+import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
+import edu.ntnu.idi.stud.team10.sparesti.service.SavingChallengeService;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(SavingChallengeController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class UserControllerTest {
+public class SavingChallengeControllerTest {
   @Autowired MockMvc mockMvc;
-  @MockBean UserService userService;
+  @MockBean SavingChallengeService savingChallengeService;
+  @MockBean ChallengeMapper challengeMapper;
   private Jwt token;
 
   @BeforeEach
@@ -39,74 +48,77 @@ public class UserControllerTest {
   }
 
   @Test
-  void getUserByUsername() throws Exception {
-    UserDto userDto = new UserDto();
-    when(userService.getUserById(1L)).thenReturn(userDto);
+  void createSavingChallenge() throws Exception {
+    SavingChallengeDto dto = new SavingChallengeDto();
+    when(savingChallengeService.createChallenge(any(SavingChallenge.class)))
+        .thenReturn(new SavingChallenge());
     mockMvc
         .perform(
-            get("/api/users")
-                .header("Authorization", "Bearer" + token.getTokenValue())
-                .secure(true))
-        .andExpect(status().isOk());
-  }
-
-  @Test
-  void createUser() throws Exception {
-    UserDto userDto = new UserDto();
-    when(userService.addUser(userDto)).thenReturn(userDto);
-    mockMvc
-        .perform(
-            post("/api/users/create")
+            post("/api/saving-challenges/saving")
                 .header("Authorization", "Bearer" + token.getTokenValue())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(userDto))
+                .content(asJsonString(dto))
                 .secure(true))
         .andExpect(status().isCreated());
   }
 
   @Test
-  void deleteUser() throws Exception {
-    doNothing().when(userService).deleteUser(1L);
+  void updateSavingChallenge() throws Exception {
+    SavingChallengeDto dto = new SavingChallengeDto();
+    when(savingChallengeService.updateSavingChallenge(1L, dto)).thenReturn(new SavingChallenge());
     mockMvc
         .perform(
-            delete("/api/users/delete")
+            put("/api/saving-challenges/saving/1")
+                .header("Authorization", "Bearer" + token.getTokenValue())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(dto))
+                .secure(true))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void deleteSavingChallenge() throws Exception {
+    doNothing().when(savingChallengeService).deleteSavingChallenge(1L);
+    mockMvc
+        .perform(
+            delete("/api/saving-challenges/saving/1")
                 .header("Authorization", "Bearer" + token.getTokenValue())
                 .secure(true))
         .andExpect(status().isNoContent());
   }
 
   @Test
-  void updateUser() throws Exception {
-    UserDto userDto = new UserDto();
-    when(userService.updateUser(userDto)).thenReturn(userDto);
+  void getAllSavingChallenges() throws Exception {
+    List<SavingChallenge> challenges = new ArrayList<>();
+    when(savingChallengeService.getAllSavingChallenges()).thenReturn(challenges);
     mockMvc
         .perform(
-            post("/api/users/update")
-                .header("Authorization", "Bearer" + token.getTokenValue())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(userDto))
-                .secure(true))
-        .andExpect(status().isOk());
-  }
-
-  @Test
-  void updateLoginStreak() throws Exception {
-    doNothing().when(userService).updateLoginStreak(1L);
-    mockMvc
-        .perform(
-            post("/api/users/update-login-streak")
+            get("/api/saving-challenges/saving")
                 .header("Authorization", "Bearer" + token.getTokenValue())
                 .secure(true))
         .andExpect(status().isOk());
   }
 
   @Test
-  void getLoginStreak() throws Exception {
-    when(userService.getLoginStreak(1L)).thenReturn(1);
+  void getSavingChallengeById() throws Exception {
+    Optional<SavingChallenge> challenge = Optional.of(new SavingChallenge());
+    when(savingChallengeService.getSavingChallengeById(1L)).thenReturn(challenge);
     mockMvc
         .perform(
-            get("/api/users/login-streak")
+            get("/api/saving-challenges/saving/1")
                 .header("Authorization", "Bearer" + token.getTokenValue())
+                .secure(true))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void addAmountToSavingChallenge() throws Exception {
+    doNothing().when(savingChallengeService).addToSavedAmount(1L, 100.0);
+    mockMvc
+        .perform(
+            put("/api/saving-challenges/saving/1/add")
+                .header("Authorization", "Bearer" + token.getTokenValue())
+                .param("amount", "100.0")
                 .secure(true))
         .andExpect(status().isOk());
   }
