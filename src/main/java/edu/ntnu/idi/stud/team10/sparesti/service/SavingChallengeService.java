@@ -22,7 +22,6 @@ public class SavingChallengeService extends ChallengeService<SavingChallenge> {
    * @param savingChallengeRepository Repository for accessing saving challenge data.
    * @param challengeMapper Mapper for converting between SavingChallenge and SavingChallengeDto.
    */
-
   public SavingChallengeService(
       SavingChallengeRepository savingChallengeRepository, ChallengeMapper challengeMapper) {
     super(savingChallengeRepository);

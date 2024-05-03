@@ -29,7 +29,8 @@ public class UserService implements UserDetailsService {
   private final UserMapper userMapper;
 
   /**
-   * Constructs a UserService with the necessary repository, password encoder, mock data service, bank
+   * Constructs a UserService with the necessary repository, password encoder, mock data service,
+   * bank
    *
    * @param userRepository Repository for accessing user data.
    * @param passwordEncoder Encoder for hashing passwords.

@@ -70,7 +70,6 @@ public class TransactionBudgetRowController {
    * @param transactionId The id of the transaction
    * @return
    */
-
   @PostMapping("/add/{budgetRowId}/{transactionId}")
   @Operation(summary = "Add a transaction to a budget row")
   public ResponseEntity<TransactionBudgetRowDto> addTransactionToBudgetRow(
@@ -106,7 +105,6 @@ public class TransactionBudgetRowController {
    * @param token The JWT access token
    * @return A set of transaction DTOs
    */
-
   @GetMapping("/transactions-not-in-budget-row")
   @Operation(summary = "Get transactions not in a budget row")
   public ResponseEntity<Set<TransactionDto>> getTransactionsNotInBudgetRow(

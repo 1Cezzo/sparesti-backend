@@ -23,7 +23,6 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
    * @param email The email of the PasswordResetToken.
    * @return The PasswordResetToken with the given email, if it exists.
    */
-
   Optional<PasswordResetToken> findByEmail(String email);
 
   /**

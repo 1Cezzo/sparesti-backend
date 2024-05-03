@@ -26,9 +26,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   /**
    * Counts the number of distinct users who have earned a specific badge.
-   * <p>
-   * This method is used to determine the rarity of a badge. The rarity is determined by the number of unique users who have earned the badge.
-   * The method could potentially be moved to the BadgeRepository.
+   *
+   * <p>This method is used to determine the rarity of a badge. The rarity is determined by the
+   * number of unique users who have earned the badge. The method could potentially be moved to the
+   * BadgeRepository.
    *
    * @param badgeId The ID of the badge.
    * @return The number of distinct users who have earned the badge.

@@ -147,6 +147,7 @@ public class BudgetController {
 
   /**
    * Get the newest budget for a user.
+   *
    * @param token The JWT token.
    * @return The newest budget DTO.
    */

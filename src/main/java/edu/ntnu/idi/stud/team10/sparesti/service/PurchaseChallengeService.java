@@ -19,7 +19,8 @@ public class PurchaseChallengeService extends ChallengeService<PurchaseChallenge
    * Constructs a PurchaseChallengeService with the necessary repository and mapper.
    *
    * @param purchaseChallengeRepository Repository for accessing purchase challenge data.
-   * @param challengeMapper Mapper for converting between PurchaseChallenge and PurchaseChallengeDto.
+   * @param challengeMapper Mapper for converting between PurchaseChallenge and
+   *     PurchaseChallengeDto.
    */
   public PurchaseChallengeService(
       PurchaseChallengeRepository purchaseChallengeRepository, ChallengeMapper challengeMapper) {

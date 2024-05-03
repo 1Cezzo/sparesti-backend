@@ -106,7 +106,6 @@ public class User {
    *
    * @param badge (Badge) The badge to remove.
    */
-
   public void removeBadge(Badge badge) {
     this.earnedBadges.remove(badge);
   }
@@ -117,7 +116,6 @@ public class User {
    * @param o (Object) The object to compare to.
    * @return (boolean) True if the objects are equal, false otherwise.
    */
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -137,7 +135,6 @@ public class User {
    *
    * @return (int) The hash code of the user.
    */
-
   @Override
   public int hashCode() {
     return Objects.hash(id, password, email);

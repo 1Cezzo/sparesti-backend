@@ -43,9 +43,11 @@ public class ChatGPTService {
   /**
    * Sends a series of messages to the ChatGPT API and retrieves the completion.
    *
-   * @param messages An array of maps, where each map represents a message with its role and content.
+   * @param messages An array of maps, where each map represents a message with its role and
+   *     content.
    * @return The response body from the ChatGPT API as a string.
-   * @throws RuntimeException if there is an error converting the request body to JSON or if there is an error communicating with the ChatGPT API.
+   * @throws RuntimeException if there is an error converting the request body to JSON or if there
+   *     is an error communicating with the ChatGPT API.
    */
   public String sendMessagesAndGetCompletion(Map<String, String>[] messages) {
     HttpHeaders headers = new HttpHeaders();

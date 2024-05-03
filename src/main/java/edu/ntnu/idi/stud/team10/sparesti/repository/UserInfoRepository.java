@@ -30,6 +30,5 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
    * @param displayName The display name of the UserInfo.
    * @return True if the UserInfo exists, false otherwise.
    */
-
   boolean existsByDisplayName(String displayName);
 }

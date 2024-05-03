@@ -6,9 +6,7 @@ import static edu.ntnu.idi.stud.team10.sparesti.config.AuthorizationServerConfig
 
 /** A utility class for parsing tokens. */
 public class TokenParser {
-  /**
-   * Constructor for TokenParser.
-   */
+  /** Constructor for TokenParser. */
   private TokenParser() {}
 
   /**

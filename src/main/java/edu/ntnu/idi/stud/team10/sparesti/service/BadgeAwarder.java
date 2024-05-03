@@ -19,7 +19,6 @@ public class BadgeAwarder {
   private final UserService userService;
   private final BudgetService budgetService;
 
-
   /**
    * Constructs a BadgeAwarder with the necessary services and repositories.
    *

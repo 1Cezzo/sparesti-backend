@@ -38,7 +38,6 @@ public class UserInfoController {
    * @param userInfoDto The user info DTO
    * @return The user info DTO
    */
-
   @PostMapping("/create")
   @Operation(summary = "Create user info")
   public ResponseEntity<UserInfoDto> createUserInfo(
@@ -54,7 +53,6 @@ public class UserInfoController {
    * @param userInfoDto The user info DTO
    * @return The user info DTO
    */
-
   @PostMapping("/update")
   @Operation(summary = "Update user info")
   public ResponseEntity<UserInfoDto> updateUserInfo(

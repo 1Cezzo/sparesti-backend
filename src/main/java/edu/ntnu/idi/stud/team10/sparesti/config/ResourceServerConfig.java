@@ -27,6 +27,7 @@ public class ResourceServerConfig {
 
   /**
    * Constructor for the ResourceServerConfig.
+   *
    * @param jwtDecoder
    * @param requestCache
    * @param sessionRegistry

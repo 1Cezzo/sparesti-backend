@@ -34,7 +34,8 @@ public class TransactionBudgetRowService {
    * @param transactionBudgetRowRepository Repository for accessing transaction budget row data.
    * @param bankService Service for bank entities.
    * @param budgetService Service for budget entities.
-   * @param transactionBudgetRowMapper Mapper for converting between TransactionBudgetRow and TransactionBudgetRowDto.
+   * @param transactionBudgetRowMapper Mapper for converting between TransactionBudgetRow and
+   *     TransactionBudgetRowDto.
    * @param budgetRowMapper Mapper for converting between BudgetRow and BudgetRowDto.
    * @param transactionMapper Mapper for converting between Transaction and TransactionDto.
    */

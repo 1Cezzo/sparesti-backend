@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import edu.ntnu.idi.stud.team10.sparesti.enums.OccupationStatus;
+
 /** A class for storing challenge templates. */
 public class ChallengeTemplates {
 
   Map<OccupationStatus, List<String[]>> challengeMap;
 
-    /**
-     * Constructor for ChallengeTemplates.
-     */
+  /** Constructor for ChallengeTemplates. */
   public ChallengeTemplates() {
     challengeMap = new HashMap<>();
 

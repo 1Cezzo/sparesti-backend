@@ -20,7 +20,8 @@ public class ConsumptionChallengeService extends ChallengeService<ConsumptionCha
    * Constructs a ConsumptionChallengeService with the necessary repository and mapper.
    *
    * @param consumptionChallengeRepository Repository for accessing consumption challenge data.
-   * @param challengeMapper Mapper for converting between ConsumptionChallenge and ConsumptionChallengeDto.
+   * @param challengeMapper Mapper for converting between ConsumptionChallenge and
+   *     ConsumptionChallengeDto.
    */
   public ConsumptionChallengeService(
       ConsumptionChallengeRepository consumptionChallengeRepository,

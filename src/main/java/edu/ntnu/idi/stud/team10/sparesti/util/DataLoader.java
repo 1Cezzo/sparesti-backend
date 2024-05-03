@@ -65,9 +65,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     initialize();
   }
 
-  /**
-   * Resets the badges in the application.
-   */
+  /** Resets the badges in the application. */
   private void resetBadges() {
     List<Badge> allBadges = badgeService.getAllBadges();
     for (Badge badge : allBadges) {
@@ -77,11 +75,10 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
   }
 
   /**
-   * Initializes the application with default data.
-   * This includes creating badges, saving tips, and setting up an admin user.
-   * It also creates two default challenges for the admin user.
-   * <p>
-   * Note: The creation of saving tips only works if the database is empty.
+   * Initializes the application with default data. This includes creating badges, saving tips, and
+   * setting up an admin user. It also creates two default challenges for the admin user.
+   *
+   * <p>Note: The creation of saving tips only works if the database is empty.
    *
    * @throws NotFoundException if the admin user is not found in the database.
    */
@@ -162,9 +159,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     badgeService.createBadge(badgeDto);
   }
 
-  /**
-   * Creates the default badges for the application.
-   */
+  /** Creates the default badges for the application. */
   private void createBadges() {
     if (!badgeService.getAllBadges().isEmpty()) {
       return;
@@ -267,9 +262,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
         "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/created_challenge.png\n");
   }
 
-  /**
-   * Creates the default saving tips for the application.
-   */
+  /** Creates the default saving tips for the application. */
   private void createSavingTips() {
     if (savingTipService.noSavingTips()) {
       List<String> savingTips =
