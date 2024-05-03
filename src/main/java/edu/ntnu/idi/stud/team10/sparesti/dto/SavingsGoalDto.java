@@ -17,24 +17,4 @@ public class SavingsGoalDto {
   private LocalDate deadline;
   private boolean completed;
   private Long authorId;
-
-  /**
-   * Constructor for creating a new SavingsGoalDTO.
-   *
-   * @param name The name of the savings goal.
-   * @param targetAmount The target amount of the savings goal.
-   * @param mediaUrl The media URL of the savings goal.
-   * @param deadline The deadline of the savings goal.
-   * @param authorId The ID of the author of the savings goal.
-   */
-  public SavingsGoalDto(
-      String name, double targetAmount, String mediaUrl, LocalDate deadline, Long authorId) {
-    this.name = name;
-    this.targetAmount = targetAmount;
-    this.savedAmount = 0;
-    this.mediaUrl = mediaUrl;
-    this.deadline = deadline;
-    this.completed = false;
-    this.authorId = authorId;
-  }
 }
