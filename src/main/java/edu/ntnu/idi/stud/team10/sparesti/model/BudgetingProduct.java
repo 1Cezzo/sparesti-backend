@@ -12,6 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a product that the user wants to budget for. It has a name, a frequency, an amount,
+ * and a unit price.
+ */
 @Entity
 @Data
 @NoArgsConstructor

@@ -17,6 +17,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.Transaction;
 import edu.ntnu.idi.stud.team10.sparesti.model.TransactionBudgetRow;
 import edu.ntnu.idi.stud.team10.sparesti.repository.TransactionBudgetRowRepository;
 
+/** Service for Transaction Budget Row entities. */
 @Service
 public class TransactionBudgetRowService {
   private final TransactionBudgetRowRepository transactionBudgetRowRepository;
@@ -55,11 +56,22 @@ public class TransactionBudgetRowService {
     this.transactionMapper = transactionMapper;
   }
 
+  /**
+   * Adds a transaction to a transaction budget row.
+   *
+   * @param transactionBudgetRowDto the DTO representing the transaction budget row to add the
+   *     transaction to.
+   */
   public void addTransactiontoBudgetRow(TransactionBudgetRowDto transactionBudgetRowDto) {
     transactionBudgetRowRepository.save(
         transactionBudgetRowMapper.toEntity(transactionBudgetRowDto));
   }
 
+  /**
+   * Adds the transaction budget row to a transaction.
+   *
+   * @return a list of all transaction budget rows.
+   */
   public void addTransactionBudgetRow(Transaction transaction, BudgetRowDto budgetRowDto) {
     TransactionBudgetRow transactionBudgetRow = new TransactionBudgetRow();
     transactionBudgetRow.setBudgetRow(budgetRowMapper.toEntity(budgetRowDto));
@@ -67,6 +79,11 @@ public class TransactionBudgetRowService {
     transactionBudgetRowRepository.save(transactionBudgetRow);
   }
 
+  /**
+   * Get all transactions not in a budget row.
+   *
+   * @return a list of all transaction not in a budget row.
+   */
   public Set<Transaction> getTransactionsNotInBudgetRow(Long userId) {
     // Retrieve all transactions
     Set<Transaction> allTransactions = bankService.getTransactionsByUserId(userId);

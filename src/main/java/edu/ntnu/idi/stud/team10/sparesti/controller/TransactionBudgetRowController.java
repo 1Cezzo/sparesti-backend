@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/transaction-budget-row")
 @Tag(name = "TransactionBudgetRow", description = "Operations related to transaction budget rows")
+/** Controller class for the TransactionBudgetRow entity. */
 public class TransactionBudgetRowController {
 
   private final TransactionBudgetRowService transactionBudgetRowService;

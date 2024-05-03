@@ -307,6 +307,7 @@ public class UserChallengeService<T extends Challenge> {
             + "Så ikke si 'Reduser daglig kaffe', hvis utfordringen er WEEKLY for eksempel. "
             + "IKKE BRUK SAMME PRODUKT HVER GANG! IKKE BRUK SAMME UTFORDRINGSTYPE HVER GANG!");
     messages[2] = assistantMessage;
+    // We have to be quite strict with the prompt, or we will get a bad response from the API.
 
     // Send messages to the ChatGPT API and get completion
     String completion;
@@ -423,6 +424,12 @@ public class UserChallengeService<T extends Challenge> {
     }
   }
 
+  /**
+   * Calculate the amount to add to the savings goal.
+   *
+   * @param challengeDto the challenge DTO.
+   * @return the amount to add.
+   */
   private double calculateAmountToAdd(ChallengeDto challengeDto) {
     if (challengeDto instanceof PurchaseChallengeDto) {
       PurchaseChallengeDto purchaseChallengeDto = (PurchaseChallengeDto) challengeDto;

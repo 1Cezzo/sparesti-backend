@@ -55,6 +55,12 @@ public class SavingsGoalController {
     return new ResponseEntity<>(savingsGoal, HttpStatus.CREATED);
   }
 
+  /**
+   * Get the current saving goal for the user.
+   *
+   * @param token The JWT access token.
+   * @return The current saving goal for the user.
+   */
   @GetMapping("/current")
   @Operation(summary = "Get the current saving goal for the user")
   public ResponseEntity<SavingsGoalDto> getCurrentSavingsGoal(@AuthenticationPrincipal Jwt token) {
