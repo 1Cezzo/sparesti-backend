@@ -15,7 +15,6 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
-import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import edu.ntnu.idi.stud.team10.sparesti.util.UnauthorizedException;
 
@@ -52,7 +51,7 @@ public class UserService implements UserDetailsService {
    *
    * @param userDto (UserDto) The user to add.
    * @return A Dto representing the added user.
-   * @throws ExistingUserException If the username already exists.
+   * @throws ExistingUserExceptionTest If the username already exists.
    * @throws IllegalArgumentException If the userDto is null.
    */
   public UserDto addUser(UserDto userDto) {

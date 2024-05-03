@@ -203,6 +203,8 @@
             <exclude>**/*ChatGPTService.*</exclude>
             <exclude>**/*DataLoader.*</exclude>
             <exclude>**/*AuthorizationServerConfig.*</exclude>
+            <exclude>**/*SpareStiApplication.*</exclude>
+            <exclude>**/*Lambda*.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>

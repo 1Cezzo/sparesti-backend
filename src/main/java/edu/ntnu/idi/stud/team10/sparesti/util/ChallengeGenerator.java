@@ -12,6 +12,12 @@ import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
 
 public class ChallengeGenerator {
 
+  private final ChallengeTemplates challengeTemplates;
+
+  public ChallengeGenerator(ChallengeTemplates challengeTemplates) {
+    this.challengeTemplates = challengeTemplates;
+  }
+
   public ChallengeDto randomChallengeGenerator(UserInfoDto userInfo) {
     Random random = new Random();
 
@@ -27,7 +33,7 @@ public class ChallengeGenerator {
     }
   }
 
-  private SavingChallengeDto generateRandomSavingChallenge(UserInfoDto userInfo, Random random) {
+  public SavingChallengeDto generateRandomSavingChallenge(UserInfoDto userInfo, Random random) {
     // Get the occupation status of the user
     OccupationStatus occupationStatus = userInfo.getOccupationStatus();
     ChallengeTemplates templates = new ChallengeTemplates();
@@ -53,8 +59,7 @@ public class ChallengeGenerator {
     return savingChallenge;
   }
 
-  private PurchaseChallengeDto generateRandomPurchaseChallenge(
-      UserInfoDto userInfo, Random random) {
+  public PurchaseChallengeDto generateRandomPurchaseChallenge(UserInfoDto userInfo, Random random) {
     // Randomly select a budgeting product for the purchase challenge
     Set<BudgetingProductDto> budgetingProducts = userInfo.getBudgetingProducts();
     List<BudgetingProductDto> productList = new ArrayList<>(budgetingProducts);
@@ -76,7 +81,7 @@ public class ChallengeGenerator {
     return purchaseChallenge;
   }
 
-  private static int getMultiplier(TimeInterval frequency) {
+  public static int getMultiplier(TimeInterval frequency) {
     return switch (frequency) {
       case DAILY -> 7;
       case WEEKLY, MONTHLY -> 1;
