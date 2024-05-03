@@ -352,9 +352,9 @@ public class UserChallengeService<T extends Challenge> {
    * @param challengeId the id of the challenge.
    * @param userId the id of the user.
    * @throws NotFoundException if the challenge is not found.
+   * @return true if the challenge was completed, false otherwise.
    */
   public boolean updateCompleted(Long userId, Long challengeId) {
-    double amountToAdd = 0;
     // Retrieve the user entity
     User user =
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
@@ -371,23 +371,17 @@ public class UserChallengeService<T extends Challenge> {
     // Check if the challenge with the given ID exists
     if (optionalChallenge.isPresent()) {
       ChallengeDto challengeDto = optionalChallenge.get();
+      double amountToAdd = calculateAmountToAdd(challengeDto);
 
-      if (challengeDto instanceof PurchaseChallengeDto) {
-        PurchaseChallengeDto purchaseChallengeDto = (PurchaseChallengeDto) challengeDto;
-        amountToAdd =
-            (purchaseChallengeDto.getTargetAmount() - purchaseChallengeDto.getUsedAmount())
-                * purchaseChallengeDto.getProductPrice();
-      } else if (challengeDto instanceof SavingChallengeDto) {
-        amountToAdd = challengeDto.getUsedAmount();
-      } else {
-        amountToAdd = challengeDto.getTargetAmount() - challengeDto.getUsedAmount();
+      // Check if the challenge has expired and if the challenge isnt a saving challenge with
+      // completed amount
+      if (challengeDto.getExpiryDate().isAfter(LocalDate.now())
+          && !(challengeDto instanceof SavingChallengeDto
+              && challengeDto.getUsedAmount() == challengeDto.getTargetAmount())) {
+        return false;
       }
 
-      // Check if the challenge has expired
-      if (challengeDto.getExpiryDate().isAfter(LocalDate.now())) {
-        return false;
-        // Check if the target amount has been reached
-      } else if (amountToAdd > 0) {
+      if (amountToAdd > 0) {
         challengeDto.setCompleted(true);
 
         // If target amount has been reached, add remaining to savings goal.
@@ -399,19 +393,28 @@ public class UserChallengeService<T extends Challenge> {
         } catch (NotFoundException e) {
           e.printStackTrace();
         }
-
-        removeChallengeFromUser(userId, challengeId);
-        challengeRepository.deleteById(challengeId);
-        userRepository.save(user);
-        return true;
       } else {
         challengeDto.setCompleted(false);
-        removeChallengeFromUser(userId, challengeId);
-        challengeRepository.deleteById(challengeId);
-        return false;
       }
+
+      removeChallengeFromUser(userId, challengeId);
+      challengeRepository.deleteById(challengeId);
+      userRepository.save(user);
+      return true;
     } else {
       return false;
+    }
+  }
+
+  private double calculateAmountToAdd(ChallengeDto challengeDto) {
+    if (challengeDto instanceof PurchaseChallengeDto) {
+      PurchaseChallengeDto purchaseChallengeDto = (PurchaseChallengeDto) challengeDto;
+      return (purchaseChallengeDto.getTargetAmount() - purchaseChallengeDto.getUsedAmount())
+          * purchaseChallengeDto.getProductPrice();
+    } else if (challengeDto instanceof SavingChallengeDto) {
+      return challengeDto.getUsedAmount();
+    } else {
+      return challengeDto.getTargetAmount() - challengeDto.getUsedAmount();
     }
   }
 }
