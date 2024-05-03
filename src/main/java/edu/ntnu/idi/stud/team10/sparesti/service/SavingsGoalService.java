@@ -169,7 +169,8 @@ public class SavingsGoalService {
       SavingsGoal updatedSavingsGoal = userSavingsGoal.getSavingsGoal();
       updatedSavingsGoal.setSavedAmount(updatedSavingsGoal.getSavedAmount() + savedAmount);
       LocalDateTime currentDate = LocalDateTime.now();
-      updatedSavingsGoal.setCompleted(currentDate.isAfter(updatedSavingsGoal.getDeadline().atStartOfDay()));
+      updatedSavingsGoal.setCompleted(
+          currentDate.isAfter(updatedSavingsGoal.getDeadline().atStartOfDay()));
       savingsGoalRepository.save(updatedSavingsGoal);
     } else {
       throw new IllegalArgumentException(
@@ -395,7 +396,10 @@ public class SavingsGoalService {
    */
   public void completeCurrentSavingsGoal(Long userId) {
     SavingsGoalDto current = getCurrentSavingsGoal(userId);
-    SavingsGoal currentGoal = savingsGoalRepository.findById(current.getId()).orElseThrow(() -> new NotFoundException("Savings goal not found"));
+    SavingsGoal currentGoal =
+        savingsGoalRepository
+            .findById(current.getId())
+            .orElseThrow(() -> new NotFoundException("Savings goal not found"));
     if (currentGoal.getSavedAmount() >= currentGoal.getTargetAmount()) {
       currentGoal.setCompleted(true);
       savingsGoalRepository.save(currentGoal);
