@@ -14,6 +14,7 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.SavingsGoalMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
+import edu.ntnu.idi.stud.team10.sparesti.model.UserSavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserSavingsGoalRepository;
@@ -44,6 +45,9 @@ class SavingsGoalServiceTest {
   public void setUp() {
     when(savingsGoalMapper.toEntity(any())).thenReturn(new SavingsGoal());
     when(savingsGoalMapper.toDto(any())).thenReturn(new SavingsGoalDto());
+    savingsGoal.setSavedAmount(50.0);
+    savingsGoal.setTargetAmount(100.0);
+    savingsGoal.setDeadline(LocalDate.now().plusMonths(1));
   }
 
   @Test
@@ -174,5 +178,114 @@ class SavingsGoalServiceTest {
     // Act & Assert
     assertThrows(
         IllegalArgumentException.class, () -> savingsGoalService.updateSavingsGoal(id, null));
+  }
+
+  @Test
+  void testAddSavingsGoalToUser_ValidInput_SavingsGoalAdded() {
+    Long userId = 1L;
+    Long savingsGoalId = 1L;
+
+    User user = new User();
+    user.setId(userId);
+
+    SavingsGoal savingsGoal = new SavingsGoal();
+    savingsGoal.setId(savingsGoalId);
+    savingsGoal.setTargetAmount(1000.0);
+
+    when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+    when(savingsGoalRepository.findById(savingsGoalId)).thenReturn(Optional.of(savingsGoal));
+
+    savingsGoalService.addSavingsGoalToUser(userId, savingsGoalId);
+
+    verify(userSavingsGoalRepository).save(any(UserSavingsGoal.class));
+  }
+
+  @Test
+  void testGetAllSavingsGoalsForUser_ValidInput_ReturnsSavingsGoals() {
+    Long userId = 1L;
+
+    User user = new User();
+    user.setId(userId);
+
+    when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+    savingsGoalService.getAllSavingsGoalsForUser(userId);
+
+    verify(userSavingsGoalRepository).findByUserId(userId);
+  }
+
+  @Test
+  void testDeleteSavingsGoalFromUser_ValidInput_SavingsGoalDeleted() {
+    Long userId = 1L;
+    Long savingsGoalId = 1L;
+
+    User user = new User();
+    user.setId(userId);
+
+    SavingsGoal savingsGoal = new SavingsGoal();
+    savingsGoal.setId(savingsGoalId);
+
+    UserSavingsGoal userSavingsGoal = new UserSavingsGoal();
+    userSavingsGoal.setUser(user);
+    userSavingsGoal.setSavingsGoal(savingsGoal);
+
+    when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+    when(savingsGoalRepository.findById(savingsGoalId)).thenReturn(Optional.of(savingsGoal));
+    when(userSavingsGoalRepository.findByUserAndSavingsGoal(user, savingsGoal))
+        .thenReturn(Optional.of(userSavingsGoal));
+
+    savingsGoalService.deleteSavingsGoalFromUser(userId, savingsGoalId);
+
+    verify(userSavingsGoalRepository).delete(userSavingsGoal);
+  }
+
+  @Test
+  void testGetUsersBySavingsGoal_ValidInput_ReturnsUsers() {
+    Long savingsGoalId = 1L;
+
+    SavingsGoal savingsGoal = new SavingsGoal();
+    savingsGoal.setId(savingsGoalId);
+
+    when(savingsGoalRepository.findById(savingsGoalId)).thenReturn(Optional.of(savingsGoal));
+
+    savingsGoalService.getUsersBySavingsGoal(savingsGoalId);
+
+    verify(userSavingsGoalRepository).findBySavingsGoal(savingsGoal);
+  }
+
+  @Test
+  void testHasActiveSavingsGoal_ValidInput_ReturnsBoolean() {
+    Long userId = 1L;
+
+    savingsGoalService.hasActiveSavingsGoal(userId);
+
+    verify(userSavingsGoalRepository).findByUserId(userId);
+  }
+
+  @Test
+  void testHasCompletedSavingsGoal_ValidInput_ReturnsBoolean() {
+    Long userId = 1L;
+
+    savingsGoalService.hasCompletedSavingsGoal(userId);
+
+    verify(userSavingsGoalRepository).findByUserId(userId);
+  }
+
+  @Test
+  void testHasSharedSavingsGoal_ValidInput_ReturnsBoolean() {
+    Long userId = 1L;
+
+    savingsGoalService.hasSharedSavingsGoal(userId);
+
+    verify(userSavingsGoalRepository).findByUserId(userId);
+  }
+
+  @Test
+  void testHasCreatedSavingsGoal_ValidInput_ReturnsBoolean() {
+    Long userId = 1L;
+
+    savingsGoalService.hasCreatedSavingsGoal(userId);
+
+    verify(savingsGoalRepository).findSavingsGoalByAuthorId(userId);
   }
 }
