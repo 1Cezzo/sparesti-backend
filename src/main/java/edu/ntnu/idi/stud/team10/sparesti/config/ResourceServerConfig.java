@@ -25,6 +25,13 @@ public class ResourceServerConfig {
   private final SessionRegistry sessionRegistry;
   private final String frontendUrl;
 
+  /**
+   * Constructor for the ResourceServerConfig.
+   * @param jwtDecoder
+   * @param requestCache
+   * @param sessionRegistry
+   * @param env
+   */
   @Autowired
   public ResourceServerConfig(
       JwtDecoder jwtDecoder,

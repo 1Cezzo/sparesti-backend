@@ -27,6 +27,12 @@ public class EmailController {
   private final JavaMailSender emailSender;
   private final PasswordResetTokenService passwordResetTokenService;
 
+  /**
+   * Constructor for EmailController.
+   *
+   * @param emailSender (JavaMailSender) The email sender
+   * @param passwordResetTokenService (PasswordResetTokenService) The password reset token service
+   */
   @Autowired
   public EmailController(
       JavaMailSender emailSender, PasswordResetTokenService passwordResetTokenService) {

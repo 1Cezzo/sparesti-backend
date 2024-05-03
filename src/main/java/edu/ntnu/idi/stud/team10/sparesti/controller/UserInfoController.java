@@ -21,10 +21,23 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UserInfoController {
   private UserInfoService userInfoService;
 
+  /**
+   * Constructor for UserInfoController.
+   *
+   * @param userInfoService The user info service
+   */
   @Autowired
   public UserInfoController(UserInfoService userInfoService) {
     this.userInfoService = userInfoService;
   }
+
+  /**
+   * Create user info.
+   *
+   * @param token The JWT access token
+   * @param userInfoDto The user info DTO
+   * @return The user info DTO
+   */
 
   @PostMapping("/create")
   @Operation(summary = "Create user info")
@@ -33,6 +46,14 @@ public class UserInfoController {
     userInfoDto.setUserId(TokenParser.extractUserId(token));
     return ResponseEntity.ok(userInfoService.createUserInfo(userInfoDto));
   }
+
+  /**
+   * Update user info.
+   *
+   * @param token The JWT access token
+   * @param userInfoDto The user info DTO
+   * @return The user info DTO
+   */
 
   @PostMapping("/update")
   @Operation(summary = "Update user info")

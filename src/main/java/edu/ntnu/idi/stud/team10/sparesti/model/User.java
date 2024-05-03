@@ -79,10 +79,20 @@ public class User {
     this.challenges.remove(challenge);
   }
 
+  /**
+   * Add a badge to the user.
+   *
+   * @param badge (Badge) The badge to add.
+   */
   public void addBadge(Badge badge) {
     this.earnedBadges.add(badge);
   }
 
+  /**
+   * Get the earned badges of the user.
+   *
+   * @return (List<Badge>) The earned badges of the user.
+   */
   public List<Badge> getEarnedBadges() {
     if (earnedBadges == null) {
       return List.of();
@@ -91,9 +101,22 @@ public class User {
     }
   }
 
+  /**
+   * Remove a badge from the user.
+   *
+   * @param badge (Badge) The badge to remove.
+   */
+
   public void removeBadge(Badge badge) {
     this.earnedBadges.remove(badge);
   }
+
+  /**
+   * Equals method for the user.
+   *
+   * @param o (Object) The object to compare to.
+   * @return (boolean) True if the objects are equal, false otherwise.
+   */
 
   @Override
   public boolean equals(Object o) {
@@ -109,11 +132,22 @@ public class User {
         && Objects.equals(email, user.email);
   }
 
+  /**
+   * Hash code method for the user.
+   *
+   * @return (int) The hash code of the user.
+   */
+
   @Override
   public int hashCode() {
     return Objects.hash(id, password, email);
   }
 
+  /**
+   * String representation of the user.
+   *
+   * @return (String) The string representation of the user.
+   */
   @Override
   public String toString() {
     return "User{" + "id=" + id + ", email='" + email + '\'' + '}';

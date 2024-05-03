@@ -26,6 +26,12 @@ public class ConsumptionChallengeController {
   private final ConsumptionChallengeService consumptionChallengeService;
   private final ChallengeMapper challengeMapper;
 
+  /**
+   * Constructor for ConsumptionChallengeController.
+   *
+   * @param consumptionChallengeService The consumption challenge service
+   * @param challengeMapper The challenge mapper
+   */
   @Autowired
   public ConsumptionChallengeController(
       ConsumptionChallengeService consumptionChallengeService, ChallengeMapper challengeMapper) {

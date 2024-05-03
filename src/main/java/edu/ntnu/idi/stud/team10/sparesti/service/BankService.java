@@ -30,6 +30,14 @@ public class BankService {
   private final AccountMapper accountMapper;
   private final TransactionMapper transactionMapper;
 
+  /**
+   * Constructs a BankService with the necessary repositories and mappers.
+   *
+   * @param accountRepository Repository for accessing account data.
+   * @param transactionRepository Repository for accessing transaction data.
+   * @param accountMapper Mapper for converting between Account and AccountDto.
+   * @param transactionMapper Mapper for converting between Transaction and TransactionDto.
+   */
   @Autowired
   public BankService(
       AccountRepository accountRepository,

@@ -15,6 +15,12 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.PurchaseChallengeRepository;
 public class PurchaseChallengeService extends ChallengeService<PurchaseChallenge> {
   private final ChallengeMapper challengeMapper;
 
+  /**
+   * Constructs a PurchaseChallengeService with the necessary repository and mapper.
+   *
+   * @param purchaseChallengeRepository Repository for accessing purchase challenge data.
+   * @param challengeMapper Mapper for converting between PurchaseChallenge and PurchaseChallengeDto.
+   */
   public PurchaseChallengeService(
       PurchaseChallengeRepository purchaseChallengeRepository, ChallengeMapper challengeMapper) {
     super(purchaseChallengeRepository);

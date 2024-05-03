@@ -6,11 +6,11 @@ import edu.ntnu.idi.stud.team10.sparesti.util.UserSavingsGoalId;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/** Represents a user's savings goal. */
 @Entity
 @Data
 @Table(name = "user_savings_goal")
 @IdClass(UserSavingsGoalId.class)
-/** Represents a user's savings goal. */
 public class UserSavingsGoal {
 
   @Id

@@ -6,7 +6,15 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.SavingChallengeDto;
 import edu.ntnu.idi.stud.team10.sparesti.enums.DifficultyLevel;
 import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
 
+/** A class for parsing challenges from text responses. */
 public class ChallengeParser {
+
+  /**
+   * Parses a challenge from a text response.
+   *
+   * @param textResponse The text response.
+   * @return The parsed challenge.
+   */
   public static ChallengeDto parse(String textResponse) {
     if (textResponse.toLowerCase().contains("saving")) {
       return parseSavingChallenge(textResponse);
@@ -17,6 +25,12 @@ public class ChallengeParser {
     }
   }
 
+  /**
+   * Parses a saving challenge from a text response.
+   *
+   * @param textResponse The text response.
+   * @return The parsed saving challenge.
+   */
   private static SavingChallengeDto parseSavingChallenge(String textResponse) {
     SavingChallengeDto savingChallengeDTO = new SavingChallengeDto();
     String[] lines = textResponse.split("\n");
@@ -76,6 +90,12 @@ public class ChallengeParser {
     return savingChallengeDTO;
   }
 
+  /**
+   * Parses a purchase challenge from a text response.
+   *
+   * @param textResponse The text response.
+   * @return The parsed purchase challenge.
+   */
   private static PurchaseChallengeDto parsePurchaseChallenge(String textResponse) {
     PurchaseChallengeDto purchaseChallengeDTO = new PurchaseChallengeDto();
     String[] lines = textResponse.split("\n");

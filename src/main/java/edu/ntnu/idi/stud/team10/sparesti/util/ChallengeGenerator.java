@@ -10,8 +10,16 @@ import edu.ntnu.idi.stud.team10.sparesti.enums.DifficultyLevel;
 import edu.ntnu.idi.stud.team10.sparesti.enums.OccupationStatus;
 import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
 
+/** A class for generating random challenges for the user. */
 public class ChallengeGenerator {
 
+  /**
+   * Generates a random challenge for the user based on their occupation status and budgeting
+   * products.
+   *
+   * @param userInfo The user information.
+   * @return A random challenge.
+   */
   public ChallengeDto randomChallengeGenerator(UserInfoDto userInfo) {
     Random random = new Random();
 
@@ -27,6 +35,13 @@ public class ChallengeGenerator {
     }
   }
 
+  /**
+   * Generates a random saving challenge for the user based on their occupation status.
+   *
+   * @param userInfo The user information.
+   * @param random The random number generator.
+   * @return A random saving challenge.
+   */
   private SavingChallengeDto generateRandomSavingChallenge(UserInfoDto userInfo, Random random) {
     // Get the occupation status of the user
     OccupationStatus occupationStatus = userInfo.getOccupationStatus();
@@ -53,6 +68,13 @@ public class ChallengeGenerator {
     return savingChallenge;
   }
 
+  /**
+   * Generates a random purchase challenge for the user based on their budgeting products.
+   *
+   * @param userInfo The user information.
+   * @param random The random number generator.
+   * @return A random purchase challenge.
+   */
   private PurchaseChallengeDto generateRandomPurchaseChallenge(
       UserInfoDto userInfo, Random random) {
     // Randomly select a budgeting product for the purchase challenge
@@ -76,6 +98,12 @@ public class ChallengeGenerator {
     return purchaseChallenge;
   }
 
+  /**
+   * Returns the multiplier for the target amount based on the frequency of the budgeting product.
+   *
+   * @param frequency The frequency of the budgeting product.
+   * @return The multiplier for the target amount.
+   */
   private static int getMultiplier(TimeInterval frequency) {
     return switch (frequency) {
       case DAILY -> 7;

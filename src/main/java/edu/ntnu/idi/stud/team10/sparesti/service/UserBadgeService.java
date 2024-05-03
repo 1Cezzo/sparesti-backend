@@ -29,6 +29,14 @@ public class UserBadgeService {
   private final UserBadgeRepository userBadgeRepository;
   private final UserMapper userMapper;
 
+  /**
+   * Constructs a UserBadgeService with the necessary repositories and mappers.
+   *
+   * @param badgeRepository Repository for accessing badge data.
+   * @param userRepository Repository for accessing user data.
+   * @param userBadgeRepository Repository for accessing user badge data.
+   * @param userMapper Mapper for converting between User and UserDto.
+   */
   @Autowired
   public UserBadgeService(
       BadgeRepository badgeRepository,

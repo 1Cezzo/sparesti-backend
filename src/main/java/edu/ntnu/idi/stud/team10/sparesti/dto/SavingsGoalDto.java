@@ -4,10 +4,10 @@ import java.time.LocalDate;
 
 import lombok.*;
 
+/** A DTO for the SavingsGoal entity. */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-/** A DTO for the SavingsGoal entity. */
 public class SavingsGoalDto {
   private Long id;
   private String name;

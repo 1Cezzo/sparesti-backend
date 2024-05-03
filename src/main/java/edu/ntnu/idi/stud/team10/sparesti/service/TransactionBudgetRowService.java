@@ -28,6 +28,16 @@ public class TransactionBudgetRowService {
   private final BudgetRowMapper budgetRowMapper;
   private final TransactionMapper transactionMapper;
 
+  /**
+   * Constructs a TransactionBudgetRowService with the necessary repository, services and mappers.
+   *
+   * @param transactionBudgetRowRepository Repository for accessing transaction budget row data.
+   * @param bankService Service for bank entities.
+   * @param budgetService Service for budget entities.
+   * @param transactionBudgetRowMapper Mapper for converting between TransactionBudgetRow and TransactionBudgetRowDto.
+   * @param budgetRowMapper Mapper for converting between BudgetRow and BudgetRowDto.
+   * @param transactionMapper Mapper for converting between Transaction and TransactionDto.
+   */
   @Autowired
   public TransactionBudgetRowService(
       TransactionBudgetRowRepository transactionBudgetRowRepository,

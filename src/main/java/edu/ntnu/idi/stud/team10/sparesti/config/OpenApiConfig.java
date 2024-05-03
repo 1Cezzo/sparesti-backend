@@ -10,6 +10,12 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class OpenApiConfig {
+
+  /**
+   * Configure the OpenAPI.
+   *
+   * @return OpenAPI
+   */
   @Bean
   public OpenAPI springShopOpenAPI() {
     return new OpenAPI()

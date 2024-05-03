@@ -24,6 +24,12 @@ public class SavingChallengeController {
   private final SavingChallengeService savingChallengeService;
   private final ChallengeMapper challengeMapper;
 
+  /**
+   * Constructor for SavingChallengeController.
+   *
+   * @param savingChallengeService The saving challenge service
+   * @param challengeMapper The challenge mapper
+   */
   @Autowired
   public SavingChallengeController(
       SavingChallengeService savingChallengeService, ChallengeMapper challengeMapper) {
