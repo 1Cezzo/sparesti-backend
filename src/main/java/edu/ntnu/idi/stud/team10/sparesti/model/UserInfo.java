@@ -38,8 +38,7 @@ public class UserInfo {
   @OneToOne
   private User user;
 
-  @Column()
-  private String displayName;
+  @Column() private String displayName;
 
   @Column() private String firstName;
 
