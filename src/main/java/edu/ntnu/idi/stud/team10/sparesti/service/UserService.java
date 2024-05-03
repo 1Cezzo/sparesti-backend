@@ -51,7 +51,6 @@ public class UserService implements UserDetailsService {
    *
    * @param userDto (UserDto) The user to add.
    * @return A Dto representing the added user.
-   * @throws ExistingUserExceptionTest If the username already exists.
    * @throws IllegalArgumentException If the userDto is null.
    */
   public UserDto addUser(UserDto userDto) {
