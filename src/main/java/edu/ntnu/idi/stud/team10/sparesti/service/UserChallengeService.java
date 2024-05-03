@@ -371,20 +371,14 @@ public class UserChallengeService<T extends Challenge> {
     // Check if the challenge with the given ID exists
     if (optionalChallenge.isPresent()) {
       ChallengeDto challengeDto = optionalChallenge.get();
-      System.out.println(challengeDto);
 
       if (challengeDto instanceof PurchaseChallengeDto) {
         PurchaseChallengeDto purchaseChallengeDto = (PurchaseChallengeDto) challengeDto;
-        System.out.println(purchaseChallengeDto);
-        System.out.println(purchaseChallengeDto.getProductPrice());
-        System.out.println(
-            purchaseChallengeDto.getTargetAmount() - purchaseChallengeDto.getUsedAmount());
         amountToAdd =
             (purchaseChallengeDto.getTargetAmount() - purchaseChallengeDto.getUsedAmount())
                 * purchaseChallengeDto.getProductPrice();
-        System.out.println("Amount to add: " + amountToAdd);
-        System.out.println("purchase challenge");
-        System.out.println(purchaseChallengeDto.getProductPrice());
+      } else if (challengeDto instanceof SavingChallengeDto) {
+        amountToAdd = challengeDto.getUsedAmount();
       } else {
         amountToAdd = challengeDto.getTargetAmount() - challengeDto.getUsedAmount();
       }
@@ -393,7 +387,7 @@ public class UserChallengeService<T extends Challenge> {
       if (challengeDto.getExpiryDate().isAfter(LocalDate.now())) {
         return false;
         // Check if the target amount has been reached
-      } else if (challengeDto.getTargetAmount() >= challengeDto.getUsedAmount()) {
+      } else if (amountToAdd > 0) {
         challengeDto.setCompleted(true);
 
         // If target amount has been reached, add remaining to savings goal.
@@ -401,8 +395,6 @@ public class UserChallengeService<T extends Challenge> {
           SavingsGoalDto currentSavingsGoalDto = savingsGoalService.getCurrentSavingsGoal(userId);
           Long savingGoalId = currentSavingsGoalDto.getId();
 
-          System.out.println("Amount to add: " + amountToAdd);
-          System.out.println("Saving goal ID: " + savingGoalId);
           savingsGoalService.updateSavedAmount(userId, savingGoalId, amountToAdd);
         } catch (NotFoundException e) {
           e.printStackTrace();
