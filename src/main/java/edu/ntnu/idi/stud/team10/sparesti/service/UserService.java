@@ -243,7 +243,7 @@ public class UserService implements UserDetailsService {
   }
 
   /**
-   * Checks if user has profile picture
+   * Checks if user has profile picture.
    *
    * @param userId (Long) The id of the user.
    * @throws NotFoundException If the user is not found.
@@ -252,5 +252,17 @@ public class UserService implements UserDetailsService {
   public boolean hasProfilePicture(Long userId) {
     User user = findUserById(userId);
     return user.getProfilePictureUrl() != null;
+  }
+
+  /**
+   * Get login streak for a user.
+   *
+   * @param userId (Long) The id of the user.
+   * @throws NotFoundException If the user is not found.
+   * @return the login streak
+   */
+  public Integer getLoginStreak(Long userId) {
+    User user = findUserById(userId);
+    return user.getLoginStreak();
   }
 }
