@@ -18,6 +18,7 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.ChallengeRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.util.ChallengeGenerator;
 import edu.ntnu.idi.stud.team10.sparesti.util.ChallengeParser;
+import edu.ntnu.idi.stud.team10.sparesti.util.ChallengeTemplates;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 /**
@@ -224,10 +225,11 @@ public class UserChallengeService<T extends Challenge> {
    * @return a challenge DTO for the user.
    */
   public ChallengeDto generateChatResponse(UserInfoDto userInfo) {
+    ChallengeTemplates challengeTemplates = new ChallengeTemplates();
     // Construct the array of messages for the conversation
     Map<String, String>[] messages = new Map[3];
     ChallengeParser challengeParser = new ChallengeParser();
-    ChallengeGenerator challengeGenerator = new ChallengeGenerator();
+    ChallengeGenerator challengeGenerator = new ChallengeGenerator(challengeTemplates);
 
     // Add system message indicating the assistant's role
     Map<String, String> systemMessage = new HashMap<>();
@@ -332,7 +334,8 @@ public class UserChallengeService<T extends Challenge> {
    * @return a challenge DTO for the user.
    */
   public ChallengeDto generateRandomChallenge(UserInfoDto userInfo) {
-    ChallengeGenerator challengeGenerator = new ChallengeGenerator();
+    ChallengeTemplates challengeTemplates = new ChallengeTemplates();
+    ChallengeGenerator challengeGenerator = new ChallengeGenerator(challengeTemplates);
     return challengeGenerator.randomChallengeGenerator(userInfo);
   }
 
@@ -403,6 +406,7 @@ public class UserChallengeService<T extends Challenge> {
           Long savingGoalId = currentSavingsGoalDto.getId();
 
           savingsGoalService.updateSavedAmount(userId, savingGoalId, amountToAdd);
+          user.setTotalSavings(user.getTotalSavings() + amountToAdd);
         } catch (NotFoundException e) {
           e.printStackTrace();
         }

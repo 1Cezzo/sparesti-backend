@@ -19,6 +19,17 @@ public class BadgeAwarder {
   private final UserService userService;
   private final BudgetService budgetService;
 
+  private String loginBadgeName;
+  private String threeChallengesBadgeName;
+  private String fiveChallengesBadgeName;
+  private String fifteenChallengesBadgeName;
+  private String savingsGoalCompletedBadgeName;
+  private String sharedSavingsGoalBadgeName;
+  private String profilePictureBadgeName;
+  private String budgetBadgeName;
+  private String savingsGoalBadgeName;
+  private String challengeCreationBadgeName;
+
   /**
    * Constructs a BadgeAwarder with the necessary services and repositories.
    *

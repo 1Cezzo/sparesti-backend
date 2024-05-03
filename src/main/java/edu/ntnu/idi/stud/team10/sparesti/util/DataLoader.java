@@ -71,7 +71,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     for (Badge badge : allBadges) {
       badgeService.deleteBadgeById(badge.getId());
     }
-    badgeService.deleteAllBadges(); // Implement this method in BadgeService to delete all badges
+    badgeService.deleteAllBadges();
   }
 
   /**
@@ -84,7 +84,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
    */
   private void initialize() {
     createBadges();
-    createSavingTips(); // works only if DB is empty
+    createSavingTips();
 
     try {
       userService.getUserByEmail("admin@admin");
