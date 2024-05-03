@@ -1,57 +1,98 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
-import java.time.LocalDate;
-
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import edu.ntnu.idi.stud.team10.sparesti.enums.DifficultyLevel;
-import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ConsumptionChallengeTest {
-
   private ConsumptionChallenge consumptionChallenge;
-  private final String testDescription = "Test Description";
-  private final double testTargetAmount = 500.0;
-  private final double testUsedAmount = 100.0;
-  private final String testMediaUrl = "http://example.com";
-  private final TimeInterval testTimeInterval = TimeInterval.WEEKLY;
-  private final DifficultyLevel testDifficultyLevel = DifficultyLevel.EASY;
-  private final LocalDate testExpiryDate = LocalDate.now().plusDays(7);
-  private final boolean testCompleted = false;
-  private final String testProductCategory = "Test Category";
-  private final double testReductionPercentage = 10.0;
 
   @BeforeEach
   public void setUp() {
     consumptionChallenge = new ConsumptionChallenge();
-    consumptionChallenge.setDescription(testDescription);
-    consumptionChallenge.setTargetAmount(testTargetAmount);
-    consumptionChallenge.setUsedAmount(testUsedAmount);
-    consumptionChallenge.setMediaUrl(testMediaUrl);
-    consumptionChallenge.setTimeInterval(testTimeInterval);
-    consumptionChallenge.setDifficultyLevel(testDifficultyLevel);
-    consumptionChallenge.setExpiryDate(testExpiryDate);
-    consumptionChallenge.setCompleted(testCompleted);
-    consumptionChallenge.setProductCategory(testProductCategory);
-    consumptionChallenge.setReductionPercentage(testReductionPercentage);
+    consumptionChallenge.setId(1L);
+    consumptionChallenge.setProductCategory("Test Product Category");
+    consumptionChallenge.setReductionPercentage(20.0);
+  }
+
+  @Nested
+  class Constructors {
+    @Test
+    void noArgsConstructor() {
+      ConsumptionChallenge newConsumptionChallenge = new ConsumptionChallenge();
+      assertNotNull(newConsumptionChallenge);
+    }
+
+    @Test
+    void allArgsConstructor() {
+      ConsumptionChallenge newConsumptionChallenge =
+          new ConsumptionChallenge("Test Product Category 2", 30.0);
+      assertNotNull(newConsumptionChallenge);
+    }
+  }
+
+  @Nested
+  class GettersAndSetters {
+    @Test
+    void getAndSetId() {
+      consumptionChallenge.setId(2L);
+      assertEquals(2L, consumptionChallenge.getId());
+    }
+
+    @Test
+    void getAndSetProductCategory() {
+      consumptionChallenge.setProductCategory("Test Product Category 2");
+      assertEquals("Test Product Category 2", consumptionChallenge.getProductCategory());
+    }
+
+    @Test
+    void getAndSetReductionPercentage() {
+      consumptionChallenge.setReductionPercentage(30.0);
+      assertEquals(30.0, consumptionChallenge.getReductionPercentage());
+    }
+  }
+
+  @Nested
+  class EqualsAndHashcode {
+    private ConsumptionChallenge anotherConsumptionChallenge;
+
+    @BeforeEach
+    void setUp() {
+      anotherConsumptionChallenge = new ConsumptionChallenge();
+      anotherConsumptionChallenge.setId(1L);
+      anotherConsumptionChallenge.setProductCategory("Test Product Category");
+      anotherConsumptionChallenge.setReductionPercentage(20.0);
+    }
+
+    @Test
+    void whenComparingSameData_thenObjectsAreEqual() {
+      assertEquals(consumptionChallenge, anotherConsumptionChallenge);
+    }
+
+    @Test
+    void whenComparingDifferentData_thenObjectsAreNotEqual() {
+      anotherConsumptionChallenge.setProductCategory("Test Product Category 2");
+      assertNotEquals(consumptionChallenge, anotherConsumptionChallenge);
+    }
+
+    @Test
+    void whenComparingHashcodesOfSameData_thenHashcodesAreEqual() {
+      assertEquals(consumptionChallenge.hashCode(), anotherConsumptionChallenge.hashCode());
+    }
+
+    @Test
+    void whenComparingHashcodesOfDifferentData_thenHashcodesAreNotEqual() {
+      anotherConsumptionChallenge.setProductCategory("Test Product Category 2");
+      assertNotEquals(consumptionChallenge.hashCode(), anotherConsumptionChallenge.hashCode());
+    }
   }
 
   @Test
-  void testConsumptionChallengeAttributes() {
-    assertNotNull(consumptionChallenge);
-    assertEquals(testDescription, consumptionChallenge.getDescription());
-    assertEquals(testTargetAmount, consumptionChallenge.getTargetAmount());
-    assertEquals(testUsedAmount, consumptionChallenge.getUsedAmount());
-    assertEquals(testMediaUrl, consumptionChallenge.getMediaUrl());
-    assertEquals(testTimeInterval, consumptionChallenge.getTimeInterval());
-    assertEquals(testDifficultyLevel, consumptionChallenge.getDifficultyLevel());
-    assertEquals(testExpiryDate, consumptionChallenge.getExpiryDate());
-    assertEquals(testCompleted, consumptionChallenge.isCompleted());
-    assertEquals(testProductCategory, consumptionChallenge.getProductCategory());
-    assertEquals(testReductionPercentage, consumptionChallenge.getReductionPercentage());
+  void toStringTest() {
+    assertNotNull(consumptionChallenge.toString());
   }
 }

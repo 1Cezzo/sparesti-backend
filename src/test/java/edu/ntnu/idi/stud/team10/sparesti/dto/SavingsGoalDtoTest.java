@@ -3,13 +3,15 @@ package edu.ntnu.idi.stud.team10.sparesti.dto;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SavingsGoalDtoTest {
+class SavingsGoalDtoTest {
 
   private SavingsGoalDto savingsGoalDto1;
   private SavingsGoalDto savingsGoalDto2;
@@ -34,28 +36,52 @@ public class SavingsGoalDtoTest {
   }
 
   @Test
-  public void testSavingsGoalDtoFields() {
+  void testSavingsGoalDtoFields() {
     assertEquals("Test Savings Goal", savingsGoalDto1.getName());
     assertEquals(1000.0, savingsGoalDto1.getTargetAmount());
     assertEquals(500.0, savingsGoalDto1.getSavedAmount());
     assertEquals("https://example.com/image.jpg", savingsGoalDto1.getMediaUrl());
     assertEquals(LocalDate.now().plusMonths(6), savingsGoalDto1.getDeadline());
-    assertEquals(false, savingsGoalDto1.isCompleted());
+    assertFalse(savingsGoalDto1.isCompleted());
+  }
+
+  @Nested
+  class Constructors {
+    @Test
+    void noArgsConstructor() {
+      SavingsGoalDto savingsGoalDto = new SavingsGoalDto();
+      assertNotNull(savingsGoalDto);
+    }
+
+    @Test
+    void allArgsConstructor() {
+      SavingsGoalDto savingsGoalDto =
+          new SavingsGoalDto(
+              1L,
+              "Test Savings Goal",
+              1000.0,
+              500.0,
+              "https://example.com/image.jpg",
+              LocalDate.now().plusMonths(6),
+              false,
+              2L);
+      assertNotNull(savingsGoalDto);
+    }
   }
 
   @Test
-  public void testEquals() {
-    assertTrue(savingsGoalDto1.equals(savingsGoalDto2));
+  void testEquals() {
+    assertEquals(savingsGoalDto1, savingsGoalDto2);
   }
 
   @Test
-  public void testNotEquals() {
+  void testNotEquals() {
     savingsGoalDto2.setName("Different Name");
-    assertFalse(savingsGoalDto1.equals(savingsGoalDto2));
+    assertNotEquals(savingsGoalDto1, savingsGoalDto2);
   }
 
   @Test
-  public void testHashCode() {
+  void testHashCode() {
     assertEquals(savingsGoalDto1.hashCode(), savingsGoalDto2.hashCode());
   }
 }

@@ -1,57 +1,97 @@
 package edu.ntnu.idi.stud.team10.sparesti.model;
 
-import java.time.LocalDate;
-
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import edu.ntnu.idi.stud.team10.sparesti.enums.DifficultyLevel;
-import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PurchaseChallengeTest {
-
+class PurchaseChallengeTest {
   private PurchaseChallenge purchaseChallenge;
-  private final String testDescription = "Test Description";
-  private final double testTargetAmount = 500.0;
-  private final double testUsedAmount = 100.0;
-  private final String testMediaUrl = "http://example.com";
-  private final TimeInterval testTimeInterval = TimeInterval.WEEKLY;
-  private final DifficultyLevel testDifficultyLevel = DifficultyLevel.EASY;
-  private final LocalDate testExpiryDate = LocalDate.now().plusDays(7);
-  private final boolean testCompleted = false;
-  private final String testProductName = "Test Product";
 
   @BeforeEach
   public void setUp() {
     purchaseChallenge = new PurchaseChallenge();
-    purchaseChallenge.setDescription(testDescription);
-    purchaseChallenge.setTargetAmount(testTargetAmount);
-    purchaseChallenge.setUsedAmount(testUsedAmount);
-    purchaseChallenge.setMediaUrl(testMediaUrl);
-    purchaseChallenge.setTimeInterval(testTimeInterval);
-    purchaseChallenge.setDifficultyLevel(testDifficultyLevel);
-    purchaseChallenge.setExpiryDate(testExpiryDate);
-    purchaseChallenge.setCompleted(testCompleted);
-    purchaseChallenge.setProductName(testProductName);
+    purchaseChallenge.setId(1L);
+    purchaseChallenge.setProductName("Test Product");
+    purchaseChallenge.setProductPrice(100.0);
+  }
+
+  @Nested
+  class Constructors {
+    @Test
+    void noArgsConstructor() {
+      PurchaseChallenge newPurchaseChallenge = new PurchaseChallenge();
+      assertNotNull(newPurchaseChallenge);
+    }
+
+    @Test
+    void allArgsConstructor() {
+      PurchaseChallenge newPurchaseChallenge = new PurchaseChallenge("Test Product 2", 200.0);
+      assertNotNull(newPurchaseChallenge);
+    }
+  }
+
+  @Nested
+  class GettersAndSetters {
+    @Test
+    void getAndSetId() {
+      purchaseChallenge.setId(2L);
+      assertEquals(2L, purchaseChallenge.getId());
+    }
+
+    @Test
+    void getAndSetProductName() {
+      purchaseChallenge.setProductName("Test Product 2");
+      assertEquals("Test Product 2", purchaseChallenge.getProductName());
+    }
+
+    @Test
+    void getAndSetProductPrice() {
+      purchaseChallenge.setProductPrice(200.0);
+      assertEquals(200.0, purchaseChallenge.getProductPrice());
+    }
+  }
+
+  @Nested
+  class EqualsAndHashcode {
+    private PurchaseChallenge anotherPurchaseChallenge;
+
+    @BeforeEach
+    void setUp() {
+      anotherPurchaseChallenge = new PurchaseChallenge();
+      anotherPurchaseChallenge.setId(1L);
+      anotherPurchaseChallenge.setProductName("Test Product");
+      anotherPurchaseChallenge.setProductPrice(100.0);
+    }
+
+    @Test
+    void whenComparingSameData_thenObjectsAreEqual() {
+      assertEquals(purchaseChallenge, anotherPurchaseChallenge);
+    }
+
+    @Test
+    void whenComparingDifferentData_thenObjectsAreNotEqual() {
+      anotherPurchaseChallenge.setProductName("Test Product 2");
+      assertNotEquals(purchaseChallenge, anotherPurchaseChallenge);
+    }
+
+    @Test
+    void whenComparingHashcodesOfSameData_thenHashcodesAreEqual() {
+      assertEquals(purchaseChallenge.hashCode(), anotherPurchaseChallenge.hashCode());
+    }
+
+    @Test
+    void whenComparingHashcodesOfDifferentData_thenHashcodesAreNotEqual() {
+      anotherPurchaseChallenge.setProductName("Test Product 2");
+      assertNotEquals(purchaseChallenge.hashCode(), anotherPurchaseChallenge.hashCode());
+    }
   }
 
   @Test
-  public void testPurchaseChallengeAttributes() {
-    assertNotNull(purchaseChallenge);
-    assertEquals(testDescription, purchaseChallenge.getDescription());
-    assertEquals(testTargetAmount, purchaseChallenge.getTargetAmount());
-    assertEquals(testUsedAmount, purchaseChallenge.getUsedAmount());
-    assertEquals(testMediaUrl, purchaseChallenge.getMediaUrl());
-    assertEquals(testTimeInterval, purchaseChallenge.getTimeInterval());
-    assertEquals(testDifficultyLevel, purchaseChallenge.getDifficultyLevel());
-    assertEquals(testExpiryDate, purchaseChallenge.getExpiryDate());
-    assertEquals(testCompleted, purchaseChallenge.isCompleted());
-    assertEquals(testProductName, purchaseChallenge.getProductName());
+  void toStringTest() {
+    assertNotNull(purchaseChallenge.toString());
   }
-
-  // Add more tests as needed...
-
 }
