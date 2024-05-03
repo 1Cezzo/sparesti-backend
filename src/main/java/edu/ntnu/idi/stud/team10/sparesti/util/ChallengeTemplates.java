@@ -7,10 +7,12 @@ import java.util.Map;
 
 import edu.ntnu.idi.stud.team10.sparesti.enums.OccupationStatus;
 
+/** A class for storing challenge templates. */
 public class ChallengeTemplates {
 
   Map<OccupationStatus, List<String[]>> challengeMap;
 
+  /** Constructor for ChallengeTemplates. */
   public ChallengeTemplates() {
     challengeMap = new HashMap<>();
 
@@ -79,6 +81,11 @@ public class ChallengeTemplates {
             }));
   }
 
+  /**
+   * Gets the challenge map.
+   *
+   * @return The challenge map.
+   */
   public Map<OccupationStatus, List<String[]>> getChallengeMap() {
     return challengeMap;
   }

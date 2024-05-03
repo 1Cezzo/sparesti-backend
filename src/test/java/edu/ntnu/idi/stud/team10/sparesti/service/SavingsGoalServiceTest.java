@@ -16,8 +16,11 @@ import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.SavingsGoalRepository;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
+import edu.ntnu.idi.stud.team10.sparesti.repository.UserSavingsGoalRepository;
+import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -28,6 +31,12 @@ class SavingsGoalServiceTest {
   @Mock private UserRepository userRepository;
 
   @Mock private SavingsGoalMapper savingsGoalMapper;
+
+  @Mock private User user;
+
+  @Mock private SavingsGoal savingsGoal;
+
+  @Mock private UserSavingsGoalRepository userSavingsGoalRepository;
 
   @InjectMocks private SavingsGoalService savingsGoalService;
 
@@ -108,5 +117,62 @@ class SavingsGoalServiceTest {
 
     // Assert
     verify(savingsGoalRepository).deleteById(id);
+  }
+
+  @Test
+  void testGetSavingsGoalById_ExistingId_ReturnsSavingsGoal() {
+    // Arrange
+    Long id = 1L;
+    SavingsGoal savingsGoal = new SavingsGoal();
+    savingsGoal.setId(id);
+
+    when(savingsGoalRepository.findById(id)).thenReturn(Optional.of(savingsGoal));
+
+    // Act
+    SavingsGoal retrievedSavingsGoal = savingsGoalService.getSavingsGoalById(id);
+
+    // Assert
+    assertNotNull(retrievedSavingsGoal);
+    assertEquals(savingsGoal.getId(), retrievedSavingsGoal.getId());
+  }
+
+  @Test
+  void testGetSavingsGoalById_NonExistingId_ThrowsNotFoundException() {
+    // Arrange
+    Long id = 1L;
+
+    when(savingsGoalRepository.findById(id)).thenReturn(Optional.empty());
+
+    // Act & Assert
+    assertThrows(NotFoundException.class, () -> savingsGoalService.getSavingsGoalById(id));
+  }
+
+  @Test
+  void testUpdateSavingsGoal_NonExistingId_ThrowsNotFoundException() {
+    // Arrange
+    Long id = 1L;
+    SavingsGoalDto savingsGoalDTO = new SavingsGoalDto();
+
+    when(savingsGoalRepository.findById(id)).thenReturn(Optional.empty());
+
+    // Act & Assert
+    assertThrows(
+        NotFoundException.class, () -> savingsGoalService.updateSavingsGoal(id, savingsGoalDTO));
+  }
+
+  @Test
+  void testUpdateSavingsGoal_NullDto_ThrowsIllegalArgumentException() {
+    // Arrange
+    Long id = 1L;
+
+    SavingsGoal existingSavingsGoal = new SavingsGoal();
+    existingSavingsGoal.setId(id);
+
+    when(savingsGoalRepository.findById(existingSavingsGoal.getId()))
+        .thenReturn(Optional.of(existingSavingsGoal));
+
+    // Act & Assert
+    assertThrows(
+        IllegalArgumentException.class, () -> savingsGoalService.updateSavingsGoal(id, null));
   }
 }

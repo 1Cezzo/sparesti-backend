@@ -15,6 +15,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
 import edu.ntnu.idi.stud.team10.sparesti.service.*;
 
+/** A class for loading data into the application. */
 @Component
 public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
@@ -26,6 +27,17 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
   private final UserRepository userRepository;
   private final SavingTipService savingTipService;
 
+  /**
+   * Constructor for DataLoader.
+   *
+   * @param badgeService The badge service.
+   * @param userBadgeService The user badge service.
+   * @param userService The user service.
+   * @param consumptionChallengeService The consumption challenge service.
+   * @param userChallengeService The user challenge service.
+   * @param userRepository The user repository.
+   * @param savingTipService The saving tip service.
+   */
   public DataLoader(
       BadgeService badgeService,
       UserBadgeService userBadgeService,
@@ -43,22 +55,36 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     this.savingTipService = savingTipService;
   }
 
+  /**
+   * Loads data into the application.
+   *
+   * @param event The application ready event.
+   */
   @Override
   public void onApplicationEvent(ApplicationReadyEvent event) {
     initialize();
   }
 
+  /** Resets the badges in the application. */
   private void resetBadges() {
     List<Badge> allBadges = badgeService.getAllBadges();
     for (Badge badge : allBadges) {
       badgeService.deleteBadgeById(badge.getId());
     }
-    badgeService.deleteAllBadges(); // Implement this method in BadgeService to delete all badges
+    badgeService.deleteAllBadges();
   }
 
+  /**
+   * Initializes the application with default data. This includes creating badges, saving tips, and
+   * setting up an admin user. It also creates two default challenges for the admin user.
+   *
+   * <p>Note: The creation of saving tips only works if the database is empty.
+   *
+   * @throws NotFoundException if the admin user is not found in the database.
+   */
   private void initialize() {
     createBadges();
-    createSavingTips(); // works only if DB is empty
+    createSavingTips();
 
     try {
       userService.getUserByEmail("admin@admin");
@@ -118,6 +144,13 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     userChallengeService.addChallengeToUser(adminUserId, challenge2.getId());
   }
 
+  /**
+   * Creates a badge with the given name, description, and image URL.
+   *
+   * @param name The name of the badge.
+   * @param description The description of the badge.
+   * @param imageUrl The image URL of the badge.
+   */
   private void createBadge(String name, String description, String imageUrl) {
     BadgeDto badgeDto = new BadgeDto();
     badgeDto.setName(name);
@@ -126,6 +159,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     badgeService.createBadge(badgeDto);
   }
 
+  /** Creates the default badges for the application. */
   private void createBadges() {
     if (!badgeService.getAllBadges().isEmpty()) {
       return;
@@ -228,6 +262,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
         "https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/created_challenge.png\n");
   }
 
+  /** Creates the default saving tips for the application. */
   private void createSavingTips() {
     if (savingTipService.noSavingTips()) {
       List<String> savingTips =

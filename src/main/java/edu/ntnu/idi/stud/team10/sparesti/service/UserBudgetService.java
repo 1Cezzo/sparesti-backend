@@ -39,6 +39,17 @@ public class UserBudgetService {
   private final BudgetRowMapper budgetRowMapper;
   private TransactionBudgetRowRepository transactionBudgetRowRepository;
 
+  /**
+   * Constructs a UserBudgetService with the necessary repositories and mappers.
+   *
+   * @param userRepository Repository for accessing user data.
+   * @param budgetRepository Repository for accessing budget data.
+   * @param budgetRowRepository Repository for accessing budget row data.
+   * @param userMapper Mapper for converting between User and UserDto.
+   * @param budgetMapper Mapper for converting between Budget and BudgetDto.
+   * @param budgetRowMapper Mapper for converting between BudgetRow and BudgetRowDto.
+   * @param transactionBudgetRowRepository Repository for accessing transaction budget row data.
+   */
   @Autowired
   public UserBudgetService(
       UserRepository userRepository,

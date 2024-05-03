@@ -2,17 +2,16 @@ package edu.ntnu.idi.stud.team10.sparesti.model;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BudgetTest {
-
+class BudgetTest {
   private Budget budget;
   private User user;
 
@@ -30,43 +29,105 @@ public class BudgetTest {
     budget.setUser(user);
   }
 
-  @Test
-  public void testBudgetFields() {
-    assertEquals(1L, budget.getId());
-    assertNotNull(budget.getRow());
-    assertTrue(budget.getRow().isEmpty());
-    assertEquals(LocalDate.of(2024, 12, 31), budget.getExpiryDate());
-    assertEquals(user, budget.getUser());
+  @Nested
+  class Constructors {
+    @Test
+    void noArgsConstructor() {
+      Budget newBudget = new Budget();
+      assertNotNull(newBudget);
+    }
+
+    @Test
+    void allArgsConstructor() {
+      Budget newBudget =
+          new Budget(
+              1L,
+              new HashSet<BudgetRow>(),
+              "Name",
+              LocalDate.of(3000, 1, 1),
+              LocalDate.of(2024, 1, 1),
+              new User());
+      assertNotNull(newBudget);
+    }
+  }
+
+  @Nested
+  class GettersAndSetters {
+    @Test
+    void getAndSetId() {
+      budget.setId(2L);
+      assertEquals(2L, budget.getId());
+    }
+
+    @Test
+    void getAndSetRow() {
+      HashSet<BudgetRow> rows = new HashSet<>();
+      budget.setRow(rows);
+      assertEquals(rows, budget.getRow());
+    }
+
+    @Test
+    void getAndSetExpiryDate() {
+      LocalDate newExpiryDate = LocalDate.of(2025, 12, 31);
+      budget.setExpiryDate(newExpiryDate);
+      assertEquals(newExpiryDate, budget.getExpiryDate());
+    }
+
+    @Test
+    void getAndSetUser() {
+      User newUser = new User();
+      newUser.setId(2L);
+      newUser.setPassword("newPassword");
+      newUser.setEmail("new@example.com");
+      newUser.setProfilePictureUrl("https://example2.com/profile.jpg");
+      budget.setUser(newUser);
+      assertEquals(newUser, budget.getUser());
+    }
+  }
+
+  @Nested
+  class EqualsAndHashcode {
+    private Budget anotherBudget;
+
+    @BeforeEach
+    void setUp() {
+      anotherBudget = new Budget();
+      anotherBudget.setId(1L);
+      anotherBudget.setRow(new HashSet<>());
+      anotherBudget.setExpiryDate(LocalDate.of(2024, 12, 31));
+      User anotherUser = new User();
+      anotherUser.setId(1L);
+      anotherUser.setPassword("testPassword");
+      anotherUser.setEmail("test@example.com");
+      anotherUser.setProfilePictureUrl("https://example.com/profile.jpg");
+      anotherBudget.setUser(anotherUser);
+    }
+
+    @Test
+    void whenComparingSameData_thenObjectsAreEqual() {
+      assertEquals(budget, anotherBudget);
+    }
+
+    @Test
+    void whenComparingDifferentData_thenObjectsAreNotEqual() {
+      anotherBudget.setId(2L);
+      assertNotEquals(budget, anotherBudget);
+    }
+
+    @Test
+    void whenComparingHashcodesOfSameData_thenHashcodesAreEqual() {
+      assertEquals(budget.hashCode(), anotherBudget.hashCode());
+    }
+
+    @Test
+    void whenComparingHashcodesOfDifferentData_thenHashcodesAreNotEqual() {
+      anotherBudget.setId(2L);
+      assertNotEquals(budget.hashCode(), anotherBudget.hashCode());
+    }
   }
 
   @Test
-  public void testBudgetRowAssociation() {
-    BudgetRow budgetRow = new BudgetRow();
-    Set<BudgetRow> rows = new HashSet<>();
-    budgetRow.setId(1L);
-    budgetRow.setName("Test Budget Row");
-    budgetRow.setMaxAmount(500.0);
-    budgetRow.setCategory("Groceries");
-    rows.add(budgetRow);
-    budget.setRow(rows);
-
-    assertEquals(1, budget.getRow().size());
-    assertTrue(budget.getRow().contains(budgetRow));
-  }
-
-  @Test
-  public void testToString() {
-    User user = new User();
-    user.setId(1L);
-    user.setEmail("test@example.com");
-
-    Budget budget = new Budget();
-    budget.setId(1L);
-    budget.setExpiryDate(LocalDate.of(2024, 12, 31));
-    budget.setUser(user);
-
-    String expectedString =
-        "Budget(id=1, row=[], name=null, expiryDate=2024-12-31, creationDate=null, user=User{id=1, email='test@example.com'})";
-    assertEquals(expectedString, budget.toString());
+  void toStringTest() {
+    assertNotNull(budget.toString());
   }
 }

@@ -18,6 +18,12 @@ public class BudgetService {
   private final BudgetRepository budgetRepository;
   private final BankService bankService;
 
+  /**
+   * Constructs a BudgetService with the necessary repository and service.
+   *
+   * @param budgetRepository Repository for accessing budget data.
+   * @param bankService Service for handling bank related operations.
+   */
   @Autowired
   public BudgetService(BudgetRepository budgetRepository, BankService bankService) {
     this.budgetRepository = budgetRepository;

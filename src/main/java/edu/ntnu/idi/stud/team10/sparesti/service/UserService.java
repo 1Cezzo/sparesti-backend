@@ -15,7 +15,6 @@ import edu.ntnu.idi.stud.team10.sparesti.dto.*;
 import edu.ntnu.idi.stud.team10.sparesti.mapper.UserMapper;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 import edu.ntnu.idi.stud.team10.sparesti.repository.UserRepository;
-import edu.ntnu.idi.stud.team10.sparesti.util.ExistingUserException;
 import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 import edu.ntnu.idi.stud.team10.sparesti.util.UnauthorizedException;
 
@@ -29,9 +28,14 @@ public class UserService implements UserDetailsService {
   private final UserMapper userMapper;
 
   /**
-   * Constructor for UserService, with automatic injection of dependencies.
+   * Constructs a UserService with the necessary repository, password encoder, mock data service,
+   * bank
    *
-   * @param userRepository (UserRepository) The repository for User entities.
+   * @param userRepository Repository for accessing user data.
+   * @param passwordEncoder Encoder for hashing passwords.
+   * @param mockDataService Service for mock data.
+   * @param bankService Service for bank entities.
+   * @param userMapper Mapper for converting between User and UserDto.
    */
   @Autowired
   public UserService(
@@ -52,7 +56,6 @@ public class UserService implements UserDetailsService {
    *
    * @param userDto (UserDto) The user to add.
    * @return A Dto representing the added user.
-   * @throws ExistingUserException If the username already exists.
    * @throws IllegalArgumentException If the userDto is null.
    */
   public UserDto addUser(UserDto userDto) {

@@ -24,6 +24,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig {
   private final String frontendUrl;
 
+  /**
+   * Constructor for the SecurityConfig.
+   *
+   * @param env The environment
+   */
   @Autowired
   public SecurityConfig(Environment env) {
     this.frontendUrl = env.getProperty("frontend.url");

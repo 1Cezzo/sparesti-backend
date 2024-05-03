@@ -24,6 +24,12 @@ public class PurchaseChallengeController {
   private final PurchaseChallengeService purchaseChallengeService;
   private final ChallengeMapper challengeMapper;
 
+  /**
+   * Constructor for PurchaseChallengeController.
+   *
+   * @param purchaseChallengeService The purchase challenge service
+   * @param challengeMapper The challenge mapper
+   */
   @Autowired
   public PurchaseChallengeController(
       PurchaseChallengeService purchaseChallengeService, ChallengeMapper challengeMapper) {

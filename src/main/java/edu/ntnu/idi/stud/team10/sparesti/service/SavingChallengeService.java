@@ -16,6 +16,12 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 public class SavingChallengeService extends ChallengeService<SavingChallenge> {
   private final ChallengeMapper challengeMapper;
 
+  /**
+   * Constructs a SavingChallengeService with the necessary repository and mapper.
+   *
+   * @param savingChallengeRepository Repository for accessing saving challenge data.
+   * @param challengeMapper Mapper for converting between SavingChallenge and SavingChallengeDto.
+   */
   public SavingChallengeService(
       SavingChallengeRepository savingChallengeRepository, ChallengeMapper challengeMapper) {
     super(savingChallengeRepository);

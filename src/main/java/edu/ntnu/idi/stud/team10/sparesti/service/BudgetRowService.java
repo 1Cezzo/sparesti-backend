@@ -17,6 +17,12 @@ public class BudgetRowService {
   private static BudgetRowRepository budgetRowRepository;
   private final BudgetRowMapper budgetRowMapper;
 
+  /**
+   * Constructs a BudgetRowService with the necessary repository and mapper.
+   *
+   * @param budgetRowRepository Repository for accessing budget row data.
+   * @param budgetRowMapper Mapper for converting between BudgetRow and BudgetRowDto.
+   */
   @Autowired
   public BudgetRowService(
       BudgetRowRepository budgetRowRepository, BudgetRowMapper budgetRowMapper) {

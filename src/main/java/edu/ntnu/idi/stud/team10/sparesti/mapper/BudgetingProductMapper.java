@@ -8,6 +8,7 @@ import org.mapstruct.factory.Mappers;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetingProductDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetingProduct;
 
+/** Mapper between budgeting product entity and budgeting product dto. */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BudgetingProductMapper {
   BudgetingProductMapper INSTANCE = Mappers.getMapper(BudgetingProductMapper.class);

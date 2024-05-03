@@ -19,6 +19,27 @@ public class BadgeAwarder {
   private final UserService userService;
   private final BudgetService budgetService;
 
+  private String loginBadgeName;
+  private String threeChallengesBadgeName;
+  private String fiveChallengesBadgeName;
+  private String fifteenChallengesBadgeName;
+  private String savingsGoalCompletedBadgeName;
+  private String sharedSavingsGoalBadgeName;
+  private String profilePictureBadgeName;
+  private String budgetBadgeName;
+  private String savingsGoalBadgeName;
+  private String challengeCreationBadgeName;
+
+  /**
+   * Constructs a BadgeAwarder with the necessary services and repositories.
+   *
+   * @param userBadgeService Service for handling user-badge related operations.
+   * @param badgeRepository Repository for accessing badge data.
+   * @param userChallengeService Service for handling user-challenge related operations.
+   * @param savingsGoalService Service for handling savings goal related operations.
+   * @param userService Service for handling user related operations.
+   * @param budgetService Service for handling budget related operations.
+   */
   @Autowired
   public BadgeAwarder(
       UserBadgeService userBadgeService,

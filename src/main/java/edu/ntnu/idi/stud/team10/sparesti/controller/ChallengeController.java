@@ -23,6 +23,12 @@ public class ChallengeController {
   private final UserChallengeService userChallengeService;
   private final UserInfoService userInfoService;
 
+  /**
+   * Constructor for ChallengeController.
+   *
+   * @param userChallengeService (UserChallengeService) The user challenge service
+   * @param userInfoService (UserInfoService) The user info service
+   */
   @Autowired
   public ChallengeController(
       UserChallengeService userChallengeService, UserInfoService userInfoService) {

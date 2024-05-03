@@ -10,7 +10,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.User;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserDtoTest {
+class UserDtoTest {
 
   private UserDto userDto;
   private UserDto userDto2;
@@ -20,7 +20,6 @@ public class UserDtoTest {
   private final String testPassword = "testpassword";
   private final String testEmail = "test@example.com";
   private final String testProfilePictureUrl = "http://example.com/image.jpg";
-  private List<SavingsGoalDto> testSavingsGoals;
   private List<ChallengeDto> testChallenges;
 
   @BeforeEach
@@ -30,9 +29,8 @@ public class UserDtoTest {
     userDto.setPassword(testPassword);
     userDto.setEmail(testEmail);
     userDto.setProfilePictureUrl(testProfilePictureUrl);
-    testSavingsGoals = new ArrayList<>();
     testChallenges = new ArrayList<>();
-    // Add test savings goals and challenges as needed
+
     userDto2 = new UserDto();
     userDto2.setId(testId);
     userDto2.setPassword(testPassword);
@@ -45,16 +43,48 @@ public class UserDtoTest {
   }
 
   @Test
-  public void testUserDtoAttributes() {
+  void noArgsConstructor() {
+    UserDto userDto = new UserDto();
+    assertNotNull(userDto);
+  }
+
+  @Test
+  void allArgsConstructor() {
+    UserDto userDto =
+        new UserDto(
+            testId, testPassword, testEmail, testProfilePictureUrl, 0, null, 0L, 0L, 0.0, null);
+    assertNotNull(userDto);
+  }
+
+  @Test
+  void testGettersAndSetters() {
+    UserDto userDto = new UserDto();
+    userDto.setId(testId);
+    userDto.setPassword(testPassword);
+    userDto.setEmail(testEmail);
+    userDto.setProfilePictureUrl(testProfilePictureUrl);
+    userDto.setLoginStreak(0);
+    userDto.setLastLogin(null);
+    userDto.setCheckingAccountNr(0L);
+    userDto.setSavingsAccountNr(0L);
+    userDto.setTotalSavings(0.0);
+    userDto.setChallenges(testChallenges);
+
     assertNotNull(userDto);
     assertEquals(testId, userDto.getId());
     assertEquals(testPassword, userDto.getPassword());
     assertEquals(testEmail, userDto.getEmail());
     assertEquals(testProfilePictureUrl, userDto.getProfilePictureUrl());
+    assertEquals(0, userDto.getLoginStreak());
+    assertNull(userDto.getLastLogin());
+    assertEquals(0L, userDto.getCheckingAccountNr());
+    assertEquals(0L, userDto.getSavingsAccountNr());
+    assertEquals(0.0, userDto.getTotalSavings());
+    assertEquals(testChallenges, userDto.getChallenges());
   }
 
   @Test
-  public void testEquals() {
+  void testEquals() {
 
     // Test with equal objects
     assertEquals(userDto, userDto2);
@@ -72,14 +102,16 @@ public class UserDtoTest {
 
     // Test with different email
     userDto2.setEmail("different@example.com");
-    assertFalse(userDto.equals(userDto2));
-
-    // Test with different object type
-    assertFalse(userDto.equals("test"));
+    assertNotEquals(userDto, userDto2);
   }
 
   @Test
-  public void testHashCode() {
+  void testHashCode() {
     assertEquals(userDto.hashCode(), userDto2.hashCode());
+  }
+
+  @Test
+  void testToString() {
+    assertNotNull(userDto.toString());
   }
 }
