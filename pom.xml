@@ -200,32 +200,22 @@
 						<exclude>**/*SavingTip.*</exclude>
 						<exclude>**/*SavingTipService.*</exclude>
 						<exclude>**/*SavingTipController.*</exclude>
-            <exclude>**/*ChatGPTService.*</exclude>
-            <exclude>**/*DataLoader.*</exclude>
-            <exclude>**/*AuthorizationServerConfig.*</exclude>
-            <exclude>**/*SpareStiApplication.*</exclude>
-            <exclude>**/*Lambda*.class</exclude>
-						<exclude>ImageController</exclude>
-						<exclude>EmailController</exclude>
-						<exclude>AmazonClient</exclude>
-						<exclude>MockDataService</exclude>
-						<exclude>MockDataController</exclude>
-						<exclude>SavingTip</exclude>
-						<exclude>SavingTipService</exclude>
-						<exclude>SavingTipController</exclude>
-						<exclude>Idatt2105BackendApplication</exclude>
-						<!-- Exclude generated mapper implementations. -->
-						<exclude>AccountMapperImpl</exclude>
-						<exclude>BadgeMapperImpl</exclude>
-						<exclude>BudgetingProductMapperImpl</exclude>
-						<exclude>BudgetMapperImpl</exclude>
-						<exclude>BudgetRowMapperImpl</exclude>
-						<exclude>ChallengeMapperImpl</exclude>
-						<exclude>SavingsGoalMapperImpl</exclude>
-						<exclude>TransactionBudgetRowMapperImpl</exclude>
-						<exclude>TransactionMapperImpl</exclude>
-						<exclude>UserInfoMapperImpl</exclude>
-						<exclude>UserMapperImpl</exclude>
+           				<exclude>**/*ChatGPTService.*</exclude>
+           				<exclude>**/*DataLoader.*</exclude>
+           				<exclude>**/*AuthorizationServerConfig.*</exclude>
+           				<exclude>**/*SpareStiApplication.*</exclude>
+           				<exclude>**/*Lambda*.class</exclude>
+						<exclude>**/*AccountMapperImpl.*</exclude>
+						<exclude>**/*BadgeMapperImpl.*</exclude>
+						<exclude>**/*BudgetingProductMapperImpl.*</exclude>
+						<exclude>**/*BudgetMapperImpl.*</exclude>
+						<exclude>**/*BudgetRowMapperImpl.*</exclude>
+						<exclude>**/*ChallengeMapperImpl.*</exclude>
+						<exclude>**/*SavingsGoalMapperImpl.*</exclude>
+						<exclude>**/*TransactionBudgetRowMapperImpl.*</exclude>
+						<exclude>**/*TransactionMapperImpl.*</exclude>
+						<exclude>**/*UserInfoMapperImpl.*</exclude>
+						<exclude>**/*UserMapperImpl.*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
