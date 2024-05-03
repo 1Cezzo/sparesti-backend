@@ -192,15 +192,17 @@
 				<configuration>
 					<excludes>
 						<!-- Exclude files that depend on external services -->
-						<exclude>/ImageController.</exclude>
-						<exclude>/EmailController.</exclude>
-						<exclude>/AmazonClient.</exclude>
-						<exclude>/MockDataService</exclude>
-						<exclude>/MockDataController</exclude>
-						<exclude>/SavingTip</exclude>
-						<exclude>/SavingTipService</exclude>
-						<exclude>/SavingTipController</exclude>
-						<exclude>/Idatt2105BackendApplication.</exclude>
+						<exclude>**/*ImageController.*</exclude>
+						<exclude>**/*EmailController.*</exclude>
+						<exclude>**/*AmazonClient.*</exclude>
+						<exclude>**/*MockDataService.*</exclude>
+						<exclude>**/*MockDataController.*</exclude>
+						<exclude>**/*SavingTip.*</exclude>
+						<exclude>**/*SavingTipService.*</exclude>
+						<exclude>**/*SavingTipController.*</exclude>
+            <exclude>**/*ChatGPTService.*</exclude>
+            <exclude>**/*DataLoader.*</exclude>
+            <exclude>**/*AuthorizationServerConfig.*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
