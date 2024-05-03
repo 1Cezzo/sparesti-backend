@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/user-info")
 @Tag(name = "User Details", description = "Operations related to user info from questionnaire.")
+/** Controller class for the UserInfo entity. */
 public class UserInfoController {
   private UserInfoService userInfoService;
 

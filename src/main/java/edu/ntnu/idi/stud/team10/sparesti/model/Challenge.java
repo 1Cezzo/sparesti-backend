@@ -10,16 +10,16 @@ import edu.ntnu.idi.stud.team10.sparesti.enums.TimeInterval;
 import jakarta.persistence.*;
 import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@Data
 /**
  * A challenge is a goal that a user sets for themselves to complete. It has a description, a
  * target, and a saved amount. The challenge can be of different types, such as a purchase challenge
  * or a saving challenge.
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Data
 public class Challenge {
   @Id
   @GeneratedValue(strategy = GenerationType.TABLE)

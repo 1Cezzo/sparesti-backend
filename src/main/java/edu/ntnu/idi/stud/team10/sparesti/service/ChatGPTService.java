@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.annotation.PostConstruct;
 
+/** Service for interacting with the ChatGPT API. */
 @Service
 public class ChatGPTService {
   @Autowired private Environment env;
