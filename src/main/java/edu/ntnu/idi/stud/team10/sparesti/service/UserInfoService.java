@@ -58,9 +58,6 @@ public class UserInfoService {
     if (userInfoRepository.existsByUserId(userInfoDto.getUserId())) {
       throw new ConflictException("User info already exists");
     }
-    if (userInfoRepository.existsByDisplayName(userInfoDto.getDisplayName())) {
-      throw new ConflictException("Display name is taken.");
-    }
     UserInfo userInfo = userInfoMapper.toEntity(userInfoDto);
     User user = findUserById(userInfoDto.getUserId());
     userInfo.setUser(user);
