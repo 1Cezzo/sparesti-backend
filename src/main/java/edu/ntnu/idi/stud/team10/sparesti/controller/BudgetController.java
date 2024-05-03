@@ -145,6 +145,12 @@ public class BudgetController {
     return ResponseEntity.ok(updatedBudgetRowDto);
   }
 
+  /**
+   * Get the newest budget for a user.
+   *
+   * @param token The JWT token.
+   * @return The newest budget DTO.
+   */
   @GetMapping("/budgets/getnew")
   @Operation(summary = "Get the newest budget")
   public ResponseEntity<BudgetDto> getNewestBudget(@AuthenticationPrincipal Jwt token) {

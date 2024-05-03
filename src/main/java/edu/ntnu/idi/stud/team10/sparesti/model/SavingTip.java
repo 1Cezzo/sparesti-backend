@@ -3,10 +3,10 @@ package edu.ntnu.idi.stud.team10.sparesti.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/** Simple data entity representing a random daily saving tip that user can see */
 @Data
 @Entity
 @Table(name = "saving_tips")
-/** Simple data entity representing a random daily saving tip that user can see */
 public class SavingTip {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

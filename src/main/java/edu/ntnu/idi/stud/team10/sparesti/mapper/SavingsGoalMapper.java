@@ -8,6 +8,7 @@ import org.mapstruct.factory.Mappers;
 import edu.ntnu.idi.stud.team10.sparesti.dto.SavingsGoalDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingsGoal;
 
+/** Mapper between savings goal entity and savings goal dto. */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface SavingsGoalMapper {
   SavingsGoalMapper INSTANCE = Mappers.getMapper(SavingsGoalMapper.class);

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/** A class that handles exceptions thrown by the REST API. */
 @ControllerAdvice
 public class RestExceptionHandler {
   @ExceptionHandler(NotFoundException.class)

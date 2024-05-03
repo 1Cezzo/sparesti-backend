@@ -19,6 +19,11 @@ public class MockDataController {
 
   private final MockDataService mockDataService;
 
+  /**
+   * Constructor for MockDataController.
+   *
+   * @param mockDataService (MockDataService) The mock data service
+   */
   @Autowired
   public MockDataController(MockDataService mockDataService) {
     this.mockDataService = mockDataService;

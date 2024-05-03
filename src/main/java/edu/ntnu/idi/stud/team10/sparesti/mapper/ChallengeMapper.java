@@ -14,6 +14,7 @@ import edu.ntnu.idi.stud.team10.sparesti.model.ConsumptionChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.PurchaseChallenge;
 import edu.ntnu.idi.stud.team10.sparesti.model.SavingChallenge;
 
+/** Mapper between challenge entity and challenge dto. */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ChallengeMapper {
   ChallengeMapper INSTANCE = Mappers.getMapper(ChallengeMapper.class);

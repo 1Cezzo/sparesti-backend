@@ -17,11 +17,21 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class SavingTipController {
   private final SavingTipService savingTipService;
 
+  /**
+   * Constructor for SavingTipController.
+   *
+   * @param savingTipService The saving tip service
+   */
   @Autowired
   public SavingTipController(SavingTipService savingTipService) {
     this.savingTipService = savingTipService;
   }
 
+  /**
+   * Get a random saving tip.
+   *
+   * @return A ResponseEntity containing the saving tip
+   */
   @GetMapping("/get")
   @Operation(summary = "Get a random saving tip")
   public ResponseEntity<String> getDailySavingTip() {

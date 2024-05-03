@@ -24,6 +24,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class BankController {
   private final BankService bankService;
 
+  /**
+   * Constructor for BankController.
+   *
+   * @param bankService (BankService) The bank service
+   */
   @Autowired
   public BankController(BankService bankService) {
     this.bankService = bankService;

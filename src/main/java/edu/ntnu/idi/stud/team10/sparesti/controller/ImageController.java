@@ -18,6 +18,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ImageController {
   private AmazonClient amazonClient;
 
+  /**
+   * Constructor for ImageController.
+   *
+   * @param amazonClient (AmazonClient) The Amazon client
+   */
   @Autowired
   ImageController(AmazonClient amazonClient) {
     this.amazonClient = amazonClient;

@@ -29,6 +29,14 @@ public class SavingsGoalService {
   private final UserSavingsGoalRepository userSavingsGoalRepository;
   private final SavingsGoalMapper savingsGoalMapper;
 
+  /**
+   * Constructs a SavingsGoalService with the necessary repositories and mapper.
+   *
+   * @param savingsGoalRepository Repository for accessing savings goal data.
+   * @param userRepository Repository for accessing user data.
+   * @param userSavingsGoalRepository Repository for accessing user savings goal data.
+   * @param savingsGoalMapper Mapper for converting between SavingsGoal and SavingsGoalDto.
+   */
   @Autowired
   public SavingsGoalService(
       SavingsGoalRepository savingsGoalRepository,

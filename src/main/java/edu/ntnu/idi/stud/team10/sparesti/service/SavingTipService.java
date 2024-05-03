@@ -11,6 +11,11 @@ import edu.ntnu.idi.stud.team10.sparesti.repository.SavingTipRepository;
 public class SavingTipService {
   private final SavingTipRepository savingTipRepository;
 
+  /**
+   * Constructs a SavingTipService with the necessary repository.
+   *
+   * @param savingTipRepository Repository for accessing saving tip data.
+   */
   @Autowired
   public SavingTipService(SavingTipRepository savingTipRepository) {
     this.savingTipRepository = savingTipRepository;

@@ -11,6 +11,7 @@ import org.mapstruct.factory.Mappers;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.BudgetRow;
 
+/** Mapper between budget row entity and budget row dto. */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BudgetRowMapper {
   BudgetRowMapper INSTANCE = Mappers.getMapper(BudgetRowMapper.class);
@@ -20,6 +21,12 @@ public interface BudgetRowMapper {
 
   BudgetRowDto toDto(BudgetRow budgetRow);
 
+  /**
+   * Update budget row entity from dto.
+   *
+   * @param budgetRowDto
+   * @param budgetRow
+   */
   default void updateFromDto(BudgetRowDto budgetRowDto, @MappingTarget BudgetRow budgetRow) {
     Optional.ofNullable(budgetRowDto.getName()).ifPresent(budgetRow::setName);
     Optional.ofNullable(budgetRowDto.getUsedAmount()).ifPresent(budgetRow::setUsedAmount);

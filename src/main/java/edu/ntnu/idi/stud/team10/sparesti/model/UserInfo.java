@@ -67,6 +67,12 @@ public class UserInfo {
   @Column(name = "location")
   private List<String> budgetingLocations;
 
+  /**
+   * Equals method for UserInfo.
+   *
+   * @param o the object to compare to
+   * @return true if the objects are equal, false otherwise
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -87,6 +93,11 @@ public class UserInfo {
         && Objects.equals(income, userInfo.income);
   }
 
+  /**
+   * Hash code method for UserInfo.
+   *
+   * @return the hash code of the UserInfo
+   */
   @Override
   public int hashCode() {
     return Objects.hash(
@@ -101,6 +112,11 @@ public class UserInfo {
         income);
   }
 
+  /**
+   * String representation of UserInfo.
+   *
+   * @return the string representation of UserInfo
+   */
   @Override
   public String toString() {
     return "UserInfo{"

@@ -31,6 +31,13 @@ public class BadgeController {
   private final UserBadgeService userBadgeService;
   private final BadgeAwarder badgeAwarder;
 
+  /**
+   * Constructor for BadgeController.
+   *
+   * @param badgeService The badge service
+   * @param userBadgeService The user badge service
+   * @param badgeAwarder The badge awarder
+   */
   @Autowired
   public BadgeController(
       BadgeService badgeService, UserBadgeService userBadgeService, BadgeAwarder badgeAwarder) {
