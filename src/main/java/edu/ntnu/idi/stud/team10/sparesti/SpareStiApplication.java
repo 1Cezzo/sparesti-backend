@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /** The main class for the SpareSti application. */
 @SpringBootApplication
 public class SpareStiApplication {
-
   /**
    * The main method for the SpareSti application.
    *
