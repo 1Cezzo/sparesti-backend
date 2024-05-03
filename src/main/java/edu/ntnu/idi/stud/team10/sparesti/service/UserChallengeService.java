@@ -296,9 +296,12 @@ public class UserChallengeService<T extends Challenge> {
     messages[2] = assistantMessage;
 
     // Send messages to the ChatGPT API and get completion
-    String completion = chatGPTService.sendMessagesAndGetCompletion(messages);
-    System.out.println(completion);
-
+    String completion;
+    try {
+      completion = chatGPTService.sendMessagesAndGetCompletion(messages);
+    } catch (Exception e) {
+      return challengeGenerator.randomChallengeGenerator(userInfo);
+    }
     // Parse the completion to a ChallengeDTO
     ObjectMapper objectMapper = new ObjectMapper();
     try {
