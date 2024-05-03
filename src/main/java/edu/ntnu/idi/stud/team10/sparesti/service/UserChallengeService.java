@@ -377,7 +377,7 @@ public class UserChallengeService<T extends Challenge> {
       // completed amount
       if (challengeDto.getExpiryDate().isAfter(LocalDate.now())
           && !(challengeDto instanceof SavingChallengeDto
-               && Objects.equals(challengeDto.getUsedAmount(), challengeDto.getTargetAmount()))) {
+              && Objects.equals(challengeDto.getUsedAmount(), challengeDto.getTargetAmount()))) {
         return false;
       }
 
