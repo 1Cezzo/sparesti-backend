@@ -38,7 +38,7 @@ public class UserInfo {
   @OneToOne
   private User user;
 
-  @Column(unique = true)
+  @Column()
   private String displayName;
 
   @Column() private String firstName;
