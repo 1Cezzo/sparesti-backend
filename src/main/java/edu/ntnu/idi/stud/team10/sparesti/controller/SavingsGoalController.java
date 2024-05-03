@@ -28,6 +28,12 @@ public class SavingsGoalController {
   private final SavingsGoalService savingsGoalService;
   private final UserService userService;
 
+  /**
+   * Constructor for SavingsGoalController.
+   *
+   * @param savingsGoalService The savings goal service
+   * @param userService The user service
+   */
   @Autowired
   public SavingsGoalController(SavingsGoalService savingsGoalService, UserService userService) {
     this.savingsGoalService = savingsGoalService;

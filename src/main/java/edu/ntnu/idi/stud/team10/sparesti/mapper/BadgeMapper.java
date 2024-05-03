@@ -7,6 +7,7 @@ import org.mapstruct.factory.Mappers;
 import edu.ntnu.idi.stud.team10.sparesti.dto.BadgeDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.Badge;
 
+/** Mapper between badge entity and badge dto. */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BadgeMapper {
   BadgeMapper INSTANCE = Mappers.getMapper(BadgeMapper.class);

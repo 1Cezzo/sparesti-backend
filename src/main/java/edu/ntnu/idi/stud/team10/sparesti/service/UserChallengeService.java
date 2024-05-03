@@ -37,6 +37,17 @@ public class UserChallengeService<T extends Challenge> {
   private final SavingsGoalService savingsGoalService;
   private final SavingsGoalMapper savingsGoalMapper;
 
+  /**
+   * Constructs a UserChallengeService with the necessary repositories, services and mappers.
+   *
+   * @param challengeRepository Repository for accessing challenge data.
+   * @param userRepository Repository for accessing user data.
+   * @param chatGPTService Service for ChatGPT API.
+   * @param userMapper Mapper for converting between User and UserDto.
+   * @param challengeMapper Mapper for converting between Challenge and ChallengeDto.
+   * @param savingsGoalMapper Mapper for converting between SavingsGoal and SavingsGoalDto.
+   * @param savingsGoalService Service for savings goal entities.
+   */
   public UserChallengeService(
       ChallengeRepository<T> challengeRepository,
       UserRepository userRepository,

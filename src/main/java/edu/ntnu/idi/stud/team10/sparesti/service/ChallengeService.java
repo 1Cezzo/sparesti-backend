@@ -25,6 +25,11 @@ public abstract class ChallengeService<T extends Challenge> {
 
   private final ChallengeRepository<T> challengeRepository;
 
+  /**
+   * Constructs a ChallengeService with the necessary repository.
+   *
+   * @param challengeRepository Repository for accessing challenge data.
+   */
   @Autowired
   protected ChallengeService(ChallengeRepository<T> challengeRepository) {
     this.challengeRepository = challengeRepository;

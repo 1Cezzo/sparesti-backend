@@ -6,11 +6,11 @@ import edu.ntnu.idi.stud.team10.sparesti.util.UserBadgeId;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/** Represents a user's badge. */
 @Entity
 @Data
 @Table(name = "user_badges")
 @IdClass(UserBadgeId.class)
-/** Represents a user's badge. */
 public class UserBadge {
 
   @Id

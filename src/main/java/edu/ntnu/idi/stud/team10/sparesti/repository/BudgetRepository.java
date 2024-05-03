@@ -10,7 +10,19 @@ import edu.ntnu.idi.stud.team10.sparesti.model.User;
 /** Repository for the Budget entity. */
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
 
+  /**
+   * Find all budgets for a user.
+   *
+   * @param userId The user id.
+   * @return A list of budgets.
+   */
   List<Budget> findByUserId(Long userId);
 
+  /**
+   * Find all budgets for a user.
+   *
+   * @param user The user.
+   * @return A list of budgets.
+   */
   List<Budget> findByUser(User user);
 }

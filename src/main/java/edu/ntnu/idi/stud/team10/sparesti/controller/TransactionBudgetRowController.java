@@ -37,6 +37,16 @@ public class TransactionBudgetRowController {
   private final TransactionRepository transactionRepository;
   private final BudgetRowService budgetRowService;
 
+  /**
+   * Constructor for TransactionBudgetRowController.
+   *
+   * @param transactionBudgetRowService The transaction budget row service
+   * @param budgetRowMapper The budget row mapper
+   * @param transactionMapper The transaction mapper
+   * @param budgetRowRepository The budget row repository
+   * @param transactionRepository The transaction repository
+   * @param budgetRowService The budget row service
+   */
   @Autowired
   public TransactionBudgetRowController(
       TransactionBudgetRowService transactionBudgetRowService,
@@ -53,6 +63,13 @@ public class TransactionBudgetRowController {
     this.budgetRowService = budgetRowService;
   }
 
+  /**
+   * Add a transaction to a budget row.
+   *
+   * @param budgetRowId The id of the budget row
+   * @param transactionId The id of the transaction
+   * @return
+   */
   @PostMapping("/add/{budgetRowId}/{transactionId}")
   @Operation(summary = "Add a transaction to a budget row")
   public ResponseEntity<TransactionBudgetRowDto> addTransactionToBudgetRow(
@@ -82,6 +99,12 @@ public class TransactionBudgetRowController {
     }
   }
 
+  /**
+   * Get transactions not in a budget row.
+   *
+   * @param token The JWT access token
+   * @return A set of transaction DTOs
+   */
   @GetMapping("/transactions-not-in-budget-row")
   @Operation(summary = "Get transactions not in a budget row")
   public ResponseEntity<Set<TransactionDto>> getTransactionsNotInBudgetRow(

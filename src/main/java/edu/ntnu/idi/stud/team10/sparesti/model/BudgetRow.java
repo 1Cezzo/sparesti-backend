@@ -38,6 +38,7 @@ public class BudgetRow {
     this.emoji = emoji;
   }
 
+  /** Constructor for creating a budget row. */
   public BudgetRow() {}
 
   /**
@@ -76,10 +77,20 @@ public class BudgetRow {
     return category;
   }
 
+  /**
+   * Get the id of the budget row.
+   *
+   * @return (Long) The id of the budget row.
+   */
   public Long getId() {
     return id;
   }
 
+  /**
+   * Get the emoji of the budget row.
+   *
+   * @return (String) The emoji of the budget row.
+   */
   public String getEmoji() {
     return emoji;
   }

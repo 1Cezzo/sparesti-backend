@@ -12,6 +12,7 @@ import org.mapstruct.factory.Mappers;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserInfoDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.UserInfo;
 
+/** Mapper between user info entity and user info dto. */
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
     uses = BudgetingProductMapper.class)

@@ -8,6 +8,7 @@ import org.mapstruct.factory.Mappers;
 import edu.ntnu.idi.stud.team10.sparesti.dto.UserDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.User;
 
+/** Mapper between user entity and user dto. */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
   UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);

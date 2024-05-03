@@ -28,9 +28,14 @@ public class UserService implements UserDetailsService {
   private final UserMapper userMapper;
 
   /**
-   * Constructor for UserService, with automatic injection of dependencies.
+   * Constructs a UserService with the necessary repository, password encoder, mock data service,
+   * bank
    *
-   * @param userRepository (UserRepository) The repository for User entities.
+   * @param userRepository Repository for accessing user data.
+   * @param passwordEncoder Encoder for hashing passwords.
+   * @param mockDataService Service for mock data.
+   * @param bankService Service for bank entities.
+   * @param userMapper Mapper for converting between User and UserDto.
    */
   @Autowired
   public UserService(

@@ -8,6 +8,7 @@ import org.mapstruct.factory.Mappers;
 import edu.ntnu.idi.stud.team10.sparesti.dto.TransactionBudgetRowDto;
 import edu.ntnu.idi.stud.team10.sparesti.model.TransactionBudgetRow;
 
+/** Mapper between transaction budget row entity and transaction budget row dto. */
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
     uses = {TransactionMapper.class})

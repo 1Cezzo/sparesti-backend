@@ -16,6 +16,13 @@ import edu.ntnu.idi.stud.team10.sparesti.util.NotFoundException;
 public class ConsumptionChallengeService extends ChallengeService<ConsumptionChallenge> {
   private final ChallengeMapper challengeMapper;
 
+  /**
+   * Constructs a ConsumptionChallengeService with the necessary repository and mapper.
+   *
+   * @param consumptionChallengeRepository Repository for accessing consumption challenge data.
+   * @param challengeMapper Mapper for converting between ConsumptionChallenge and
+   *     ConsumptionChallengeDto.
+   */
   public ConsumptionChallengeService(
       ConsumptionChallengeRepository consumptionChallengeRepository,
       ChallengeMapper challengeMapper) {

@@ -22,6 +22,12 @@ public class MockDataService {
   private final BankService bankService;
   private final UserInfoService userInfoService;
 
+  /**
+   * Constructs a MockDataService with the necessary services.
+   *
+   * @param bankService Service for handling bank related operations.
+   * @param userInfoService Service for handling user info related operations.
+   */
   @Autowired
   public MockDataService(BankService bankService, UserInfoService userInfoService) {
     this.bankService = bankService;
