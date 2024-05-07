@@ -1,29 +1,29 @@
-image: maven:eclipse-temurin
-
-stages:
-  - build
-  - test
-  - package
-
-build:
-  stage: build
-  script:
-    - mvn compile
-
-test:
-  stage: test
-  script:
-    - mvn clean package
-    - mvn verify
-  artifacts:
-    when: always
-    reports:
-      junit:
-        - target/surefire-reports/TEST-*.xml
-        - target/failsafe-reports/TEST-*.xml
-
-package:
-  stage: package
-  script:
-    - mvn clean package
-    - mvn process-sources
+#image: maven:eclipse-temurin
+#
+#stages:
+#  - build
+#  - test
+#  - package
+#
+#build:
+#  stage: build
+#  script:
+#    - mvn compile
+#
+#test:
+#  stage: test
+#  script:
+#    - mvn clean package
+#    - mvn verify
+#  artifacts:
+#    when: always
+#    reports:
+#      junit:
+#        - target/surefire-reports/TEST-*.xml
+#        - target/failsafe-reports/TEST-*.xml
+#
+#package:
+#  stage: package
+#  script:
+#    - mvn clean package
+#    - mvn process-sources

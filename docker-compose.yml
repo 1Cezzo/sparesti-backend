@@ -1,44 +1,44 @@
-version: '3.8'
-
-services:
-  backend:
-    build: 
-      context: ./sparesti-backend
-      args:
-        - password=test
-    environment:
-      - KEYSTORE_PASSWORD=test
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - SMTP_EMAIL=${SMTP_EMAIL}
-      - SMTP_HOST=${SMTP_HOST}
-      - ENDPOINT_URL=${ENDPOINT_URL}
-      - ACCESS_KEY=${ACCESS_KEY}
-      - SECRET_KEY=${SECRET_KEY}
-      - BUCKET_NAME=${BUCKET_NAME}
-      - CHAT_API_KEY=${CHAT_API_KEY}
-      - CHAT_API_URL=${CHAT_API_URL}
-
-    ports:
-      - "8443:8443"
-    depends_on:
-      db:
-        condition: service_healthy
-    container_name: backend
-
-  db:
-    image: mysql:latest
-    environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=backend
-    container_name: idatt2106_db
-    healthcheck:
-          test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-          timeout: 5s
-          retries: 10
-  frontend:
-    build: ./sparesti-frontend
-    ports:
-      - "5173:5173"
-    container_name: frontend
-    depends_on:
-      - backend
+#version: '3.8'
+#
+#services:
+#  backend:
+#    build:
+#      context: ./sparesti-backend
+#      args:
+#        - password=test
+#    environment:
+#      - KEYSTORE_PASSWORD=test
+#      - SMTP_PASSWORD=${SMTP_PASSWORD}
+#      - SMTP_EMAIL=${SMTP_EMAIL}
+#      - SMTP_HOST=${SMTP_HOST}
+#      - ENDPOINT_URL=${ENDPOINT_URL}
+#      - ACCESS_KEY=${ACCESS_KEY}
+#      - SECRET_KEY=${SECRET_KEY}
+#      - BUCKET_NAME=${BUCKET_NAME}
+#      - CHAT_API_KEY=${CHAT_API_KEY}
+#      - CHAT_API_URL=${CHAT_API_URL}
+#
+#    ports:
+#      - "8443:8443"
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#    container_name: backend
+#
+#  db:
+#    image: mysql:latest
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=password
+#      - MYSQL_DATABASE=backend
+#    container_name: idatt2106_db
+#    healthcheck:
+#          test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+#          timeout: 5s
+#          retries: 10
+#  frontend:
+#    build: ./sparesti-frontend
+#    ports:
+#      - "5173:5173"
+#    container_name: frontend
+#    depends_on:
+#      - backend
