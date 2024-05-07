@@ -79,28 +79,10 @@ public class ResourceServerConfig {
                     .usernameParameter("username")
                     .passwordParameter("password")
                     .loginProcessingUrl("/login")
+                    .defaultSuccessUrl(frontendUrl, true) // Redirect to frontendUrl
                     .successHandler(
                         (request, response, authentication) -> {
-                          // The redirect url can be stored in different places depending on the
-                          // type
-                          // of request,
-                          // so two checks are required.
-
-                          // This is a workaround to allow for manual generation of access tokens in
-                          // swagger.
-                          // The session is stored to get the authenticated users username,
-                          // which is then used to get the users id during token customization.
-                          sessionRegistry.registerNewSession(
-                              request.getSession().getId(), authentication.getPrincipal());
-                          var cachedRequest = requestCache.getRequest(request, response);
-                          String alternativeRedirect =
-                              cachedRequest == null ? frontendUrl : cachedRequest.getRedirectUrl();
-                          String authorizeRequestUrl =
-                              (String) request.getSession().getAttribute("ORIGINAL_REQUEST_URL");
-                          response.sendRedirect(
-                              authorizeRequestUrl != null
-                                  ? authorizeRequestUrl
-                                  : alternativeRedirect);
+                          // Your custom success handling logic, if needed
                         }))
         .oauth2ResourceServer(
             oauth2ResourceServer ->
