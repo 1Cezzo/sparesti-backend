@@ -79,7 +79,8 @@ public class ResourceServerConfig {
                     .usernameParameter("username")
                     .passwordParameter("password")
                     .loginProcessingUrl("/login")
-                    .defaultSuccessUrl(frontendUrl, true) // Redirect to frontendUrl
+                    .defaultSuccessUrl(
+                        "https://sparestien.vercel.app", true) // Redirect to frontendUrl
                     .successHandler(
                         (request, response, authentication) -> {
                           // Your custom success handling logic, if needed
