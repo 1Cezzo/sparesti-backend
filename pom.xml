@@ -145,7 +145,6 @@
 				<executions>
 					<execution>
 						<id>format</id>
-						<phase>process-sources</phase>
 						<goals>
 							<goal>check</goal>
 							<goal>apply</goal>
