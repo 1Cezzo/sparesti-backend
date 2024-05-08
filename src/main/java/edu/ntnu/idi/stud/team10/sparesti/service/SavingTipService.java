@@ -1,5 +1,8 @@
 package edu.ntnu.idi.stud.team10.sparesti.service;
 
+import java.util.List;
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +34,24 @@ public class SavingTipService {
    * @return (String): A random savings tip in the repository.
    */
   public String getRandomSavingTip() {
-    if (noSavingTips()) return "No saving tips found";
-    else return savingTipRepository.getRandomTip();
+    List<SavingTip> allTips = savingTipRepository.findAll();
+    if (allTips.isEmpty()) {
+      return "No saving tips found";
+    } else {
+      SavingTip randomTip = getRandomElement(allTips);
+      return randomTip.getMessage();
+    }
+  }
+
+  /**
+   * Get a random element from a list.
+   *
+   * @param list (List<SavingTip>): The list to get a random element from.
+   * @return (SavingTip): A random element from the list.
+   */
+  private SavingTip getRandomElement(List<SavingTip> list) {
+    Random rand = new Random();
+    return list.get(rand.nextInt(list.size()));
   }
 
   /**

@@ -305,7 +305,8 @@ public class UserChallengeService<T extends Challenge> {
             + ":) Det må være en korrelasjon mellom utfordringen og brukerens informasjon. "
             + "Det må også være sammenheng mellom beskrivelse, tittel, målbeløp og TimeInterval!"
             + "Så ikke si 'Reduser daglig kaffe', hvis utfordringen er WEEKLY for eksempel. "
-            + "IKKE BRUK SAMME PRODUKT HVER GANG! IKKE BRUK SAMME UTFORDRINGSTYPE HVER GANG!");
+            + "IKKE BRUK SAMME PRODUKT HVER GANG! IKKE BRUK SAMME UTFORDRINGSTYPE HVER GANG!"
+            + "IKKE BRUK MER ENN 1 STED SOM VIL SPARES PÅ I EN UTFORDRING! MAKS 1 STED. ");
     messages[2] = assistantMessage;
     // We have to be quite strict with the prompt, or we will get a bad response from the API.
 
