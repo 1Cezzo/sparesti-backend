@@ -36,12 +36,23 @@ public class SecurityConfig {
 
   @Bean
   @Order(3)
-  /** Configures the default security filter chain. */
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
         .requiresChannel(requiresChannel -> requiresChannel.anyRequest().requiresSecure())
         .formLogin(Customizer.withDefaults());
+
+    // Add configuration to ignore certain URLs
+    http.authorizeRequests(
+            authorize ->
+                authorize
+                    .antMatchers("/favicon.ico", "/resources/**", "/error")
+                    .permitAll()
+                    // Add more antMatchers if needed
+                    .anyRequest()
+                    .authenticated())
+        .formLogin(Customizer.withDefaults());
+
     return http.build();
   }
 
