@@ -77,7 +77,10 @@ public class ResourceServerConfig {
                     .requestMatchers(
                         request -> {
                           String referer = request.getHeader("referer");
-                          return referer != null && referer.contains("/swagger-ui");
+                          String URL = request.getRequestURI();
+                          return referer != null
+                              && referer.contains("/swagger-ui")
+                              && !URL.contains("/swagger");
                         })
                     .denyAll()
                     .anyRequest()
