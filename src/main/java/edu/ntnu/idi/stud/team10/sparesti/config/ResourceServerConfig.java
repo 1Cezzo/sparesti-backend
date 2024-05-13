@@ -70,10 +70,14 @@ public class ResourceServerConfig {
                     .permitAll()
                     .requestMatchers("/images/**")
                     .permitAll()
+                    // Allow access to Swagger UI page
+                    .requestMatchers("/swagger-ui/**")
+                    .permitAll()
+                    // Deny access to API endpoints if request comes from Swagger UI
                     .requestMatchers(
                         request -> {
-                          String requestPath = request.getServletPath() + request.getPathInfo();
-                          return requestPath != null && requestPath.contains("/swagger");
+                          String referer = request.getHeader("referer");
+                          return referer != null && referer.contains("/swagger-ui");
                         })
                     .denyAll()
                     .anyRequest()
