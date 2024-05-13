@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -71,17 +70,11 @@ public class ResourceServerConfig {
                     .permitAll()
                     .requestMatchers("/images/**")
                     .permitAll()
-                    .requestMatchers("swagger-ui/**")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.POST, "swagger-ui/**")
-                    .denyAll()
-                    .requestMatchers(HttpMethod.PUT, "swagger-ui/**")
-                    .denyAll()
-                    .requestMatchers(HttpMethod.DELETE, "swagger-ui/**")
-                    .denyAll()
-                    .requestMatchers(HttpMethod.PATCH, "swagger-ui/**")
-                    .denyAll()
-                    .requestMatchers(HttpMethod.GET, "swagger-ui/**")
+                    .requestMatchers(
+                        request -> {
+                          String requestPath = request.getServletPath() + request.getPathInfo();
+                          return requestPath != null && requestPath.contains("/swagger");
+                        })
                     .denyAll()
                     .anyRequest()
                     .authenticated())
