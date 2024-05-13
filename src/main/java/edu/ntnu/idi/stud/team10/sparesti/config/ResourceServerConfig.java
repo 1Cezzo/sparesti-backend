@@ -71,7 +71,7 @@ public class ResourceServerConfig {
                     .requestMatchers("/images/**")
                     .permitAll()
                     // Allow access to Swagger UI page
-                    .requestMatchers("/swagger-ui/**")
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
                     .permitAll()
                     // Deny access to API endpoints if request comes from Swagger UI
                     .requestMatchers(
